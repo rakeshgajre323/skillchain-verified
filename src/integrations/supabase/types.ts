@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      credentials: {
+        Row: {
+          created_at: string
+          credential_type: string
+          description: string | null
+          expiry_date: string | null
+          id: string
+          issued_date: string
+          issuer_id: string | null
+          issuer_name: string
+          metadata: Json | null
+          title: string
+          updated_at: string
+          user_id: string
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          credential_type?: string
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string
+          issuer_id?: string | null
+          issuer_name: string
+          metadata?: Json | null
+          title: string
+          updated_at?: string
+          user_id: string
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          credential_type?: string
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          issued_date?: string
+          issuer_id?: string | null
+          issuer_name?: string
+          metadata?: Json | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verification_status?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           attempts: number

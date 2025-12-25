@@ -256,9 +256,11 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
-                <Button variant="outline" className="w-full mt-4" size="sm">
-                  Edit Profile
-                </Button>
+                <Link to="/profile-settings">
+                  <Button variant="outline" className="w-full mt-4" size="sm">
+                    Edit Profile
+                  </Button>
+                </Link>
               </div>
 
               {/* Recent Activity */}

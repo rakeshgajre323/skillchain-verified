@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -14,18 +15,19 @@ interface SendOtpRequest {
   email: string;
 }
 
+// Rate limiting constants
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const MAX_OTP_REQUESTS_PER_HOUR = 3;
+
 // Generate a random 6-digit OTP
 function generateOtp(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Simple hash function for OTP (in production, use proper crypto)
+// Secure hash function using bcrypt
 async function hashOtp(otp: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(otp + Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"));
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(otp, salt);
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -39,7 +41,25 @@ serve(async (req: Request): Promise<Response> => {
 
     if (!userId || !email) {
       return new Response(
-        JSON.stringify({ error: "Missing userId or email" }),
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email format" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate userId format (UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid user identifier" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -51,10 +71,34 @@ serve(async (req: Request): Promise<Response> => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
+    // Rate limiting check - count recent OTP requests for this user
+    const rateLimitCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+    const { data: recentOtps, error: countError } = await supabaseAdmin
+      .from("otp_codes")
+      .select("created_at")
+      .eq("user_id", userId)
+      .gte("created_at", rateLimitCutoff);
+
+    if (countError) {
+      console.error("Error checking rate limit:", countError);
+      return new Response(
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (recentOtps && recentOtps.length >= MAX_OTP_REQUESTS_PER_HOUR) {
+      console.warn(`Rate limit exceeded for user ${userId}`);
+      return new Response(
+        JSON.stringify({ error: "Too many verification requests. Please try again later." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Delete any existing OTP for this user
     await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
 
-    // Generate and hash OTP
+    // Generate and hash OTP using bcrypt
     const otp = generateOtp();
     const codeHash = await hashOtp(otp);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
@@ -70,7 +114,7 @@ serve(async (req: Request): Promise<Response> => {
     if (insertError) {
       console.error("Error inserting OTP:", insertError);
       return new Response(
-        JSON.stringify({ error: "Failed to create OTP" }),
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -120,7 +164,7 @@ serve(async (req: Request): Promise<Response> => {
     if (emailError) {
       console.error("Error sending email:", emailError);
       return new Response(
-        JSON.stringify({ error: "Failed to send verification email" }),
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -132,10 +176,9 @@ serve(async (req: Request): Promise<Response> => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
     console.error("Error in send-otp function:", error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

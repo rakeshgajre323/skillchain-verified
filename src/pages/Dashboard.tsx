@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   Clock,
   TrendingUp,
+  ArrowRight,
 } from "lucide-react";
 
 const studentStats = [
@@ -90,21 +91,21 @@ export default function Dashboard() {
     switch (profile?.role) {
       case "student":
         return [
-          { label: "View Credentials", icon: Award },
-          { label: "Share Credentials", icon: Users },
-          { label: "Request Verification", icon: CheckCircle2 },
+          { label: "View Credentials", icon: Award, href: "/credentials" },
+          { label: "Share Credentials", icon: Users, href: "/credentials" },
+          { label: "Request Verification", icon: CheckCircle2, href: "/credentials" },
         ];
       case "institute":
         return [
-          { label: "Issue Credential", icon: Plus },
-          { label: "Manage Students", icon: Users },
-          { label: "View Analytics", icon: TrendingUp },
+          { label: "Issue Credential", icon: Plus, href: "/credentials" },
+          { label: "Manage Students", icon: Users, href: "/dashboard" },
+          { label: "View Analytics", icon: TrendingUp, href: "/dashboard" },
         ];
       case "company":
         return [
-          { label: "Verify Credential", icon: Search },
-          { label: "Browse Candidates", icon: Users },
-          { label: "Post Job", icon: Briefcase },
+          { label: "Verify Credential", icon: Search, href: "/credentials" },
+          { label: "Browse Candidates", icon: Users, href: "/dashboard" },
+          { label: "Post Job", icon: Briefcase, href: "/dashboard" },
         ];
       default:
         return [];
@@ -176,17 +177,18 @@ export default function Dashboard() {
                 {actions.map((action, index) => {
                   const Icon = action.icon;
                   return (
-                    <Button
-                      key={action.label}
-                      variant="outline"
-                      className="h-auto py-6 flex flex-col gap-3 hover:border-primary hover:bg-primary/5 transition-all animate-fade-in-up"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <div className="p-3 rounded-xl bg-primary/10">
-                        <Icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <span className="font-medium">{action.label}</span>
-                    </Button>
+                    <Link key={action.label} to={action.href}>
+                      <Button
+                        variant="outline"
+                        className="w-full h-auto py-6 flex flex-col gap-3 hover:border-primary hover:bg-primary/5 transition-all animate-fade-in-up"
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        <div className="p-3 rounded-xl bg-primary/10">
+                          <Icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <span className="font-medium">{action.label}</span>
+                      </Button>
+                    </Link>
                   );
                 })}
               </div>

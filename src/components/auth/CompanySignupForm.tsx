@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Briefcase, Mail, Phone, Lock, Globe } from "lucide-react";
 
@@ -26,12 +27,12 @@ export function CompanySignupForm() {
   const onSubmit = async (data: CompanySignupData) => {
     setIsLoading(true);
     try {
-      const { error } = await signUp(data.officialEmail, data.password, {
+      const { error, userId } = await signUp(data.officialEmail, data.password, {
         role: "company",
         company_name: data.companyName,
         phone: data.phone,
         website: data.website || null,
-        status: "active",
+        status: "pending",
       });
 
       if (error) {
@@ -43,8 +44,20 @@ export function CompanySignupForm() {
         return;
       }
 
-      toast.success("Company account created successfully!");
-      navigate("/login");
+      if (userId) {
+        const { error: otpError } = await supabase.functions.invoke("send-otp", {
+          body: { userId, email: data.officialEmail },
+        });
+
+        if (otpError) {
+          toast.error("Account created but failed to send verification code.");
+          navigate("/login");
+          return;
+        }
+
+        toast.success("Account created! Please verify your email.");
+        navigate("/verify-otp", { state: { userId, email: data.officialEmail } });
+      }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {

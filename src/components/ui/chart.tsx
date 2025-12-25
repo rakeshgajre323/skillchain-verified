@@ -58,6 +58,9 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+// WARNING: ChartConfig must only contain developer-defined values.
+// Never pass user input directly to this component's config prop
+// as it could introduce XSS vulnerabilities through dangerouslySetInnerHTML.
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 

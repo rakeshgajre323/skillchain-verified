@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,13 +12,9 @@ interface VerifyOtpRequest {
   code: string;
 }
 
-// Same hash function as in send-otp
-async function hashOtp(otp: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(otp + Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"));
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+// Secure verification using bcrypt
+async function verifyOtp(code: string, hash: string): Promise<boolean> {
+  return await bcrypt.compare(code, hash);
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -31,7 +28,7 @@ serve(async (req: Request): Promise<Response> => {
 
     if (!userId || !code) {
       return new Response(
-        JSON.stringify({ error: "Missing userId or code" }),
+        JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -40,6 +37,15 @@ serve(async (req: Request): Promise<Response> => {
     if (!/^\d{6}$/.test(code)) {
       return new Response(
         JSON.stringify({ error: "Invalid OTP format. Must be 6 digits." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate userId format (UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(userId)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid user identifier" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -61,7 +67,7 @@ serve(async (req: Request): Promise<Response> => {
     if (fetchError) {
       console.error("Error fetching OTP:", fetchError);
       return new Response(
-        JSON.stringify({ error: "Failed to verify OTP" }),
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -91,10 +97,10 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Hash the provided code and compare
-    const codeHash = await hashOtp(code);
+    // Verify the provided code using bcrypt
+    const isValid = await verifyOtp(code, otpRecord.code_hash);
 
-    if (codeHash !== otpRecord.code_hash) {
+    if (!isValid) {
       // Increment attempts
       await supabaseAdmin
         .from("otp_codes")
@@ -119,7 +125,7 @@ serve(async (req: Request): Promise<Response> => {
     if (updateError) {
       console.error("Error updating profile status:", updateError);
       return new Response(
-        JSON.stringify({ error: "Failed to activate account" }),
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -134,10 +140,9 @@ serve(async (req: Request): Promise<Response> => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
     console.error("Error in verify-otp function:", error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

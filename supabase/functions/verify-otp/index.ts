@@ -12,9 +12,18 @@ interface VerifyOtpRequest {
   code: string;
 }
 
+// Pre-computed dummy hash for constant-time responses
+// This ensures all code paths take approximately the same time
+const DUMMY_HASH = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+
 // Secure verification using bcrypt
 async function verifyOtp(code: string, hash: string): Promise<boolean> {
   return await bcrypt.compare(code, hash);
+}
+
+// Perform dummy bcrypt operation to ensure constant-time response
+async function performDummyVerification(code: string): Promise<void> {
+  await bcrypt.compare(code, DUMMY_HASH);
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -27,6 +36,8 @@ serve(async (req: Request): Promise<Response> => {
     const { userId, code }: VerifyOtpRequest = await req.json();
 
     if (!userId || !code) {
+      // Perform dummy verification to maintain constant time
+      await performDummyVerification(code || "000000");
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -35,6 +46,7 @@ serve(async (req: Request): Promise<Response> => {
 
     // Validate code format
     if (!/^\d{6}$/.test(code)) {
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "Invalid OTP format. Must be 6 digits." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -44,6 +56,7 @@ serve(async (req: Request): Promise<Response> => {
     // Validate userId format (UUID)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(userId)) {
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "Invalid user identifier" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -66,6 +79,7 @@ serve(async (req: Request): Promise<Response> => {
 
     if (fetchError) {
       console.error("Error fetching OTP:", fetchError);
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -73,6 +87,8 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (!otpRecord) {
+      // Perform dummy verification to prevent timing-based user enumeration
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "No verification code found. Please request a new one." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -82,6 +98,8 @@ serve(async (req: Request): Promise<Response> => {
     // Check if expired
     if (new Date(otpRecord.expires_at) < new Date()) {
       await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
+      // Perform dummy verification to maintain constant time
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "Verification code has expired. Please request a new one." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -91,13 +109,15 @@ serve(async (req: Request): Promise<Response> => {
     // Check attempts
     if (otpRecord.attempts >= 5) {
       await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
+      // Perform dummy verification to maintain constant time
+      await performDummyVerification(code);
       return new Response(
         JSON.stringify({ error: "Too many attempts. Please request a new verification code." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Verify the provided code using bcrypt
+    // Verify the provided code using bcrypt (this is the real verification)
     const isValid = await verifyOtp(code, otpRecord.code_hash);
 
     if (!isValid) {

@@ -22,7 +22,7 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, profileData: Partial<Profile>) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, profileData: Partial<Profile>) => Promise<{ error: Error | null; userId: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) {
-      return { error };
+      return { error, userId: null };
     }
 
     if (data.user) {
@@ -114,16 +114,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         company_name: profileData.company_name || null,
         website: profileData.website || null,
         address: profileData.address || null,
-        status: profileData.status || "active",
+        status: "pending",
       }]);
 
       if (profileError) {
         console.error("Error creating profile:", profileError);
-        return { error: profileError };
+        return { error: profileError, userId: null };
       }
+
+      return { error: null, userId: data.user.id };
     }
 
-    return { error: null };
+    return { error: null, userId: null };
   };
 
   const signIn = async (email: string, password: string) => {

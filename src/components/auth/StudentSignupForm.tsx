@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, User, Mail, Phone, Lock, IdCard } from "lucide-react";
 
@@ -26,12 +27,12 @@ export function StudentSignupForm() {
   const onSubmit = async (data: StudentSignupData) => {
     setIsLoading(true);
     try {
-      const { error } = await signUp(data.email, data.password, {
+      const { error, userId } = await signUp(data.email, data.password, {
         role: "student",
         full_name: data.fullName,
         phone: data.phone,
         appar_id: data.apparId || null,
-        status: "active",
+        status: "pending",
       });
 
       if (error) {
@@ -43,8 +44,21 @@ export function StudentSignupForm() {
         return;
       }
 
-      toast.success("Account created successfully! You can now login.");
-      navigate("/login");
+      if (userId) {
+        const { error: otpError } = await supabase.functions.invoke("send-otp", {
+          body: { userId, email: data.email },
+        });
+
+        if (otpError) {
+          console.error("Failed to send OTP:", otpError);
+          toast.error("Account created but failed to send verification code. Please login and request a new code.");
+          navigate("/login");
+          return;
+        }
+
+        toast.success("Account created! Please verify your email.");
+        navigate("/verify-otp", { state: { userId, email: data.email } });
+      }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {

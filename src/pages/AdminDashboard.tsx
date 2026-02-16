@@ -26,54 +26,62 @@ import {
   Cell,
 } from "recharts";
 
-// Mock data for charts (would come from DB aggregation in production)
-const userGrowthData = [
-  { month: "Jul", users: 45 },
-  { month: "Aug", users: 78 },
-  { month: "Sep", users: 120 },
-  { month: "Oct", users: 189 },
-  { month: "Nov", users: 267 },
-  { month: "Dec", users: 342 },
-  { month: "Jan", users: 456 },
-  { month: "Feb", users: 534 },
-];
+const STATUS_COLORS: Record<string, string> = {
+  verified: "hsl(160, 84%, 39%)",
+  pending: "hsl(38, 92%, 50%)",
+  rejected: "hsl(0, 84%, 60%)",
+  expired: "hsl(220, 9%, 46%)",
+};
 
-const certIssuanceData = [
-  { month: "Jul", issued: 12 },
-  { month: "Aug", issued: 28 },
-  { month: "Sep", issued: 45 },
-  { month: "Oct", issued: 67 },
-  { month: "Nov", issued: 89 },
-  { month: "Dec", issued: 102 },
-  { month: "Jan", issued: 134 },
-  { month: "Feb", issued: 158 },
-];
-
-const statusDistribution = [
-  { name: "Verified", value: 65, color: "hsl(160, 84%, 39%)" },
-  { name: "Pending", value: 25, color: "hsl(38, 92%, 50%)" },
-  { name: "Rejected", value: 7, color: "hsl(0, 84%, 60%)" },
-  { name: "Expired", value: 3, color: "hsl(220, 9%, 46%)" },
-];
+function cn(...classes: (string | undefined | false)[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export default function AdminDashboard() {
   const { user, profile, loading } = useAuth();
-  const [credentialCount, setCredentialCount] = useState(0);
-  const [profileCount, setProfileCount] = useState(0);
+  const [counts, setCounts] = useState({ totalUsers: 0, totalCerts: 0, verifiedCerts: 0 });
+  const [userGrowthData, setUserGrowthData] = useState<{ month: string; users: number }[]>([]);
+  const [certIssuanceData, setCertIssuanceData] = useState<{ month: string; issued: number }[]>([]);
+  const [statusDistribution, setStatusDistribution] = useState<{ name: string; value: number; color: string }[]>([]);
 
   useEffect(() => {
-    if (user) {
-      fetchCounts();
-    }
+    if (user) fetchAll();
   }, [user]);
 
-  const fetchCounts = async () => {
-    const [creds, profiles] = await Promise.all([
-      supabase.from("credentials").select("id", { count: "exact", head: true }),
-      supabase.from("profiles").select("id", { count: "exact", head: true }),
+  const fetchAll = async () => {
+    const [countsRes, growthRes, issuanceRes, statusRes] = await Promise.all([
+      supabase.rpc("get_admin_counts"),
+      supabase.rpc("get_user_growth"),
+      supabase.rpc("get_cert_issuance"),
+      supabase.rpc("get_status_distribution"),
     ]);
-    setCredentialCount(creds.count || 0);
-    setProfileCount(profiles.count || 0);
+
+    if (countsRes.data && countsRes.data.length > 0) {
+      const c = countsRes.data[0];
+      setCounts({
+        totalUsers: Number(c.total_users) || 0,
+        totalCerts: Number(c.total_certs) || 0,
+        verifiedCerts: Number(c.verified_certs) || 0,
+      });
+    }
+
+    if (growthRes.data) {
+      setUserGrowthData(growthRes.data.map((r: any) => ({ month: r.month, users: Number(r.users) })));
+    }
+
+    if (issuanceRes.data) {
+      setCertIssuanceData(issuanceRes.data.map((r: any) => ({ month: r.month, issued: Number(r.issued) })));
+    }
+
+    if (statusRes.data) {
+      setStatusDistribution(
+        statusRes.data.map((r: any) => ({
+          name: r.name,
+          value: Number(r.value),
+          color: STATUS_COLORS[r.name] || "hsl(220, 9%, 46%)",
+        }))
+      );
+    }
   };
 
   if (loading) {
@@ -86,12 +94,20 @@ export default function AdminDashboard() {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  const verificationRate = counts.totalCerts > 0
+    ? Math.round((counts.verifiedCerts / counts.totalCerts) * 100)
+    : 0;
+
   const summaryStats = [
-    { label: "Total Users", value: profileCount.toString(), icon: Users, color: "text-primary" },
-    { label: "Certificates Issued", value: credentialCount.toString(), icon: Award, color: "text-accent" },
-    { label: "Verification Rate", value: "94%", icon: Shield, color: "text-success" },
-    { label: "Growth", value: "+18%", icon: TrendingUp, color: "text-warning" },
+    { label: "Total Users", value: counts.totalUsers.toString(), icon: Users, color: "text-primary" },
+    { label: "Certificates Issued", value: counts.totalCerts.toString(), icon: Award, color: "text-accent" },
+    { label: "Verification Rate", value: `${verificationRate}%`, icon: Shield, color: "text-primary" },
+    { label: "Growth", value: userGrowthData.length >= 2
+        ? `+${userGrowthData[userGrowthData.length - 1]?.users - userGrowthData[userGrowthData.length - 2]?.users}`
+        : "—", icon: TrendingUp, color: "text-primary" },
   ];
+
+  const totalStatus = statusDistribution.reduce((s, d) => s + d.value, 0);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -132,7 +148,6 @@ export default function AdminDashboard() {
 
           {/* Charts */}
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* User Growth */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="font-display font-semibold text-lg mb-4">User Growth</h3>
               <ResponsiveContainer width="100%" height={280}>
@@ -140,27 +155,12 @@ export default function AdminDashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "0.75rem",
-                      color: "hsl(var(--foreground))",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="users"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2.5}
-                    dot={{ fill: "hsl(var(--primary))", r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "0.75rem", color: "hsl(var(--foreground))" }} />
+                  <Line type="monotone" dataKey="users" stroke="hsl(var(--primary))" strokeWidth={2.5} dot={{ fill: "hsl(var(--primary))", r: 4 }} activeDot={{ r: 6 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
 
-            {/* Certificate Issuance */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="font-display font-semibold text-lg mb-4">Certificate Issuance</h3>
               <ResponsiveContainer width="100%" height={280}>
@@ -168,14 +168,7 @@ export default function AdminDashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "0.75rem",
-                      color: "hsl(var(--foreground))",
-                    }}
-                  />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "0.75rem", color: "hsl(var(--foreground))" }} />
                   <Bar dataKey="issued" fill="hsl(var(--accent))" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -188,15 +181,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col md:flex-row items-center gap-8">
               <ResponsiveContainer width="100%" height={240} className="max-w-xs">
                 <PieChart>
-                  <Pie
-                    data={statusDistribution}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
+                  <Pie data={statusDistribution} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={4} dataKey="value">
                     {statusDistribution.map((entry, i) => (
                       <Cell key={i} fill={entry.color} />
                     ))}
@@ -208,8 +193,10 @@ export default function AdminDashboard() {
                 {statusDistribution.map((s) => (
                   <div key={s.name} className="flex items-center gap-2">
                     <span className="w-3 h-3 rounded-full" style={{ backgroundColor: s.color }} />
-                    <span className="text-sm text-muted-foreground">{s.name}</span>
-                    <span className="text-sm font-semibold">{s.value}%</span>
+                    <span className="text-sm text-muted-foreground capitalize">{s.name}</span>
+                    <span className="text-sm font-semibold">
+                      {totalStatus > 0 ? Math.round((s.value / totalStatus) * 100) : 0}%
+                    </span>
                   </div>
                 ))}
               </div>
@@ -220,8 +207,4 @@ export default function AdminDashboard() {
       <Footer />
     </div>
   );
-}
-
-function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(" ");
 }

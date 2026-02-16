@@ -142,7 +142,35 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_admin_counts: {
+        Args: never
+        Returns: {
+          total_certs: number
+          total_users: number
+          verified_certs: number
+        }[]
+      }
+      get_cert_issuance: {
+        Args: never
+        Returns: {
+          issued: number
+          month: string
+        }[]
+      }
+      get_status_distribution: {
+        Args: never
+        Returns: {
+          name: string
+          value: number
+        }[]
+      }
+      get_user_growth: {
+        Args: never
+        Returns: {
+          month: string
+          users: number
+        }[]
+      }
     }
     Enums: {
       user_role: "student" | "institute" | "company"

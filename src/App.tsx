@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Credentials from "./pages/Credentials";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfileSettings from "./pages/ProfileSettings";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <AuthProvider>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/about" element={<About />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />

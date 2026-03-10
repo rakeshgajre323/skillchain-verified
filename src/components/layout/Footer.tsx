@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Shield, Github, Twitter, Linkedin } from "lucide-react";
+import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
 
 export function Footer() {
   return (
@@ -19,8 +19,8 @@ export function Footer() {
               Secure, verifiable credentials for the modern workforce.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
-                <Twitter className="h-4 w-4 text-muted-foreground" />
+              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
+                <MessageCircle className="h-4 w-4 text-muted-foreground" />
               </a>
               <a href="#" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                 <Github className="h-4 w-4 text-muted-foreground" />

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Shield, Github, Twitter, Linkedin } from "lucide-react";
+import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
 
 export function Footer() {
   return (

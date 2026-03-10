@@ -19,13 +19,13 @@ export function Footer() {
               Secure, verifiable credentials for the modern workforce.
             </p>
             <div className="flex gap-3">
-              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
+              <a href="https://wa.me/+917989975435" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                 <MessageCircle className="h-4 w-4 text-muted-foreground" />
               </a>
-              <a href="#" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
+              <a href="https://github.com/rakeshgajre323" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                 <Github className="h-4 w-4 text-muted-foreground" />
               </a>
-              <a href="#" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
+              <a href="https://www.linkedin.com/in/rakesh-gajre-1bba71257/" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-muted hover:bg-muted/80 transition-colors">
                 <Linkedin className="h-4 w-4 text-muted-foreground" />
               </a>
             </div>

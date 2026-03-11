@@ -1,13 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 import { Resend } from "https://esm.sh/resend@4.0.0";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface SendOtpRequest {
@@ -15,23 +14,26 @@ interface SendOtpRequest {
   email: string;
 }
 
-// Rate limiting constants
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const MAX_OTP_REQUESTS_PER_HOUR = 3;
 
-// Generate a random 6-digit OTP
 function generateOtp(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Secure hash function using bcrypt
+// Hash OTP using Web Crypto API (SHA-256) with a random salt
 async function hashOtp(otp: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(otp, salt);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const saltHex = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
+  const encoder = new TextEncoder();
+  const data = encoder.encode(saltHex + otp);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return saltHex + ":" + hashHex;
 }
 
 serve(async (req: Request): Promise<Response> => {
-  // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -46,7 +48,6 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return new Response(
@@ -55,7 +56,6 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Validate userId format (UUID)
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(userId)) {
       return new Response(
@@ -64,14 +64,12 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Create Supabase client with service role
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    // Rate limiting check - count recent OTP requests for this user
     const rateLimitCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
     const { data: recentOtps, error: countError } = await supabaseAdmin
       .from("otp_codes")
@@ -88,22 +86,18 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (recentOtps && recentOtps.length >= MAX_OTP_REQUESTS_PER_HOUR) {
-      console.warn(`Rate limit exceeded for user ${userId}`);
       return new Response(
         JSON.stringify({ error: "Too many verification requests. Please try again later." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Delete any existing OTP for this user
     await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
 
-    // Generate and hash OTP using bcrypt
     const otp = generateOtp();
     const codeHash = await hashOtp(otp);
-    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    // Store hashed OTP in database
     const { error: insertError } = await supabaseAdmin.from("otp_codes").insert({
       user_id: userId,
       code_hash: codeHash,
@@ -119,7 +113,6 @@ serve(async (req: Request): Promise<Response> => {
       );
     }
 
-    // Send email with OTP
     const { error: emailError } = await resend.emails.send({
       from: "SkillChain <onboarding@resend.dev>",
       to: [email],

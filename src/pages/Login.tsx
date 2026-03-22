@@ -13,6 +13,7 @@ import { Shield, Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from "lucide-rea
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { user, loading, signIn } = useAuth();
   const navigate = useNavigate();
 

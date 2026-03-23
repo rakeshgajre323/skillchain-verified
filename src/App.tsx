@@ -18,6 +18,12 @@ import ProfileSettings from "./pages/ProfileSettings";
 import About from "./pages/About";
 import Features from "./pages/Features";
 import Contact from "./pages/Contact";
+import Pricing from "./pages/Pricing";
+import Documentation from "./pages/Documentation";
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +50,12 @@ const App = () => (
               <Route path="/credentials" element={<Credentials />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/docs" element={<Documentation />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/security" element={<Security />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

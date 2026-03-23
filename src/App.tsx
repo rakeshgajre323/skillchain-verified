@@ -18,6 +18,12 @@ import ProfileSettings from "./pages/ProfileSettings";
 import About from "./pages/About";
 import Features from "./pages/Features";
 import Contact from "./pages/Contact";
+import Pricing from "./pages/Pricing";
+import Documentation from "./pages/Documentation";
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

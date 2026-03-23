@@ -50,6 +50,12 @@ const App = () => (
               <Route path="/credentials" element={<Credentials />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/docs" element={<Documentation />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/security" element={<Security />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

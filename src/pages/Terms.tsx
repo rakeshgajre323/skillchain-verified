@@ -34,7 +34,7 @@ const Terms = () => {
           <p>We reserve the right to suspend or terminate accounts that violate these terms. Users may delete their account at any time through profile settings.</p>
 
           <h2>8. Contact</h2>
-          <p>For questions about these terms, contact us at <a href="mailto:rakeshgajre2005@gmail.com" className="text-primary">rakeshgajre2005@gmail.com</a>.</p>
+          <p>For questions about these terms, contact us at <a href="mailto:<p>For questions about these terms, contact us at <a href="mailto:rakeshgajre.work@gmail.com" className="text-primary">rakeshgajre.work@gmail.com</a>.</p></a>.</p>
         </div>
       </main>
       <Footer />

@@ -81,7 +81,7 @@ const Careers = () => {
             <div className="text-center pt-8">
               <p className="text-muted-foreground">
                 Don't see a role that fits?{" "}
-                <a href="<a href="mailto:rakeshgajre.work@gmail.com" className="text-primary hover:underline">" className="text-primary hover:underline">
+                <a href="mailto:rakeshgajre.work@gmail.com" className="text-primary hover:underline">@gmail.com" className="text-primary hover:underline">" className="text-primary hover:underline">
                   Send us your resume
                 </a>
               </p>

@@ -32,7 +32,7 @@ const securityFeatures = [
   {
     icon: AlertTriangle,
     title: "Vulnerability Reporting",
-    description: "Found a security issue? Contact us at description: "Found a security issue? Contact us at rakeshgajre.work@gmail.com. We take all reports seriously and respond within 48 hours.",. We take all reports seriously and respond within 48 hours.",
+    description: "Found a security issue? Contact us at rakeshgajre.work@gmail.com. We take all reports seriously and respond within 48 hours.",: "Found a security issue? Contact us at rakeshgajre.work@gmail.com. We take all reports seriously and respond within 48 hours.",. We take all reports seriously and respond within 48 hours.",
   },
 ];
 

@@ -28,7 +28,7 @@ const Privacy = () => {
           <p>We may use third-party services such as email delivery providers to send OTP codes and password reset links. These services only receive the minimum data necessary to perform their function.</p>
 
           <h2>6. Your Rights</h2>
-          <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:<p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:rakeshgajre.work@gmail.com" className="text-primary">rakeshgajre.work@gmail.com</a>.</p></a>.</p>
+          <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:rakeshgajre.work@gmail.com" className="text-primary">rakeshgajre.work@gmail.com</a>.</p> access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:rakeshgajre.work@gmail.com" className="text-primary">rakeshgajre.work@gmail.com</a>.</p></a>.</p>
 
           <h2>7. Changes to This Policy</h2>
           <p>We may update this policy from time to time. Changes will be posted on this page with an updated revision date.</p>

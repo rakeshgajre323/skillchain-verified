@@ -63,7 +63,7 @@ export default function Signup() {
                   return;
                 }
                 if (result.redirected) return;
-                navigate("/dashboard");
+                navigate("/complete-profile");
               }}
             >
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">

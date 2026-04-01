@@ -51,6 +51,7 @@ const App = () => (
               <Route path="/credentials" element={<Credentials />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
+              <Route path="/complete-profile" element={<CompleteProfile />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/docs" element={<Documentation />} />
               <Route path="/careers" element={<Careers />} />

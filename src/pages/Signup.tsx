@@ -16,6 +16,7 @@ import { toast } from "sonner";
 export default function Signup() {
   const [activeRole, setActiveRole] = useState<UserRole>("student");
   const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   if (loading) {
     return (

@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Credentials from "./pages/Credentials";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfileSettings from "./pages/ProfileSettings";
+import CompleteProfile from "./pages/CompleteProfile";
 import About from "./pages/About";
 import Features from "./pages/Features";
 import Contact from "./pages/Contact";
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/credentials" element={<Credentials />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
+              <Route path="/complete-profile" element={<CompleteProfile />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/docs" element={<Documentation />} />
               <Route path="/careers" element={<Careers />} />

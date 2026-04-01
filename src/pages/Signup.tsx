@@ -7,6 +7,11 @@ import { InstituteSignupForm } from "@/components/auth/InstituteSignupForm";
 import { CompanySignupForm } from "@/components/auth/CompanySignupForm";
 import { useAuth } from "@/hooks/useAuth";
 import { Shield, CheckCircle2 } from "lucide-react";
+import { lovable } from "@/integrations/lovable/index";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function Signup() {
   const [activeRole, setActiveRole] = useState<UserRole>("student");

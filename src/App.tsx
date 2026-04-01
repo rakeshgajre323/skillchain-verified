@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Credentials from "./pages/Credentials";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfileSettings from "./pages/ProfileSettings";
+import CompleteProfile from "./pages/CompleteProfile";
 import About from "./pages/About";
 import Features from "./pages/Features";
 import Contact from "./pages/Contact";

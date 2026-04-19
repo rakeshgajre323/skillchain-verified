@@ -44,7 +44,7 @@ const Security = () => {
         <section className="py-20 px-4 text-center bg-gradient-to-b from-primary/10 to-background">
           <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="text-primary">Security</span> at SkillChain
+              <span className="text-primary">Security</span> at CredVault
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Your data security is our top priority. Here's how we keep your credentials safe.

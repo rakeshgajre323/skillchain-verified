@@ -34,7 +34,7 @@ export default function Contact() {
               Get In <span className="text-primary">Touch</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Have questions about SkillChain? We'd love to hear from you. Reach out through any of the channels below.
+              Have questions about CredVault? We'd love to hear from you. Reach out through any of the channels below.
             </p>
           </div>
         </section>

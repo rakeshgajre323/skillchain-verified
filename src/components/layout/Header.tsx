@@ -25,7 +25,7 @@ export function Header() {
             <Shield className="h-6 w-6 text-primary" />
           </div>
           <span className="font-display font-bold text-xl">
-            Skill<span className="text-primary">Chain</span>
+            Cred<span className="text-primary">Vault</span>
           </span>
         </Link>
 

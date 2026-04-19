@@ -114,9 +114,9 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     const { error: emailError } = await resend.emails.send({
-      from: "SkillChain <onboarding@resend.dev>",
+      from: "CredVault <onboarding@resend.dev>",
       to: [email],
-      subject: "Your SkillChain Verification Code",
+      subject: "Your CredVault Verification Code",
       html: `
         <!DOCTYPE html>
         <html>
@@ -127,7 +127,7 @@ serve(async (req: Request): Promise<Response> => {
         <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f7fa; margin: 0; padding: 40px 20px;">
           <div style="max-width: 480px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden;">
             <div style="background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); padding: 32px; text-align: center;">
-              <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">SkillChain Credentials</h1>
+              <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">CredVault Credentials</h1>
             </div>
             <div style="padding: 40px 32px; text-align: center;">
               <h2 style="color: #1e293b; margin: 0 0 16px; font-size: 20px;">Verify Your Email</h2>
@@ -145,7 +145,7 @@ serve(async (req: Request): Promise<Response> => {
             </div>
             <div style="background: #f8fafc; padding: 20px 32px; text-align: center; border-top: 1px solid #e2e8f0;">
               <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                © ${new Date().getFullYear()} SkillChain Credentials. Secure credential management.
+                © ${new Date().getFullYear()} CredVault Credentials. Secure credential management.
               </p>
             </div>
           </div>

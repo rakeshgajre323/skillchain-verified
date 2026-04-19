@@ -38,7 +38,7 @@ export default function Signup() {
               Create Your Account
             </h1>
             <p className="text-muted-foreground">
-              Choose your role and get started with SkillChain
+              Choose your role and get started with CredVault
             </p>
           </div>
 

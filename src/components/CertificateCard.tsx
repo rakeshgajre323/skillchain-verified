@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Award, Building2, Calendar, ExternalLink, ChevronDown, Pencil, Check, X, QrCode } from "lucide-react";
+import { Award, Building2, Calendar, ChevronDown, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Collapsible,
@@ -50,36 +48,14 @@ interface CertificateCardProps {
   onUpdate?: (updated: Credential) => void;
 }
 
-export function CertificateCard({ credential, onUpdate }: CertificateCardProps) {
+export function CertificateCard({ credential }: CertificateCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editIssuer, setEditIssuer] = useState(credential.issuer_name);
-  const [saving, setSaving] = useState(false);
   const [showQR, setShowQR] = useState(false);
 
   const status = statusConfig[credential.verification_status];
   const StatusIcon = status.icon;
 
   const verificationUrl = `${window.location.origin}/credentials?verify=${credential.id}`;
-
-  const handleSaveIssuer = async () => {
-    if (!editIssuer.trim() || editIssuer === credential.issuer_name) {
-      setIsEditing(false);
-      setEditIssuer(credential.issuer_name);
-      return;
-    }
-    setSaving(true);
-    const { error } = await supabase
-      .from("credentials")
-      .update({ issuer_name: editIssuer.trim() })
-      .eq("id", credential.id);
-
-    if (!error) {
-      onUpdate?.({ ...credential, issuer_name: editIssuer.trim() });
-    }
-    setSaving(false);
-    setIsEditing(false);
-  };
 
   return (
     <div
@@ -115,33 +91,9 @@ export function CertificateCard({ credential, onUpdate }: CertificateCardProps) 
       )}
 
       <div className="space-y-2 text-sm">
-        {/* Editable Issuer */}
         <div className="flex items-center gap-2 text-muted-foreground">
           <Building2 className="h-4 w-4 flex-shrink-0" />
-          {isEditing ? (
-            <div className="flex items-center gap-1 flex-1">
-              <Input
-                value={editIssuer}
-                onChange={(e) => setEditIssuer(e.target.value)}
-                className="h-7 text-sm"
-                disabled={saving}
-                onKeyDown={(e) => e.key === "Enter" && handleSaveIssuer()}
-              />
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSaveIssuer} disabled={saving}>
-                <Check className="h-3 w-3" />
-              </Button>
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => { setIsEditing(false); setEditIssuer(credential.issuer_name); }}>
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1 flex-1 min-w-0">
-              <span className="truncate">{credential.issuer_name}</span>
-              <Button size="icon" variant="ghost" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setIsEditing(true)}>
-                <Pencil className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
+          <span className="truncate flex-1 min-w-0">{credential.issuer_name}</span>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Calendar className="h-4 w-4" />

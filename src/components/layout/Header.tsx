@@ -24,9 +24,9 @@ export function Header() {
           <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
             <Shield className="h-6 w-6 text-primary" />
           </div>
-          <span className="font-display font-bold text-xl">
-            Cred<span className="text-primary">Vault</span>
-          </span>
+        <span className="font-display font-bold text-xl">
+          Certi<span className="text-primary">Vault</span>
+        </span>
         </Link>
 
         {/* Desktop Navigation */}

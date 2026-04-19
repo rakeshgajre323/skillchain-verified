@@ -57,7 +57,7 @@ const Documentation = () => {
               <span className="text-primary">Documentation</span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Everything you need to know to get the most out of CredVault Credentials.
+              Everything you need to know to get the most out of CertiVault Credentials.
             </p>
           </div>
         </section>

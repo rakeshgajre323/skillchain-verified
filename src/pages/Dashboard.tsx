@@ -61,10 +61,6 @@ export default function Dashboard() {
     return <Navigate to="/login" replace />;
   }
 
-  if (!profile) {
-    return <Navigate to="/complete-profile" replace />;
-  }
-
   const getRoleIcon = () => {
     switch (profile?.role) {
       case "student":

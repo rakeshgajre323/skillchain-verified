@@ -147,7 +147,7 @@ export default function Index() {
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                Why Choose CredVault?
+                Why Choose CertiVault?
               </h2>
               <p className="text-muted-foreground text-lg">
                 Built with cutting-edge technology to ensure your credentials are secure, portable, and universally verifiable.

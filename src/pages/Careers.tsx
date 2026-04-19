@@ -10,7 +10,7 @@ const openings = [
     title: "Full-Stack Developer",
     location: "Remote / India",
     type: "Full-time",
-    description: "Build and maintain the CredVault platform using React, TypeScript, and Supabase.",
+    description: "Build and maintain the CertiVault platform using React, TypeScript, and Supabase.",
   },
   {
     title: "UI/UX Designer",

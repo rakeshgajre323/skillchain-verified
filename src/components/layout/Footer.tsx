@@ -61,7 +61,7 @@ export function Footer() {
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} SkillChain Credentials. All rights reserved.
+            © {new Date().getFullYear()} CredVault Credentials. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
             Built with security in mind.

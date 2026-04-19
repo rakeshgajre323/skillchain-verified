@@ -13,7 +13,7 @@ const Terms = () => {
           <p className="text-muted-foreground text-sm mb-8">Last updated: {new Date().toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" })}</p>
 
           <h2>1. Acceptance of Terms</h2>
-          <p>By accessing or using SkillChain Credentials, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
+          <p>By accessing or using CredVault Credentials, you agree to be bound by these Terms of Service. If you do not agree, please do not use the platform.</p>
 
           <h2>2. User Accounts</h2>
           <p>You must provide accurate information during registration and keep your account credentials secure. You are responsible for all activity under your account. Each account is assigned a role — student, institute, or company — which determines available features.</p>
@@ -25,10 +25,10 @@ const Terms = () => {
           <p>You may not use the platform to issue fraudulent credentials, impersonate other users, or attempt to bypass security controls including row-level security policies.</p>
 
           <h2>5. Intellectual Property</h2>
-          <p>All platform content, design, and technology are owned by SkillChain Credentials. Users retain ownership of credential data they upload.</p>
+          <p>All platform content, design, and technology are owned by CredVault Credentials. Users retain ownership of credential data they upload.</p>
 
           <h2>6. Limitation of Liability</h2>
-          <p>SkillChain Credentials is provided "as is" without warranty. We are not liable for any damages arising from use of the platform.</p>
+          <p>CredVault Credentials is provided "as is" without warranty. We are not liable for any damages arising from use of the platform.</p>
 
           <h2>7. Termination</h2>
           <p>We reserve the right to suspend or terminate accounts that violate these terms. Users may delete their account at any time through profile settings.</p>

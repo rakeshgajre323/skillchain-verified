@@ -10,7 +10,7 @@ interface ThemeProviderContextProps {
 
 const ThemeProviderContext = createContext<ThemeProviderContextProps | undefined>(undefined);
 
-const STORAGE_KEY = "skillchain-theme";
+const STORAGE_KEY = "credvault-theme";
 
 function getSystemTheme(): "dark" | "light" {
   if (typeof window === "undefined") return "light";

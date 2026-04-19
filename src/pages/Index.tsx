@@ -147,7 +147,7 @@ export default function Index() {
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-                Why Choose SkillChain?
+                Why Choose CredVault?
               </h2>
               <p className="text-muted-foreground text-lg">
                 Built with cutting-edge technology to ensure your credentials are secure, portable, and universally verifiable.
@@ -183,7 +183,7 @@ export default function Index() {
                 Built for Everyone
               </h2>
               <p className="text-muted-foreground text-lg">
-                Whether you're a student, educational institution, or employer, SkillChain has the tools you need.
+                Whether you're a student, educational institution, or employer, CredVault has the tools you need.
               </p>
             </div>
 
@@ -229,7 +229,7 @@ export default function Index() {
               Ready to Transform Your Credentials?
             </h2>
             <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8">
-              Join thousands of students, institutions, and employers who trust SkillChain for secure credential management.
+              Join thousands of students, institutions, and employers who trust CredVault for secure credential management.
             </p>
             <Link to="/signup">
               <Button variant="glass" size="xl" className="bg-background/20 hover:bg-background/30 text-primary-foreground border-primary-foreground/20">

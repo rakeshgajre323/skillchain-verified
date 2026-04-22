@@ -6,23 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { CertificateCard } from "@/components/CertificateCard";
+import { CertificateCard, type Credential } from "@/components/CertificateCard";
+import { Link } from "react-router-dom";
 import {
   Award,
   Plus,
   Search,
 } from "lucide-react";
-
-interface Credential {
-  id: string;
-  title: string;
-  description: string | null;
-  issuer_name: string;
-  credential_type: string;
-  issued_date: string;
-  expiry_date: string | null;
-  verification_status: "pending" | "verified" | "rejected" | "expired";
-}
 
 export default function Credentials() {
   const { user, loading } = useAuth();

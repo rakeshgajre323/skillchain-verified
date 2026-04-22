@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 export default function Credentials() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,24 +25,27 @@ export default function Credentials() {
   const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
-    if (user) fetchCredentials();
-  }, [user]);
+    if (user && profile) fetchCredentials();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, profile?.role]);
 
   const fetchCredentials = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("credentials")
-        .select("*")
-        .order("issued_date", { ascending: false });
-
+      let query = supabase.from("credentials").select("*").order("issued_date", { ascending: false });
+      if (profile?.role === "student") {
+        query = query.eq("user_id", user!.id);
+      } else if (profile?.role === "institute") {
+        query = query.eq("issuer_id", user!.id);
+      }
+      const { data, error } = await query;
       if (error) { console.error("Error fetching credentials:", error); return; }
 
       setCredentials(
         (data || []).map((cred) => ({
           ...cred,
           verification_status: cred.verification_status as Credential["verification_status"],
-        }))
+        })) as Credential[]
       );
     } catch (err) {
       console.error("Error:", err);

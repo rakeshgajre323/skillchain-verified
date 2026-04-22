@@ -2,33 +2,102 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, LoginData } from "@/lib/validations";
+import { z } from "zod";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Shield, Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from "lucide-react";
+import {
+  Shield,
+  Mail,
+  Lock,
+  Loader2,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  GraduationCap,
+  Building2,
+  Briefcase,
+  IdCard,
+  Hash,
+} from "lucide-react";
+
+type LoginRole = "student" | "university" | "company";
+
+const roles: {
+  id: LoginRole;
+  label: string;
+  title: string;
+  description: string;
+  icon: typeof GraduationCap;
+}[] = [
+  {
+    id: "student",
+    label: "Student",
+    title: "Login as Student",
+    description: "Access your verified credentials",
+    icon: GraduationCap,
+  },
+  {
+    id: "university",
+    label: "University",
+    title: "Login as University",
+    description: "Issue and manage certificates",
+    icon: Building2,
+  },
+  {
+    id: "company",
+    label: "Company",
+    title: "Login as Company",
+    description: "Verify candidate credentials",
+    icon: Briefcase,
+  },
+];
+
+const baseSchema = {
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+};
+
+const studentSchema = z.object({
+  ...baseSchema,
+  appar_id: z.string().min(3, "APPAR ID is required"),
+});
+
+const orgSchema = z.object({
+  ...baseSchema,
+  registration_number: z.string().min(3, "Registration number is required"),
+});
+
+type StudentForm = z.infer<typeof studentSchema>;
+type OrgForm = z.infer<typeof orgSchema>;
 
 export default function Login() {
+  const [activeRole, setActiveRole] = useState<LoginRole>("student");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { user, loading, signIn } = useAuth();
   const navigate = useNavigate();
 
+  const isStudent = activeRole === "student";
+  const schema = isStudent ? studentSchema : orgSchema;
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<LoginData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<StudentForm | OrgForm>({
+    resolver: zodResolver(schema),
   });
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     );
   }
@@ -37,7 +106,12 @@ export default function Login() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const onSubmit = async (data: LoginData) => {
+  const handleRoleChange = (role: LoginRole) => {
+    setActiveRole(role);
+    reset();
+  };
+
+  const onSubmit = async (data: StudentForm | OrgForm) => {
     setIsLoading(true);
     try {
       const { error } = await signIn(data.email, data.password);
@@ -55,19 +129,21 @@ export default function Login() {
 
       toast.success("Welcome back!");
       navigate("/dashboard");
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const active = roles.find((r) => r.id === activeRole)!;
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
       <main className="flex-1 flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-xl">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary/10 mb-4">
               <Shield className="h-8 w-8 text-primary" />
@@ -76,11 +152,65 @@ export default function Login() {
               Welcome Back
             </h1>
             <p className="text-muted-foreground">
-              Sign in to access your credentials
+              Choose your role to sign in to CertiVault
             </p>
           </div>
 
+          {/* Role tabs */}
+          <div
+            role="tablist"
+            aria-label="Select login role"
+            className="grid grid-cols-3 gap-3 mb-6"
+          >
+            {roles.map((r) => {
+              const Icon = r.icon;
+              const isActive = activeRole === r.id;
+              return (
+                <button
+                  key={r.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => handleRoleChange(r.id)}
+                  className={cn(
+                    "relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 group",
+                    isActive
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/50 hover:bg-muted/50"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "p-2.5 rounded-lg transition-all duration-300",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
+                    )}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span
+                    className={cn(
+                      "font-medium text-sm transition-colors",
+                      isActive ? "text-primary" : "text-foreground"
+                    )}
+                  >
+                    {r.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           <div className="glass-card rounded-2xl p-8">
+            <div className="mb-6">
+              <h2 className="text-xl font-display font-semibold">
+                {active.title}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {active.description}
+              </p>
+            </div>
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
@@ -95,9 +225,74 @@ export default function Login() {
                   className={errors.email ? "border-destructive" : ""}
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.email.message as string}
+                  </p>
                 )}
               </div>
+
+              {isStudent ? (
+                <div className="space-y-2">
+                  <Label htmlFor="appar_id" className="flex items-center gap-2">
+                    <IdCard className="h-4 w-4 text-muted-foreground" />
+                    APPAR ID
+                  </Label>
+                  <Input
+                    id="appar_id"
+                    type="text"
+                    placeholder="Enter your APPAR ID"
+                    {...register("appar_id" as const)}
+                    className={
+                      (errors as Record<string, { message?: string }>).appar_id
+                        ? "border-destructive"
+                        : ""
+                    }
+                  />
+                  {(errors as Record<string, { message?: string }>).appar_id && (
+                    <p className="text-sm text-destructive">
+                      {
+                        (errors as Record<string, { message?: string }>).appar_id
+                          ?.message
+                      }
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="registration_number"
+                    className="flex items-center gap-2"
+                  >
+                    <Hash className="h-4 w-4 text-muted-foreground" />
+                    Registration Number
+                  </Label>
+                  <Input
+                    id="registration_number"
+                    type="text"
+                    placeholder={
+                      activeRole === "university"
+                        ? "University registration number"
+                        : "Company registration number"
+                    }
+                    {...register("registration_number" as const)}
+                    className={
+                      (errors as Record<string, { message?: string }>)
+                        .registration_number
+                        ? "border-destructive"
+                        : ""
+                    }
+                  />
+                  {(errors as Record<string, { message?: string }>)
+                    .registration_number && (
+                    <p className="text-sm text-destructive">
+                      {
+                        (errors as Record<string, { message?: string }>)
+                          .registration_number?.message
+                      }
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -118,18 +313,27 @@ export default function Login() {
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     {...register("password")}
-                    className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
+                    className={`pr-10 ${
+                      errors.password ? "border-destructive" : ""
+                    }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.password.message as string}
+                  </p>
                 )}
               </div>
 
@@ -147,7 +351,7 @@ export default function Login() {
                   </>
                 ) : (
                   <>
-                    Sign In
+                    Sign In as {active.label}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}
@@ -157,7 +361,10 @@ export default function Login() {
             <div className="mt-6 pt-6 border-t border-border">
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-primary font-medium hover:underline">
+                <Link
+                  to="/signup"
+                  className="text-primary font-medium hover:underline"
+                >
                   Create one
                 </Link>
               </p>

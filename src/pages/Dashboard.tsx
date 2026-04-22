@@ -97,9 +97,9 @@ export default function Dashboard() {
         ];
       case "institute":
         return [
-          { label: "Issue Credential", icon: Plus, href: "/credentials" },
-          { label: "Manage Students", icon: Users, href: "/dashboard" },
-          { label: "View Analytics", icon: TrendingUp, href: "/dashboard" },
+          { label: "Upload Certificate", icon: Plus, href: "/issue-credential" },
+          { label: "Issued Credentials", icon: Award, href: "/credentials" },
+          { label: "View Analytics", icon: TrendingUp, href: "/admin" },
         ];
       case "company":
         return [
@@ -215,12 +215,14 @@ export default function Dashboard() {
                     {profile?.role === "company" &&
                       "When you verify candidate credentials, they'll be stored here for your records."}
                   </p>
-                  <Button variant="default">
-                    <Plus className="h-4 w-4 mr-2" />
-                    {profile?.role === "student" && "Request Credential"}
-                    {profile?.role === "institute" && "Issue Credential"}
-                    {profile?.role === "company" && "Verify Credential"}
-                  </Button>
+                  <Link to={profile?.role === "institute" ? "/issue-credential" : "/credentials"}>
+                    <Button variant="default">
+                      <Plus className="h-4 w-4 mr-2" />
+                      {profile?.role === "student" && "Request Credential"}
+                      {profile?.role === "institute" && "Upload Certificate"}
+                      {profile?.role === "company" && "Verify Credential"}
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

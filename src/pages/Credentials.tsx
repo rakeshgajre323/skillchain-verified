@@ -148,7 +148,7 @@ export default function Credentials() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search by title, issuer, or description..."
+                  placeholder={profile?.role === "company" ? "Search by APPAR ID, roll number, name, email…" : "Search by title, issuer, or recipient…"}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-11 pl-10 pr-4 rounded-lg border-2 border-input bg-background focus:border-primary focus:outline-none transition-colors"

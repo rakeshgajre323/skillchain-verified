@@ -72,10 +72,16 @@ export default function Credentials() {
   const uniqueIssuers = [...new Set(credentials.map((c) => c.issuer_name))];
 
   const filteredCredentials = credentials.filter((cred) => {
+    const q = searchQuery.toLowerCase();
     const matchesSearch =
-      cred.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cred.issuer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (cred.description || "").toLowerCase().includes(searchQuery.toLowerCase());
+      !q ||
+      cred.title.toLowerCase().includes(q) ||
+      cred.issuer_name.toLowerCase().includes(q) ||
+      (cred.description || "").toLowerCase().includes(q) ||
+      (cred.student_full_name || "").toLowerCase().includes(q) ||
+      (cred.student_appar_id || "").toLowerCase().includes(q) ||
+      (cred.student_roll_number || "").toLowerCase().includes(q) ||
+      (cred.student_email || "").toLowerCase().includes(q);
     const matchesStatus = statusFilter === "all" || cred.verification_status === statusFilter;
     const matchesIssuer = !issuerFilter || cred.issuer_name === issuerFilter;
     const issuedDate = new Date(cred.issued_date);

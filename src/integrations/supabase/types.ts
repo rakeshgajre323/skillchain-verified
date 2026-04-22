@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       credentials: {
         Row: {
+          certificate_file_url: string | null
           created_at: string
           credential_type: string
           description: string | null
@@ -25,12 +26,18 @@ export type Database = {
           issuer_id: string | null
           issuer_name: string
           metadata: Json | null
+          student_appar_id: string
+          student_email: string | null
+          student_full_name: string
+          student_phone: string
+          student_roll_number: string
           title: string
           updated_at: string
           user_id: string
           verification_status: string
         }
         Insert: {
+          certificate_file_url?: string | null
           created_at?: string
           credential_type?: string
           description?: string | null
@@ -40,12 +47,18 @@ export type Database = {
           issuer_id?: string | null
           issuer_name: string
           metadata?: Json | null
+          student_appar_id: string
+          student_email?: string | null
+          student_full_name: string
+          student_phone: string
+          student_roll_number: string
           title: string
           updated_at?: string
           user_id: string
           verification_status?: string
         }
         Update: {
+          certificate_file_url?: string | null
           created_at?: string
           credential_type?: string
           description?: string | null
@@ -55,6 +68,11 @@ export type Database = {
           issuer_id?: string | null
           issuer_name?: string
           metadata?: Json | null
+          student_appar_id?: string
+          student_email?: string | null
+          student_full_name?: string
+          student_phone?: string
+          student_roll_number?: string
           title?: string
           updated_at?: string
           user_id?: string

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Award, Building2, Calendar, ChevronDown, QrCode } from "lucide-react";
+import { Award, Building2, Calendar, ChevronDown, QrCode, FileText, User, Phone, Hash, IdCard, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
@@ -9,7 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-interface Credential {
+export interface Credential {
   id: string;
   title: string;
   description: string | null;
@@ -18,6 +18,12 @@ interface Credential {
   issued_date: string;
   expiry_date: string | null;
   verification_status: "pending" | "verified" | "rejected" | "expired";
+  student_full_name?: string | null;
+  student_appar_id?: string | null;
+  student_phone?: string | null;
+  student_roll_number?: string | null;
+  student_email?: string | null;
+  certificate_file_url?: string | null;
 }
 
 const statusConfig = {
@@ -101,6 +107,45 @@ export function CertificateCard({ credential }: CertificateCardProps) {
         </div>
       </div>
 
+      {/* Symmetric student-details block: identical for student & company views */}
+      {(credential.student_full_name || credential.student_appar_id) && (
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2 font-medium">
+            Recipient Details
+          </div>
+          <div className="grid grid-cols-1 gap-2 text-sm">
+            {credential.student_full_name && (
+              <div className="flex items-center gap-2">
+                <User className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-muted-foreground">Name:</span>
+                <span className="font-medium truncate">{credential.student_full_name}</span>
+              </div>
+            )}
+            {credential.student_appar_id && (
+              <div className="flex items-center gap-2">
+                <IdCard className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-muted-foreground">APPAR ID:</span>
+                <span className="font-mono text-xs truncate">{credential.student_appar_id}</span>
+              </div>
+            )}
+            {credential.student_roll_number && (
+              <div className="flex items-center gap-2">
+                <Hash className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-muted-foreground">Roll No:</span>
+                <span className="font-mono text-xs truncate">{credential.student_roll_number}</span>
+              </div>
+            )}
+            {credential.student_phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+                <span className="text-muted-foreground">Phone:</span>
+                <span className="font-medium truncate">{credential.student_phone}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Expandable Details */}
       <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
         <div className={cn(
@@ -124,6 +169,21 @@ export function CertificateCard({ credential }: CertificateCardProps) {
                 <span className="font-mono text-xs">{credential.id.slice(0, 8)}...</span>
               </div>
             </div>
+
+            {credential.certificate_file_url && (
+              <a
+                href={credential.certificate_file_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Button variant="outline" size="sm" className="w-full">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Certificate File
+                  <ExternalLink className="h-3 w-3 ml-2" />
+                </Button>
+              </a>
+            )}
 
             {/* QR Code */}
             <div className="flex flex-col items-center gap-2">

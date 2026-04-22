@@ -6,26 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { CertificateCard } from "@/components/CertificateCard";
+import { CertificateCard, type Credential } from "@/components/CertificateCard";
+import { Link } from "react-router-dom";
 import {
   Award,
   Plus,
   Search,
 } from "lucide-react";
 
-interface Credential {
-  id: string;
-  title: string;
-  description: string | null;
-  issuer_name: string;
-  credential_type: string;
-  issued_date: string;
-  expiry_date: string | null;
-  verification_status: "pending" | "verified" | "rejected" | "expired";
-}
-
 export default function Credentials() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,24 +25,27 @@ export default function Credentials() {
   const [dateTo, setDateTo] = useState("");
 
   useEffect(() => {
-    if (user) fetchCredentials();
-  }, [user]);
+    if (user && profile) fetchCredentials();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, profile?.role]);
 
   const fetchCredentials = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
-        .from("credentials")
-        .select("*")
-        .order("issued_date", { ascending: false });
-
+      let query = supabase.from("credentials").select("*").order("issued_date", { ascending: false });
+      if (profile?.role === "student") {
+        query = query.eq("user_id", user!.id);
+      } else if (profile?.role === "institute") {
+        query = query.eq("issuer_id", user!.id);
+      }
+      const { data, error } = await query;
       if (error) { console.error("Error fetching credentials:", error); return; }
 
       setCredentials(
         (data || []).map((cred) => ({
           ...cred,
           verification_status: cred.verification_status as Credential["verification_status"],
-        }))
+        })) as Credential[]
       );
     } catch (err) {
       console.error("Error:", err);
@@ -79,10 +72,16 @@ export default function Credentials() {
   const uniqueIssuers = [...new Set(credentials.map((c) => c.issuer_name))];
 
   const filteredCredentials = credentials.filter((cred) => {
+    const q = searchQuery.toLowerCase();
     const matchesSearch =
-      cred.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cred.issuer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (cred.description || "").toLowerCase().includes(searchQuery.toLowerCase());
+      !q ||
+      cred.title.toLowerCase().includes(q) ||
+      cred.issuer_name.toLowerCase().includes(q) ||
+      (cred.description || "").toLowerCase().includes(q) ||
+      (cred.student_full_name || "").toLowerCase().includes(q) ||
+      (cred.student_appar_id || "").toLowerCase().includes(q) ||
+      (cred.student_roll_number || "").toLowerCase().includes(q) ||
+      (cred.student_email || "").toLowerCase().includes(q);
     const matchesStatus = statusFilter === "all" || cred.verification_status === statusFilter;
     const matchesIssuer = !issuerFilter || cred.issuer_name === issuerFilter;
     const issuedDate = new Date(cred.issued_date);
@@ -105,13 +104,25 @@ export default function Credentials() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold">My Credentials</h1>
-              <p className="text-muted-foreground">View and manage your verified credentials</p>
+              <h1 className="text-2xl md:text-3xl font-display font-bold">
+                {profile?.role === "institute" && "Issued Credentials"}
+                {profile?.role === "company" && "Verify Credentials"}
+                {(!profile?.role || profile.role === "student") && "My Credentials"}
+              </h1>
+              <p className="text-muted-foreground">
+                {profile?.role === "institute" && "Certificates you have issued to students"}
+                {profile?.role === "company" && "Look up and verify candidate credentials"}
+                {(!profile?.role || profile.role === "student") && "View and manage your verified credentials"}
+              </p>
             </div>
-            <Button variant="default">
-              <Plus className="h-4 w-4 mr-2" />
-              Request Credential
-            </Button>
+            {profile?.role === "institute" && (
+              <Link to="/issue-credential">
+                <Button variant="default">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Upload Certificate
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Stats */}
@@ -137,7 +148,7 @@ export default function Credentials() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
-                  placeholder="Search by title, issuer, or description..."
+                  placeholder={profile?.role === "company" ? "Search by APPAR ID, roll number, name, email…" : "Search by title, issuer, or recipient…"}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-11 pl-10 pr-4 rounded-lg border-2 border-input bg-background focus:border-primary focus:outline-none transition-colors"

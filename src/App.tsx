@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Credentials from "./pages/Credentials";
+import IssueCredential from "./pages/IssueCredential";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfileSettings from "./pages/ProfileSettings";
 import About from "./pages/About";
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/credentials" element={<Credentials />} />
+              <Route path="/issue-credential" element={<IssueCredential />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
               <Route path="/pricing" element={<Pricing />} />

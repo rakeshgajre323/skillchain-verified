@@ -98,13 +98,25 @@ export default function Credentials() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-bold">My Credentials</h1>
-              <p className="text-muted-foreground">View and manage your verified credentials</p>
+              <h1 className="text-2xl md:text-3xl font-display font-bold">
+                {profile?.role === "institute" && "Issued Credentials"}
+                {profile?.role === "company" && "Verify Credentials"}
+                {(!profile?.role || profile.role === "student") && "My Credentials"}
+              </h1>
+              <p className="text-muted-foreground">
+                {profile?.role === "institute" && "Certificates you have issued to students"}
+                {profile?.role === "company" && "Look up and verify candidate credentials"}
+                {(!profile?.role || profile.role === "student") && "View and manage your verified credentials"}
+              </p>
             </div>
-            <Button variant="default">
-              <Plus className="h-4 w-4 mr-2" />
-              Request Credential
-            </Button>
+            {profile?.role === "institute" && (
+              <Link to="/issue-credential">
+                <Button variant="default">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Upload Certificate
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Stats */}

@@ -1,8 +1,31 @@
+import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+
+interface IssuedCredential {
+  id: string;
+  title: string;
+  student_full_name: string;
+  student_appar_id: string;
+  student_roll_number: string;
+  student_email: string | null;
+  issued_date: string;
+  verification_status: string;
+  certificate_file_url: string | null;
+}
 import {
   Award,
   FileText,
@@ -48,6 +71,24 @@ const recentActivity = [
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const [issued, setIssued] = useState<IssuedCredential[]>([]);
+  const [loadingIssued, setLoadingIssued] = useState(false);
+
+  useEffect(() => {
+    const loadIssued = async () => {
+      if (!user || profile?.role !== "institute") return;
+      setLoadingIssued(true);
+      const { data, error } = await supabase
+        .from("credentials")
+        .select("id,title,student_full_name,student_appar_id,student_roll_number,student_email,issued_date,verification_status,certificate_file_url")
+        .eq("issuer_id", user.id)
+        .order("issued_date", { ascending: false })
+        .limit(25);
+      if (!error && data) setIssued(data as IssuedCredential[]);
+      setLoadingIssued(false);
+    };
+    loadIssued();
+  }, [user, profile?.role]);
 
   if (loading) {
     return (
@@ -195,35 +236,116 @@ export default function Dashboard() {
 
               {/* Main Content Area */}
               <div className="mt-8">
-                <h2 className="text-xl font-display font-semibold mb-4">
-                  {profile?.role === "student" && "Your Credentials"}
-                  {profile?.role === "institute" && "Recent Issuances"}
-                  {profile?.role === "company" && "Verification Queue"}
-                </h2>
-                <div className="rounded-2xl border border-border bg-card p-8 text-center">
-                  <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">
-                    <Award className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">
-                    No credentials yet
-                  </h3>
-                  <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
-                    {profile?.role === "student" &&
-                      "Your verified credentials will appear here. Ask your institution to issue your first credential."}
-                    {profile?.role === "institute" &&
-                      "Start issuing credentials to your students. They'll appear here for easy management."}
-                    {profile?.role === "company" &&
-                      "When you verify candidate credentials, they'll be stored here for your records."}
-                  </p>
-                  <Link to={profile?.role === "institute" ? "/issue-credential" : "/credentials"}>
-                    <Button variant="default">
-                      <Plus className="h-4 w-4 mr-2" />
-                      {profile?.role === "student" && "Request Credential"}
-                      {profile?.role === "institute" && "Upload Certificate"}
-                      {profile?.role === "company" && "Verify Credential"}
-                    </Button>
-                  </Link>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-display font-semibold">
+                    {profile?.role === "student" && "Your Credentials"}
+                    {profile?.role === "institute" && "Recent Issuances"}
+                    {profile?.role === "company" && "Verification Queue"}
+                  </h2>
+                  {profile?.role === "institute" && (
+                    <Link to="/issue-credential">
+                      <Button size="sm">
+                        <Plus className="h-4 w-4 mr-2" /> Upload Certificate
+                      </Button>
+                    </Link>
+                  )}
                 </div>
+
+                {profile?.role === "institute" ? (
+                  <div className="rounded-2xl border border-border bg-card overflow-hidden">
+                    {loadingIssued ? (
+                      <div className="p-8 text-center text-muted-foreground text-sm">Loading…</div>
+                    ) : issued.length === 0 ? (
+                      <div className="p-8 text-center">
+                        <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">
+                          <Award className="h-8 w-8 text-muted-foreground" />
+                        </div>
+                        <h3 className="font-semibold text-lg mb-2">No credentials yet</h3>
+                        <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
+                          Start issuing credentials to your students. They'll appear here for easy management.
+                        </p>
+                        <Link to="/issue-credential">
+                          <Button>
+                            <Plus className="h-4 w-4 mr-2" /> Upload Certificate
+                          </Button>
+                        </Link>
+                      </div>
+                    ) : (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Student</TableHead>
+                            <TableHead>APPAR ID</TableHead>
+                            <TableHead>Roll No.</TableHead>
+                            <TableHead>Certificate</TableHead>
+                            <TableHead>Issued</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">File</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {issued.map((c) => (
+                            <TableRow key={c.id}>
+                              <TableCell>
+                                <div className="font-medium">{c.student_full_name}</div>
+                                {c.student_email && (
+                                  <div className="text-xs text-muted-foreground">{c.student_email}</div>
+                                )}
+                              </TableCell>
+                              <TableCell className="font-mono text-xs">{c.student_appar_id}</TableCell>
+                              <TableCell className="font-mono text-xs">{c.student_roll_number}</TableCell>
+                              <TableCell>{c.title}</TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {new Date(c.issued_date).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant={c.verification_status === "verified" ? "default" : "secondary"}
+                                  className="capitalize"
+                                >
+                                  {c.verification_status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {c.certificate_file_url ? (
+                                  <a
+                                    href={c.certificate_file_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline text-sm"
+                                  >
+                                    View
+                                  </a>
+                                ) : (
+                                  <span className="text-xs text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    )}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-border bg-card p-8 text-center">
+                    <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">
+                      <Award className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">No credentials yet</h3>
+                    <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
+                      {profile?.role === "student" &&
+                        "Your verified credentials will appear here. Ask your institution to issue your first credential."}
+                      {profile?.role === "company" &&
+                        "When you verify candidate credentials, they'll be stored here for your records."}
+                    </p>
+                    <Link to="/credentials">
+                      <Button>
+                        <Plus className="h-4 w-4 mr-2" />
+                        {profile?.role === "student" ? "Request Credential" : "Verify Credential"}
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
 

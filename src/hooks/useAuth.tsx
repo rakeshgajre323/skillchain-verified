@@ -14,6 +14,7 @@ interface Profile {
   company_name: string | null;
   website: string | null;
   address: string | null;
+  avatar_url: string | null;
   status: "pending" | "active" | "suspended";
 }
 

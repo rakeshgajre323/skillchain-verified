@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Shield, LogOut, Menu, X, BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function Header() {
   const { user, profile, signOut } = useAuth();
@@ -47,8 +48,14 @@ export function Header() {
           <ThemeToggle />
           {user ? (
             <>
-              <Link to="/dashboard">
-                <Button variant="ghost" size="sm">
+              <Link to="/profile-settings">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      {displayName.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                   {displayName}
                 </Button>
               </Link>

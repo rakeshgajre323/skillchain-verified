@@ -71,6 +71,24 @@ const recentActivity = [
 
 export default function Dashboard() {
   const { user, profile, loading } = useAuth();
+  const [issued, setIssued] = useState<IssuedCredential[]>([]);
+  const [loadingIssued, setLoadingIssued] = useState(false);
+
+  useEffect(() => {
+    const loadIssued = async () => {
+      if (!user || profile?.role !== "institute") return;
+      setLoadingIssued(true);
+      const { data, error } = await supabase
+        .from("credentials")
+        .select("id,title,student_full_name,student_appar_id,student_roll_number,student_email,issued_date,verification_status,certificate_file_url")
+        .eq("issuer_id", user.id)
+        .order("issued_date", { ascending: false })
+        .limit(25);
+      if (!error && data) setIssued(data as IssuedCredential[]);
+      setLoadingIssued(false);
+    };
+    loadIssued();
+  }, [user, profile?.role]);
 
   if (loading) {
     return (

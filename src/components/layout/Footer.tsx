@@ -11,7 +11,7 @@ export function Footer() {
               <div className="p-2 rounded-xl bg-primary/10">
                 <Shield className="h-5 w-5 text-primary" />
               </div>
-              <span className="font-display font-bold text-lg">
+              <span className="font-display font-bold text-lg font-serif">
                 Skill<span className="text-primary">Chain</span>
               </span>
             </Link>

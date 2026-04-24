@@ -109,11 +109,11 @@ export default function Index() {
               </div>
 
               <div className="flex items-center justify-center gap-8 pt-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground font-serif">
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   No credit card required
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground font-serif">
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   Free forever plan
                 </div>
@@ -146,7 +146,7 @@ export default function Index() {
         <section className="py-24 bg-background">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
                 Why Choose CertiVault?
               </h2>
               <p className="text-muted-foreground text-lg">
@@ -179,7 +179,7 @@ export default function Index() {
         <section className="py-24 bg-muted/30">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
                 Built for Everyone
               </h2>
               <p className="text-muted-foreground text-lg">
@@ -202,10 +202,10 @@ export default function Index() {
                       <div className="p-4 rounded-2xl bg-primary/10 text-primary w-fit mb-6">
                         <Icon className="h-8 w-8" />
                       </div>
-                      <h3 className="font-display font-bold text-xl mb-3">{role.title}</h3>
+                      <h3 className="font-display font-bold text-xl mb-3 font-mono">{role.title}</h3>
                       <p className="text-muted-foreground mb-6">{role.description}</p>
                       <Link to="/signup">
-                        <Button variant="outline" className="group/btn">
+                        <Button variant="outline" className="group/btn font-serif">
                           {role.cta}
                           <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
                         </Button>
@@ -225,7 +225,7 @@ export default function Index() {
 
           <div className="container relative text-center">
             <Award className="h-16 w-16 mx-auto mb-6 opacity-90" />
-            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
               Ready to Transform Your Credentials?
             </h2>
             <p className="text-lg opacity-90 max-w-2xl mx-auto mb-8">

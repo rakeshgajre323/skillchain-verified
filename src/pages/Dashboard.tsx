@@ -1,8 +1,31 @@
+import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+
+interface IssuedCredential {
+  id: string;
+  title: string;
+  student_full_name: string;
+  student_appar_id: string;
+  student_roll_number: string;
+  student_email: string | null;
+  issued_date: string;
+  verification_status: string;
+  certificate_file_url: string | null;
+}
 import {
   Award,
   FileText,

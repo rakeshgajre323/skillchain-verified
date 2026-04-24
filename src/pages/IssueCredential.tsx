@@ -74,6 +74,25 @@ export default function IssueCredential() {
       return;
     }
 
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
+    const allowedExts = ["pdf", "jpg", "jpeg", "png"];
+    const ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
+      setErrors({ file: "Only PDF, JPG, JPEG, or PNG files are allowed" });
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF, JPG, JPEG, or PNG file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrors({ file: "File must be smaller than 10 MB" });
+      toast({ title: "File too large", description: "Max size is 10 MB.", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
     try {
       // 1. Upload file
@@ -188,15 +207,18 @@ export default function IssueCredential() {
               </div>
 
               <div>
-                <Label htmlFor="file">Certificate File (PDF / Image) *</Label>
+                <Label htmlFor="file">Certificate File *</Label>
                 <div className="mt-1 flex items-center gap-3">
                   <Input
                     id="file"
                     type="file"
-                    accept="application/pdf,image/*"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
                     onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                   />
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Accepted formats: PDF, JPG, JPEG, PNG (max 10 MB)
+                </p>
                 {file && <p className="text-xs text-muted-foreground mt-1">Selected: {file.name}</p>}
                 {errors.file && <p className="text-xs text-destructive mt-1">{errors.file}</p>}
               </div>

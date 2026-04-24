@@ -207,15 +207,18 @@ export default function IssueCredential() {
               </div>
 
               <div>
-                <Label htmlFor="file">Certificate File (PDF / Image) *</Label>
+                <Label htmlFor="file">Certificate File *</Label>
                 <div className="mt-1 flex items-center gap-3">
                   <Input
                     id="file"
                     type="file"
-                    accept="application/pdf,image/*"
+                    accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
                     onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                   />
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Accepted formats: PDF, JPG, JPEG, PNG (max 10 MB)
+                </p>
                 {file && <p className="text-xs text-muted-foreground mt-1">Selected: {file.name}</p>}
                 {errors.file && <p className="text-xs text-destructive mt-1">{errors.file}</p>}
               </div>

@@ -56,6 +56,47 @@ export default function ProfileSettings() {
   const { user, profile, loading, refreshProfile } = useAuth();
   const [savingProfile, setSavingProfile] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Please upload a JPG, PNG, or WEBP image");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: data.publicUrl })
+        .eq("user_id", user.id);
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      toast.success("Profile picture updated");
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Upload failed";
+      toast.error(msg);
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const profileForm = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -193,9 +234,9 @@ export default function ProfileSettings() {
             Back to Dashboard
           </Link>
 
-          {/* Page Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-2">
+          {/* Page Header with Avatar on right */}
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-primary/10">
                 <RoleIcon className="h-6 w-6 text-primary" />
               </div>
@@ -207,6 +248,41 @@ export default function ProfileSettings() {
                   Manage your account information and security
                 </p>
               </div>
+            </div>
+
+            {/* Right side: profile picture + upload */}
+            <div className="flex flex-col items-center gap-2 shrink-0">
+              <div className="relative">
+                <Avatar className="h-20 w-20 border-2 border-primary/20">
+                  <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "Profile"} />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xl">
+                    {(profile?.full_name || profile?.institute_name || profile?.company_name || user.email || "U")
+                      .charAt(0)
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 transition-colors shadow-md"
+                  title="Change profile picture"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg,image/webp"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                  disabled={uploadingAvatar}
+                />
+              </div>
+              <label htmlFor="avatar-upload" className="cursor-pointer">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+                  <Upload className="h-3 w-3" />
+                  {uploadingAvatar ? "Uploading..." : "Upload Photo"}
+                </span>
+              </label>
             </div>
           </div>
 

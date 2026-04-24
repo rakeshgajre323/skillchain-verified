@@ -133,7 +133,7 @@ const Features = () => {
                   </p>
                   <ul className="space-y-1.5">
                     {feature.highlights.map((h) => (
-                      <li key={h} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <li key={h} className="flex items-center gap-2 text-sm text-muted-foreground font-serif">
                         <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
                         {h}
                       </li>

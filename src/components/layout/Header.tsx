@@ -144,6 +144,24 @@ export function Header() {
                 >
                   Dashboard
                 </Link>
+                {profile?.role === "student" && (
+                  <Link
+                    to="/request-credential"
+                    className="px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Request Credential
+                  </Link>
+                )}
+                {profile?.role === "institute" && (
+                  <Link
+                    to="/manage-requests"
+                    className="px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Requests
+                  </Link>
+                )}
                 {(profile?.role === "institute" || profile?.role === "company") && (
                   <Link
                     to="/admin"
@@ -155,6 +173,14 @@ export function Header() {
                   </Link>
                 )}
                 <button
+                  onClick={() => {
+                    handleSignOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-lg hover:bg-muted transition-colors text-left text-destructive"
+                >
+                  Sign Out
+                </button>
                   onClick={() => {
                     handleSignOut();
                     setMobileMenuOpen(false);

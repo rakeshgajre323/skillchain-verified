@@ -77,38 +77,38 @@ export default function Index() {
           <div className="absolute inset-0 bg-hero-pattern opacity-50" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/10 via-transparent to-transparent rounded-full blur-3xl" />
 
-          <div className="container relative py-24 md:py-32 lg:py-40">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium animate-fade-in">
-                <Sparkles className="h-4 w-4" />
-                Trusted by 500+ institutions worldwide
+          <div className="container relative py-16 sm:py-24 md:py-32 lg:py-40">
+            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in">
+                <Sparkles className="h-4 w-4 flex-shrink-0" />
+                <span className="text-balance">Trusted by 500+ institutions worldwide</span>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight animate-fade-in-up text-balance">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight animate-fade-in-up text-balance">
                 Secure, Verifiable{" "}
                 <span className="gradient-text">Digital Credentials</span>{" "}
                 for Everyone
               </h1>
 
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up text-balance" style={{ animationDelay: "0.1s" }}>
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up text-balance" style={{ animationDelay: "0.1s" }}>
                 Issue, manage, and verify academic and professional credentials with blockchain-grade security. Empowering students, institutions, and employers.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                <Link to="/signup">
-                  <Button variant="hero" size="xl" className="group">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+                <Link to="/signup" className="w-full sm:w-auto">
+                  <Button variant="hero" size="xl" className="group w-full sm:w-auto">
                     Get Started Free
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
-                <Link to="/about">
-                  <Button variant="outline" size="xl">
+                <Link to="/about" className="w-full sm:w-auto">
+                  <Button variant="outline" size="xl" className="w-full sm:w-auto">
                     Learn More
                   </Button>
                 </Link>
               </div>
 
-              <div className="flex items-center justify-center gap-8 pt-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-6 sm:pt-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground font-serif">
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   No credit card required
@@ -123,9 +123,9 @@ export default function Index() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-16 border-y border-border bg-card/50">
+        <section className="py-12 sm:py-16 border-y border-border bg-card/50">
           <div className="container">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}

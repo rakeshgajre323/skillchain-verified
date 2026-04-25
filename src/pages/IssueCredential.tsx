@@ -137,15 +137,18 @@ export default function IssueCredential() {
       // Store the storage path; signed URLs are generated on demand
       const fileUrl = path;
 
-      // 2. Find student profile by email (best-effort link)
-      const { data: studentProfile } = await supabase
-        .from("profiles")
-        .select("user_id")
-        .eq("role", "student")
-        .ilike("full_name", form.student_full_name)
-        .maybeSingle();
-
-      const targetUserId = studentProfile?.user_id ?? user.id; // fallback so RLS allows insert
+      // 2. Determine the student user_id. If we came from an approved request,
+      // use the verified student_id from the request. Otherwise best-effort lookup.
+      let targetUserId = linkedStudentId;
+      if (!targetUserId) {
+        const { data: studentProfile } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("role", "student")
+          .ilike("full_name", form.student_full_name)
+          .maybeSingle();
+        targetUserId = studentProfile?.user_id ?? user.id;
+      }
 
       // 3. Insert credential
       const issuerName =
@@ -173,6 +176,15 @@ export default function IssueCredential() {
 
       if (insErr) throw insErr;
 
+      // Mark the linked request as issued
+      if (requestId) {
+        await supabase
+          .from("credential_requests")
+          .update({ status: "issued" })
+          .eq("id", requestId);
+      }
+
+      logger.event("credential_issued", { request_id: requestId });
       toast({
         title: "Certificate issued",
         description: `Issued to ${form.student_full_name}.`,
@@ -180,6 +192,7 @@ export default function IssueCredential() {
       navigate("/credentials");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
+      logger.error("credential_issue_failed", { error: msg });
       toast({ title: "Could not issue certificate", description: msg, variant: "destructive" });
     } finally {
       setSubmitting(false);

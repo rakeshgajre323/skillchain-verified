@@ -171,18 +171,29 @@ export function CertificateCard({ credential }: CertificateCardProps) {
             </div>
 
             {credential.certificate_file_url && (
-              <a
-                href={credential.certificate_file_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={async () => {
+                  const path = credential.certificate_file_url!;
+                  if (/^https?:\/\//i.test(path)) {
+                    window.open(path, "_blank", "noopener,noreferrer");
+                    return;
+                  }
+                  const { supabase } = await import("@/integrations/supabase/client");
+                  const { data } = await supabase.storage
+                    .from("certificates")
+                    .createSignedUrl(path, 60);
+                  if (data?.signedUrl) {
+                    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
               >
-                <Button variant="outline" size="sm" className="w-full">
-                  <FileText className="h-4 w-4 mr-2" />
-                  View Certificate File
-                  <ExternalLink className="h-3 w-3 ml-2" />
-                </Button>
-              </a>
+                <FileText className="h-4 w-4 mr-2" />
+                View Certificate File
+                <ExternalLink className="h-3 w-3 ml-2" />
+              </Button>
             )}
 
             {/* QR Code */}

@@ -59,13 +59,25 @@ export function Header() {
                   {displayName}
                 </Button>
               </Link>
-              {(profile?.role === "institute" || profile?.role === "company") && (
-                <Link to="/admin">
-                  <Button variant="ghost" size="sm">
-                    <BarChart3 className="h-4 w-4 mr-1" />
-                    Admin
-                  </Button>
+              {profile?.role === "student" && (
+                <Link to="/request-credential">
+                  <Button variant="ghost" size="sm">Request</Button>
                 </Link>
+              )}
+              {(profile?.role === "institute" || profile?.role === "company") && (
+                <>
+                  {profile?.role === "institute" && (
+                    <Link to="/manage-requests">
+                      <Button variant="ghost" size="sm">Requests</Button>
+                    </Link>
+                  )}
+                  <Link to="/admin">
+                    <Button variant="ghost" size="sm">
+                      <BarChart3 className="h-4 w-4 mr-1" />
+                      Admin
+                    </Button>
+                  </Link>
+                </>
               )}
               <Button variant="outline" size="sm" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />

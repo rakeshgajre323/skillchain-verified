@@ -132,14 +132,14 @@ export default function Dashboard() {
     switch (profile?.role) {
       case "student":
         return [
+          { label: "Request Credential", icon: Plus, href: "/request-credential" },
           { label: "View Credentials", icon: Award, href: "/credentials" },
           { label: "Share Credentials", icon: Users, href: "/credentials" },
-          { label: "Request Verification", icon: CheckCircle2, href: "/credentials" },
         ];
       case "institute":
         return [
+          { label: "Manage Requests", icon: Users, href: "/manage-requests" },
           { label: "Upload Certificate", icon: Plus, href: "/issue-credential" },
-          { label: "Issued Credentials", icon: Award, href: "/credentials" },
           { label: "View Analytics", icon: TrendingUp, href: "/admin" },
         ];
       case "company":

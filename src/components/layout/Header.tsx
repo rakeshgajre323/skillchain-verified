@@ -181,14 +181,6 @@ export function Header() {
                 >
                   Sign Out
                 </button>
-                  onClick={() => {
-                    handleSignOut();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-4 py-2 rounded-lg hover:bg-muted transition-colors text-left text-destructive"
-                >
-                  Sign Out
-                </button>
               </>
             ) : (
               <>

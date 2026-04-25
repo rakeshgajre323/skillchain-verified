@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { issueCredentialSchema } from "@/lib/validations";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
 import { Award, ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -17,9 +18,12 @@ export default function IssueCredential() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [params] = useSearchParams();
+  const requestId = params.get("request_id");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [file, setFile] = useState<File | null>(null);
+  const [linkedStudentId, setLinkedStudentId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -33,6 +37,33 @@ export default function IssueCredential() {
     student_roll_number: "",
     student_email: "",
   });
+
+  useEffect(() => {
+    const loadRequest = async () => {
+      if (!requestId) return;
+      const { data } = await supabase
+        .from("credential_requests")
+        .select("*")
+        .eq("id", requestId)
+        .maybeSingle();
+      if (data) {
+        setLinkedStudentId(data.student_id);
+        setForm((p) => ({
+          ...p,
+          title: data.title,
+          credential_type: data.credential_type,
+          description: data.description || "",
+          student_full_name: data.student_full_name,
+          student_appar_id: data.student_appar_id,
+          student_phone: data.student_phone,
+          student_roll_number: data.student_roll_number || "",
+          student_email: data.student_email,
+        }));
+      }
+    };
+    loadRequest();
+  }, [requestId]);
+
 
   if (loading) {
     return (

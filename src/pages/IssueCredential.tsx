@@ -103,8 +103,8 @@ export default function IssueCredential() {
         .upload(path, file, { contentType: file.type });
       if (upErr) throw upErr;
 
-      const { data: pub } = supabase.storage.from("certificates").getPublicUrl(path);
-      const fileUrl = pub.publicUrl;
+      // Store the storage path; signed URLs are generated on demand
+      const fileUrl = path;
 
       // 2. Find student profile by email (best-effort link)
       const { data: studentProfile } = await supabase

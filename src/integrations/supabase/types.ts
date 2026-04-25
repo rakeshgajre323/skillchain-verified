@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      credential_requests: {
+        Row: {
+          created_at: string
+          credential_type: string
+          description: string | null
+          id: string
+          issuer_id: string
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["request_status"]
+          student_appar_id: string
+          student_email: string
+          student_full_name: string
+          student_id: string
+          student_phone: string
+          student_roll_number: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credential_type?: string
+          description?: string | null
+          id?: string
+          issuer_id: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          student_appar_id: string
+          student_email: string
+          student_full_name: string
+          student_id: string
+          student_phone: string
+          student_roll_number: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credential_type?: string
+          description?: string | null
+          id?: string
+          issuer_id?: string
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["request_status"]
+          student_appar_id?: string
+          student_email?: string
+          student_full_name?: string
+          student_id?: string
+          student_phone?: string
+          student_roll_number?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       credentials: {
         Row: {
           certificate_file_url: string | null
@@ -207,6 +261,7 @@ export type Database = {
       }
     }
     Enums: {
+      request_status: "pending" | "approved" | "rejected" | "issued"
       user_role: "student" | "institute" | "company"
       user_status: "pending" | "active" | "suspended"
     }
@@ -336,6 +391,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      request_status: ["pending", "approved", "rejected", "issued"],
       user_role: ["student", "institute", "company"],
       user_status: ["pending", "active", "suspended"],
     },

@@ -192,6 +192,19 @@ export type Database = {
           users: number
         }[]
       }
+      verify_credential: {
+        Args: { _credential_id: string }
+        Returns: {
+          credential_type: string
+          expiry_date: string
+          id: string
+          issued_date: string
+          issuer_name: string
+          student_full_name: string
+          title: string
+          verification_status: string
+        }[]
+      }
     }
     Enums: {
       user_role: "student" | "institute" | "company"

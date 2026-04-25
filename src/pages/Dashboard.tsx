@@ -308,14 +308,26 @@ export default function Dashboard() {
                               </TableCell>
                               <TableCell className="text-right">
                                 {c.certificate_file_url ? (
-                                  <a
-                                    href={c.certificate_file_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      const path = c.certificate_file_url!;
+                                      // Backwards-compat: if a full URL was stored previously, just open it
+                                      if (/^https?:\/\//i.test(path)) {
+                                        window.open(path, "_blank", "noopener,noreferrer");
+                                        return;
+                                      }
+                                      const { data, error } = await supabase.storage
+                                        .from("certificates")
+                                        .createSignedUrl(path, 60);
+                                      if (data?.signedUrl) {
+                                        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+                                      }
+                                    }}
                                     className="text-primary hover:underline text-sm"
                                   >
                                     View
-                                  </a>
+                                  </button>
                                 ) : (
                                   <span className="text-xs text-muted-foreground">—</span>
                                 )}

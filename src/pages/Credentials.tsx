@@ -126,18 +126,18 @@ export default function Credentials() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="p-4 rounded-xl bg-card border border-border">
-              <div className="text-2xl font-display font-bold">{stats.total}</div>
-              <div className="text-sm text-muted-foreground">Total</div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
+            <div className="p-3 sm:p-4 rounded-xl bg-card border border-border">
+              <div className="text-xl sm:text-2xl font-display font-bold">{stats.total}</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">Total</div>
             </div>
-            <div className="p-4 rounded-xl bg-success/5 border border-success/20">
-              <div className="text-2xl font-display font-bold text-success">{stats.verified}</div>
-              <div className="text-sm text-success/80">Verified</div>
+            <div className="p-3 sm:p-4 rounded-xl bg-success/5 border border-success/20">
+              <div className="text-xl sm:text-2xl font-display font-bold text-success">{stats.verified}</div>
+              <div className="text-xs sm:text-sm text-success/80">Verified</div>
             </div>
-            <div className="p-4 rounded-xl bg-warning/5 border border-warning/20">
-              <div className="text-2xl font-display font-bold text-warning">{stats.pending}</div>
-              <div className="text-sm text-warning/80">Pending</div>
+            <div className="p-3 sm:p-4 rounded-xl bg-warning/5 border border-warning/20">
+              <div className="text-xl sm:text-2xl font-display font-bold text-warning">{stats.pending}</div>
+              <div className="text-xs sm:text-sm text-warning/80">Pending</div>
             </div>
           </div>
 

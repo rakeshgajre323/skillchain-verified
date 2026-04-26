@@ -214,7 +214,7 @@ export default function Dashboard() {
               <h2 className="text-xl font-display font-semibold mb-4">
                 Quick Actions
               </h2>
-              <div className="grid sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {actions.map((action, index) => {
                   const Icon = action.icon;
                   return (

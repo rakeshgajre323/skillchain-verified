@@ -1,10 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Shield, LogOut, Menu, X, BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const { user, profile, signOut } = useAuth();
@@ -19,8 +20,8 @@ export function Header() {
   const displayName = profile?.full_name || profile?.institute_name || profile?.company_name || "User";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/70 backdrop-blur-xl">
+      <div className="container flex h-[72px] items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
             <Shield className="h-6 w-6 text-primary" />
@@ -31,16 +32,28 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Home
-          </Link>
-          <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            About
-          </Link>
-          <Link to="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Features
-          </Link>
+        <nav className="hidden md:flex items-center gap-1">
+          {[
+            { to: "/", label: "Home" },
+            { to: "/about", label: "About" },
+            { to: "/features", label: "Features" },
+          ].map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/"}
+              className={({ isActive }) =>
+                cn(
+                  "text-[15px] px-[14px] py-[10px] rounded-lg transition-colors",
+                  isActive
+                    ? "text-[#6366F1] font-semibold"
+                    : "text-muted-foreground hover:text-foreground",
+                )
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
         </nav>
 
         {/* Desktop Auth Buttons */}

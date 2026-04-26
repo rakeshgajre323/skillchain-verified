@@ -77,33 +77,33 @@ export default function Index() {
           <div className="absolute inset-0 bg-hero-pattern opacity-50" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/10 via-transparent to-transparent rounded-full blur-3xl" />
 
-          <div className="container relative py-16 sm:py-24 md:py-32 lg:py-40">
+          <div className="container relative pt-24 pb-20 md:pt-[96px] md:pb-[80px]">
             <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in">
                 <Sparkles className="h-4 w-4 flex-shrink-0" />
                 <span className="text-balance">Trusted by 500+ institutions worldwide</span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight animate-fade-in-up text-balance">
+              <h1 className="font-display tracking-tight animate-fade-in-up text-balance">
                 Secure, Verifiable{" "}
                 <span className="gradient-text">Digital Credentials</span>{" "}
                 for Everyone
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up text-balance" style={{ animationDelay: "0.1s" }}>
+              <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto animate-fade-in-up text-balance" style={{ animationDelay: "0.1s" }}>
                 Issue, manage, and verify academic and professional credentials with blockchain-grade security. Empowering students, institutions, and employers.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
                 <Link to="/signup" className="w-full sm:w-auto">
-                  <Button variant="hero" size="xl" className="group w-full sm:w-auto">
-                    Get Started Free
+                  <Button variant="hero" className="group w-full sm:w-auto">
+                    Start Issuing Credentials
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/about" className="w-full sm:w-auto">
-                  <Button variant="outline" size="xl" className="w-full sm:w-auto">
-                    Learn More
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    Watch Demo
                   </Button>
                 </Link>
               </div>
@@ -123,7 +123,7 @@ export default function Index() {
         </section>
 
         {/* Stats Section */}
-        <section className="py-12 sm:py-16 border-y border-border bg-card/50">
+        <section className="py-[72px] border-y border-border bg-card/50">
           <div className="container">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
               {stats.map((stat, index) => (
@@ -143,7 +143,7 @@ export default function Index() {
         </section>
 
         {/* Features Section */}
-        <section className="py-24 bg-background">
+        <section className="py-[72px] bg-background">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
@@ -160,13 +160,13 @@ export default function Index() {
                 return (
                   <div
                     key={feature.title}
-                    className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300 animate-fade-in-up"
+                    className="group surface-card animate-fade-in-up"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div className="p-3 rounded-xl bg-primary/10 text-primary w-fit mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                    <h3 className="font-semibold !text-lg !mb-2">{feature.title}</h3>
                     <p className="text-muted-foreground text-sm">{feature.description}</p>
                   </div>
                 );
@@ -176,7 +176,7 @@ export default function Index() {
         </section>
 
         {/* Roles Section */}
-        <section className="py-24 bg-muted/30">
+        <section className="py-[72px] bg-muted/30">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
@@ -219,7 +219,7 @@ export default function Index() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
+        <section className="py-[72px] bg-primary text-primary-foreground relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent opacity-90" />
           <div className="absolute inset-0 bg-hero-pattern opacity-10" />
 

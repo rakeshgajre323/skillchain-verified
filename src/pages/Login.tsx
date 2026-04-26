@@ -201,7 +201,7 @@ export default function Login() {
             })}
           </div>
 
-          <div className="glass-card rounded-2xl p-8">
+          <div className="glass-card rounded-2xl p-5 sm:p-8">
             <div className="mb-6">
               <h2 className="text-xl font-display font-semibold">
                 {active.title}

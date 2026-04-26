@@ -160,7 +160,7 @@ export default function Login() {
           <div
             role="tablist"
             aria-label="Select login role"
-            className="grid grid-cols-3 gap-3 mb-6"
+            className="grid grid-cols-3 gap-2 sm:gap-3 mb-6"
           >
             {roles.map((r) => {
               const Icon = r.icon;

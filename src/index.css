@@ -122,6 +122,10 @@
 
 @layer base {
   * {
+    @apply border-border;
+  }
+
+  .dark * {
     border-color: rgba(255, 255, 255, 0.08);
   }
 
@@ -157,16 +161,18 @@
     h4 { font-size: 18px; }
   }
 
-  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
-  textarea,
-  select {
+  /* Dark-mode form input styling per spec */
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  .dark textarea,
+  .dark select {
     background-color: #0B1020;
     border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 12px;
+    color: hsl(var(--foreground));
   }
-  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
-  textarea:focus,
-  select:focus {
+  .dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+  .dark textarea:focus,
+  .dark select:focus {
     outline: none;
     border-color: #6366F1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);

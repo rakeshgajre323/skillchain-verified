@@ -181,14 +181,14 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Stats Grid - 12-col system, top row of 4 stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <div
                   key={stat.label}
-                  className="p-6 rounded-2xl bg-card border border-border hover:shadow-lg transition-all duration-300 animate-fade-in-up"
+                  className="surface-card animate-fade-in-up"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="flex items-start justify-between mb-4">
@@ -196,7 +196,7 @@ export default function Dashboard() {
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                   </div>
-                  <div className="text-3xl font-display font-bold mb-1">
+                  <div className="font-display font-bold mb-1" style={{ fontSize: "32px", lineHeight: 1.1 }}>
                     {stat.value}
                   </div>
                   <div className="text-sm font-medium text-foreground mb-1">

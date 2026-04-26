@@ -127,6 +127,44 @@ export default function Login() {
         return;
       }
 
+      // Enforce portal/role separation: a Student cannot sign in via the
+      // University or Company portal, and vice versa.
+      const expectedRole =
+        activeRole === "student"
+          ? "student"
+          : activeRole === "university"
+          ? "institute"
+          : "company";
+
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user.id;
+
+      if (!userId) {
+        toast.error("Could not establish a session. Please try again.");
+        await supabase.auth.signOut();
+        return;
+      }
+
+      const { data: profileRow, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("user_id", userId)
+        .single();
+
+      if (profileError || !profileRow) {
+        await supabase.auth.signOut();
+        toast.error("Account profile not found. Please contact support.");
+        return;
+      }
+
+      if (profileRow.role !== expectedRole) {
+        await supabase.auth.signOut();
+        toast.error(
+          `Invalid credentials or insufficient permissions. This account is not registered as a ${active.label}.`
+        );
+        return;
+      }
+
       toast.success("Welcome back!");
       navigate("/dashboard");
     } catch {

@@ -236,7 +236,7 @@ export default function Dashboard() {
 
               {/* Main Content Area */}
               <div className="mt-8">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <h2 className="text-xl font-display font-semibold">
                     {profile?.role === "student" && "Your Credentials"}
                     {profile?.role === "institute" && "Recent Issuances"}

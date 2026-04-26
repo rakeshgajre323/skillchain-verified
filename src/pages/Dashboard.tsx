@@ -166,15 +166,15 @@ export default function Dashboard() {
         <div className="container">
           {/* Welcome Section */}
           <div className="mb-8">
-            <div className="flex items-center gap-4 mb-2">
-              <div className="p-3 rounded-xl bg-primary/10">
-                <RoleIcon className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-3 sm:gap-4 mb-2">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-primary/10 shrink-0">
+                <RoleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-display font-bold">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold truncate">
                   Welcome back, {displayName}!
                 </h1>
-                <p className="text-muted-foreground capitalize">
+                <p className="text-sm sm:text-base text-muted-foreground capitalize">
                   {profile?.role} Dashboard
                 </p>
               </div>
@@ -214,7 +214,7 @@ export default function Dashboard() {
               <h2 className="text-xl font-display font-semibold mb-4">
                 Quick Actions
               </h2>
-              <div className="grid sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                 {actions.map((action, index) => {
                   const Icon = action.icon;
                   return (
@@ -236,7 +236,7 @@ export default function Dashboard() {
 
               {/* Main Content Area */}
               <div className="mt-8">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <h2 className="text-xl font-display font-semibold">
                     {profile?.role === "student" && "Your Credentials"}
                     {profile?.role === "institute" && "Recent Issuances"}

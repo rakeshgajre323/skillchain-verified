@@ -160,7 +160,7 @@ export default function Login() {
           <div
             role="tablist"
             aria-label="Select login role"
-            className="grid grid-cols-3 gap-3 mb-6"
+            className="grid grid-cols-3 gap-2 sm:gap-3 mb-6"
           >
             {roles.map((r) => {
               const Icon = r.icon;
@@ -172,7 +172,7 @@ export default function Login() {
                   aria-selected={isActive}
                   onClick={() => handleRoleChange(r.id)}
                   className={cn(
-                    "relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-300 group",
+                    "relative flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-4 rounded-xl border-2 transition-all duration-300 group",
                     isActive
                       ? "border-primary bg-primary/5 shadow-md"
                       : "border-border hover:border-primary/50 hover:bg-muted/50"
@@ -180,17 +180,17 @@ export default function Login() {
                 >
                   <div
                     className={cn(
-                      "p-2.5 rounded-lg transition-all duration-300",
+                      "p-2 sm:p-2.5 rounded-lg transition-all duration-300",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary"
                     )}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                   <span
                     className={cn(
-                      "font-medium text-sm transition-colors",
+                      "font-medium text-xs sm:text-sm transition-colors",
                       isActive ? "text-primary" : "text-foreground"
                     )}
                   >
@@ -201,7 +201,7 @@ export default function Login() {
             })}
           </div>
 
-          <div className="glass-card rounded-2xl p-8">
+          <div className="glass-card rounded-2xl p-5 sm:p-8">
             <div className="mb-6">
               <h2 className="text-xl font-display font-semibold">
                 {active.title}

@@ -177,8 +177,6 @@ export default function Login() {
     }
   };
 
-  const active = roles.find((r) => r.id === activeRole)!;
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />

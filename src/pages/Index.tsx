@@ -75,18 +75,42 @@ export default function Index() {
         {/* Hero Section */}
         <section className="relative overflow-hidden hero-gradient">
           <div className="absolute inset-0 bg-hero-pattern opacity-50" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/10 via-transparent to-transparent rounded-full blur-3xl" />
+
+          {/* Animated gradient orbs */}
+          <div className="pointer-events-none absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full blur-3xl opacity-40 animate-orb-drift"
+               style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.55) 0%, transparent 70%)" }} />
+          <div className="pointer-events-none absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full blur-3xl opacity-35 animate-float-slow"
+               style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.5) 0%, transparent 70%)" }} />
+          <div className="pointer-events-none absolute bottom-0 left-1/3 w-[460px] h-[460px] rounded-full blur-3xl opacity-30 animate-float-reverse"
+               style={{ background: "radial-gradient(circle, hsl(var(--ring) / 0.45) 0%, transparent 70%)" }} />
+
+          {/* Slow rotating conic ring */}
+          <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[820px] h-[820px] rounded-full opacity-20 animate-spin-slow"
+               style={{ background: "conic-gradient(from 0deg, transparent 0deg, hsl(var(--primary) / 0.4) 90deg, transparent 180deg, hsl(var(--accent) / 0.4) 270deg, transparent 360deg)", maskImage: "radial-gradient(circle, transparent 55%, black 60%, transparent 80%)", WebkitMaskImage: "radial-gradient(circle, transparent 55%, black 60%, transparent 80%)" }} />
+
+          {/* Floating accent dots */}
+          <div className="pointer-events-none absolute top-24 right-[18%] w-2 h-2 rounded-full bg-primary/70 animate-float-slow" />
+          <div className="pointer-events-none absolute bottom-32 left-[12%] w-3 h-3 rounded-full bg-accent/70 animate-float-reverse" />
+          <div className="pointer-events-none absolute top-1/2 left-[8%] w-1.5 h-1.5 rounded-full bg-foreground/40 animate-float-slow" />
 
           <div className="container relative pt-24 pb-20 md:pt-[96px] md:pb-[80px]">
             <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in">
-                <Sparkles className="h-4 w-4 flex-shrink-0" />
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in border border-primary/20 backdrop-blur-sm hover:bg-primary/15 transition-colors">
+                <Sparkles className="h-4 w-4 flex-shrink-0 animate-pulse-slow" />
                 <span className="text-balance">Trusted by 500+ institutions worldwide</span>
               </div>
 
               <h1 className="font-display tracking-tight animate-fade-in-up text-balance">
                 Secure, Verifiable{" "}
-                <span className="gradient-text font-sans">Digital Certificate</span>{" "}
+                <span
+                  className="gradient-text font-sans animate-shimmer"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 25%, hsl(var(--ring)) 50%, hsl(var(--accent)) 75%, hsl(var(--primary)) 100%)",
+                  }}
+                >
+                  Digital Certificate
+                </span>{" "}
                 for Everyone
               </h1>
 
@@ -95,14 +119,15 @@ export default function Index() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                <Link to="/signup" className="w-full sm:w-auto">
-                  <Button variant="hero" className="group w-full sm:w-auto">
+                <Link to="/signup" className="w-full sm:w-auto group/cta relative">
+                  <span className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary via-accent to-primary opacity-60 blur-md group-hover/cta:opacity-90 transition-opacity animate-gradient" />
+                  <Button variant="hero" className="group relative w-full sm:w-auto">
                     Issue Your First Certificate in 60 Seconds
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/about" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto hover:border-primary hover:text-primary transition-colors">
                     See How Verification Works
                   </Button>
                 </Link>

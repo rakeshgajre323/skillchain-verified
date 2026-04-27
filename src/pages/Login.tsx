@@ -112,6 +112,8 @@ export default function Login() {
     reset();
   };
 
+  const active = roles.find((r) => r.id === activeRole)!;
+
   const onSubmit = async (data: StudentForm | OrgForm) => {
     setIsLoading(true);
     try {
@@ -174,8 +176,6 @@ export default function Login() {
       setIsLoading(false);
     }
   };
-
-  const active = roles.find((r) => r.id === activeRole)!;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

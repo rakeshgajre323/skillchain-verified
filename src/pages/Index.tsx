@@ -86,7 +86,7 @@ export default function Index() {
 
               <h1 className="font-display tracking-tight animate-fade-in-up text-balance">
                 Secure, Verifiable{" "}
-                <span className="gradient-text">Digital Credentials</span>{" "}
+                <span className="gradient-text font-sans">Digital Certificate</span>{" "}
                 for Everyone
               </h1>
 

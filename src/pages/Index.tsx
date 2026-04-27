@@ -97,13 +97,13 @@ export default function Index() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
                 <Link to="/signup" className="w-full sm:w-auto">
                   <Button variant="hero" className="group w-full sm:w-auto">
-                    Start Issuing Credentials
+                    Issue Your First Certificate in 60 Seconds
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
                 <Link to="/about" className="w-full sm:w-auto">
                   <Button variant="outline" className="w-full sm:w-auto">
-                    Watch Demo
+                    See How Verification Works
                   </Button>
                 </Link>
               </div>

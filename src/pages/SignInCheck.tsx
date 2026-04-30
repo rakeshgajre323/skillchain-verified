@@ -48,16 +48,16 @@ const STEPS: Step[] = [
   },
   {
     id: "jwt",
-    title: "JWT Stored Correctly",
+    title: "JWT Validated by Auth Server",
     description:
-      "A valid, unexpired access token is persisted in browser storage.",
+      "Bearer token is accepted by the real /auth/v1/user endpoint (server-side validation).",
     icon: KeyRound,
   },
   {
     id: "protected",
-    title: "Protected Resource Access",
+    title: "Protected Backend Endpoint",
     description:
-      "Authenticated query against your own profile (RLS enforced) succeeds.",
+      "Calling the protected `whoami` backend function with the Bearer JWT returns your data.",
     icon: Database,
   },
 ];

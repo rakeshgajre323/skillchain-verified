@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
 import {
   Shield,
   CheckCircle2,
@@ -146,6 +147,9 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* Partner Institutions Marquee */}
+        <InstitutionsMarquee />
 
         {/* Stats Section */}
         <section className="py-[72px] border-y border-border bg-card/50">

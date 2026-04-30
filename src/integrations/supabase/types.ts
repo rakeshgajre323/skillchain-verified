@@ -134,6 +134,39 @@ export type Database = {
         }
         Relationships: []
       }
+      institution_logos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          logo_url: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           attempts: number

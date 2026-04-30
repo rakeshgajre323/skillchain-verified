@@ -18,6 +18,7 @@ import IssueCredential from "./pages/IssueCredential";
 import AdminDashboard from "./pages/AdminDashboard";
 import RequestCredential from "./pages/RequestCredential";
 import ManageRequests from "./pages/ManageRequests";
+import ManageInstitutions from "./pages/ManageInstitutions";
 import ProfileSettings from "./pages/ProfileSettings";
 import About from "./pages/About";
 import Features from "./pages/Features";
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/request-credential" element={<RequestCredential />} />
               <Route path="/manage-requests" element={<ManageRequests />} />
+              <Route path="/manage-institutions" element={<ManageInstitutions />} />
               <Route path="/profile-settings" element={<ProfileSettings />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/docs" element={<Documentation />} />

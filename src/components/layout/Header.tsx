@@ -80,9 +80,14 @@ export function Header() {
               {(profile?.role === "institute" || profile?.role === "company") && (
                 <>
                   {profile?.role === "institute" && (
-                    <Link to="/manage-requests">
-                      <Button variant="ghost" size="sm">Requests</Button>
-                    </Link>
+                    <>
+                      <Link to="/manage-requests">
+                        <Button variant="ghost" size="sm">Requests</Button>
+                      </Link>
+                      <Link to="/manage-institutions">
+                        <Button variant="ghost" size="sm">Logos</Button>
+                      </Link>
+                    </>
                   )}
                   <Link to="/admin">
                     <Button variant="ghost" size="sm">
@@ -167,13 +172,22 @@ export function Header() {
                   </Link>
                 )}
                 {profile?.role === "institute" && (
-                  <Link
-                    to="/manage-requests"
-                    className="px-4 py-2 rounded-lg hover:bg-muted transition-colors"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Requests
-                  </Link>
+                  <>
+                    <Link
+                      to="/manage-requests"
+                      className="px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Requests
+                    </Link>
+                    <Link
+                      to="/manage-institutions"
+                      className="px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Manage Logos
+                    </Link>
+                  </>
                 )}
                 {(profile?.role === "institute" || profile?.role === "company") && (
                   <Link

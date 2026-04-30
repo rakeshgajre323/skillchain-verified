@@ -134,9 +134,10 @@ export default function SignInCheck() {
       detail: `Signed in as ${user.email} (role: ${profile?.role ?? "n/a"}).`,
     });
 
-    // 3. JWT stored correctly
+    // 3. JWT validated by real auth endpoint (/auth/v1/user)
     update("jwt", { status: "running" });
-    await new Promise((r) => setTimeout(r, 250));
+    await new Promise((r) => setTimeout(r, 200));
+    let accessToken: string | null = null;
     try {
       const { data, error } = await supabase.auth.getSession();
       if (error || !data.session) {
@@ -148,39 +149,53 @@ export default function SignInCheck() {
         setRunning(false);
         return;
       }
-      const { access_token, expires_at } = data.session;
-      const expMs = (expires_at ?? 0) * 1000;
-      const isExpired = expMs > 0 && expMs < Date.now();
-      const parts = access_token.split(".");
-      const looksLikeJwt = parts.length === 3;
-
-      // Confirm persisted in localStorage (client.ts uses localStorage)
-      const persisted = Object.keys(localStorage).some((k) =>
-        k.startsWith("sb-") && k.includes("auth-token")
-      );
-
-      if (!looksLikeJwt) {
+      accessToken = data.session.access_token;
+      const parts = accessToken.split(".");
+      if (parts.length !== 3) {
         update("jwt", {
           status: "fail",
           detail: "Access token is not a valid JWT shape.",
         });
-      } else if (isExpired) {
-        update("jwt", {
-          status: "fail",
-          detail: "Access token is expired.",
-        });
-      } else if (!persisted) {
-        update("jwt", {
-          status: "fail",
-          detail: "Token not found in localStorage.",
-        });
-      } else {
-        const expIn = Math.max(0, Math.round((expMs - Date.now()) / 1000));
-        update("jwt", {
-          status: "pass",
-          detail: `JWT persisted in localStorage. Expires in ${expIn}s.`,
-        });
+        update("protected", { status: "skip", detail: "Skipped — bad JWT." });
+        setRunning(false);
+        return;
       }
+
+      // Hit the real Supabase Auth REST endpoint to have the server validate the JWT
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+      const ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string;
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          apikey: ANON_KEY,
+        },
+      });
+
+      if (!res.ok) {
+        update("jwt", {
+          status: "fail",
+          detail: `Auth endpoint rejected token (HTTP ${res.status}).`,
+        });
+        update("protected", {
+          status: "skip",
+          detail: "Skipped — JWT not validated by server.",
+        });
+        setRunning(false);
+        return;
+      }
+
+      const body = await res.json();
+      const persisted = Object.keys(localStorage).some(
+        (k) => k.startsWith("sb-") && k.includes("auth-token")
+      );
+
+      update("jwt", {
+        status: "pass",
+        detail: `Server validated JWT via /auth/v1/user → ${body.email}${
+          persisted ? " · persisted in localStorage." : "."
+        }`,
+      });
     } catch (e) {
       update("jwt", {
         status: "fail",
@@ -191,29 +206,27 @@ export default function SignInCheck() {
       return;
     }
 
-    // 4. Protected resource access (RLS-protected profiles row)
+    // 4. Protected backend endpoint (edge function requires Bearer JWT)
     update("protected", { status: "running" });
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, role, status")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data, error } = await supabase.functions.invoke("whoami", {
+        method: "GET",
+      });
 
       if (error) {
         update("protected", {
           status: "fail",
-          detail: `Query rejected: ${error.message}`,
+          detail: `Backend rejected request: ${error.message}`,
         });
-      } else if (!data) {
+      } else if (!data?.success || !data?.profile) {
         update("protected", {
           status: "fail",
-          detail: "Authenticated, but no profile row visible under RLS.",
+          detail: "Backend responded but returned no profile data.",
         });
       } else {
         update("protected", {
           status: "pass",
-          detail: `RLS-protected profile fetched (role: ${data.role}).`,
+          detail: `Backend /whoami returned profile (role: ${data.profile.role}, status: ${data.profile.status}).`,
         });
       }
     } catch (e) {

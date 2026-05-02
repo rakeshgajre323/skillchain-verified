@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { getHomeForRole } from "@/lib/roleRoutes";
 import { toast } from "sonner";
 import {
   Shield,
@@ -80,7 +81,7 @@ export default function Login() {
   const [activeRole, setActiveRole] = useState<LoginRole>("student");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { user, loading, signIn } = useAuth();
+  const { user, profile, loading, signIn } = useAuth();
   const navigate = useNavigate();
 
   const isStudent = activeRole === "student";
@@ -104,7 +105,7 @@ export default function Login() {
   }
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={getHomeForRole(profile?.role)} replace />;
   }
 
   const handleRoleChange = (role: LoginRole) => {
@@ -169,7 +170,7 @@ export default function Login() {
       }
 
       toast.success("Welcome back!");
-      navigate("/dashboard");
+      navigate(getHomeForRole(profileRow.role as "student" | "institute" | "company"));
     } catch {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {

@@ -147,7 +147,8 @@ serve(async (req: Request): Promise<Response> => {
     const { error: updateError } = await supabaseAdmin
       .from("profiles")
       .update({ status: "active" })
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("status", "pending");
 
     if (updateError) {
       console.error("Error updating profile status:", updateError);

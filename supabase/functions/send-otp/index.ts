@@ -144,6 +144,13 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (recentOtps && recentOtps.length >= MAX_OTP_REQUESTS_PER_HOUR) {
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_request",
+        outcome: "rate_limited",
+        metadata: { recent_count: recentOtps.length, window_ms: RATE_LIMIT_WINDOW_MS },
+      });
       return new Response(
         JSON.stringify({ error: "Too many verification requests. Please try again later." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -165,11 +172,26 @@ serve(async (req: Request): Promise<Response> => {
 
     if (insertError) {
       console.error("Error inserting OTP:", insertError);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_generate",
+        outcome: "db_error",
+        error_message: insertError.message,
+      });
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    await logEvent(supabaseAdmin, {
+      user_id: userId,
+      email,
+      event_type: "otp_generate",
+      outcome: "success",
+      metadata: { expires_at: expiresAt },
+    });
 
     const { error: emailError } = await resend.emails.send({
       from: "CertiVault <onboarding@resend.dev>",

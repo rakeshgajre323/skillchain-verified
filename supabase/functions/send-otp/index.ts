@@ -236,11 +236,25 @@ serve(async (req: Request): Promise<Response> => {
 
     if (emailError) {
       console.error("Error sending email:", emailError);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_email",
+        outcome: "send_failed",
+        error_message: (emailError as { message?: string })?.message ?? String(emailError),
+      });
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    await logEvent(supabaseAdmin, {
+      user_id: userId,
+      email,
+      event_type: "otp_email",
+      outcome: "sent",
+    });
 
     console.log(`OTP sent successfully to ${email}`);
 

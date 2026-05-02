@@ -39,19 +39,11 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { userId, email }: SendOtpRequest = await req.json();
+    const { userId }: SendOtpRequest = await req.json();
 
-    if (!userId || !email) {
+    if (!userId) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid email format" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -69,6 +61,45 @@ serve(async (req: Request): Promise<Response> => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
+
+    // Authenticate caller and assert it matches the requested userId.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace("Bearer ", "");
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
+    if (userErr || !userData?.user || userData.user.id !== userId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Always send to the verified email on record — never trust caller-supplied address.
+    const email = userData.user.email;
+    if (!email) {
+      return new Response(
+        JSON.stringify({ error: "No email on record for this account." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Block suspended accounts from triggering verification flows.
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("status")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (profile?.status === "suspended") {
+      return new Response(
+        JSON.stringify({ error: "Account is suspended. Please contact support." }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const rateLimitCutoff = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
     const { data: recentOtps, error: countError } = await supabaseAdmin

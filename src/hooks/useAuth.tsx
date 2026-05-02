@@ -97,6 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password,
       options: {
         emailRedirectTo: redirectUrl,
+        data: {
+          role: profileData.role,
+          full_name: profileData.full_name || null,
+          phone: profileData.phone || null,
+          appar_id: profileData.appar_id || null,
+          institute_name: profileData.institute_name || null,
+          company_name: profileData.company_name || null,
+          website: profileData.website || null,
+          address: profileData.address || null,
+        },
       },
     });
 
@@ -104,29 +114,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error, userId: null };
     }
 
-    if (data.user) {
-      const { error: profileError } = await supabase.from("profiles").insert([{
-        user_id: data.user.id,
-        role: profileData.role!,
-        full_name: profileData.full_name || null,
-        phone: profileData.phone || null,
-        appar_id: profileData.appar_id || null,
-        institute_name: profileData.institute_name || null,
-        company_name: profileData.company_name || null,
-        website: profileData.website || null,
-        address: profileData.address || null,
-        status: "pending",
-      }]);
-
-      if (profileError) {
-        console.error("Error creating profile:", profileError);
-        return { error: profileError, userId: null };
-      }
-
-      return { error: null, userId: data.user.id };
-    }
-
-    return { error: null, userId: null };
+    // Profile is auto-created by the on_auth_user_created trigger using the
+    // metadata above, so no client-side insert is needed (avoids RLS issues
+    // when no session exists yet, e.g. when email confirmation is required).
+    return { error: null, userId: data.user?.id ?? null };
   };
 
   const signIn = async (email: string, password: string) => {

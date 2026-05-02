@@ -70,6 +70,13 @@ const roles = [
 ];
 
 export default function Index() {
+  const { user, profile, loading } = useAuth();
+
+  // Send authenticated active users straight to their role-specific home.
+  if (!loading && user && profile?.status === "active") {
+    return <Navigate to={getHomeForRole(profile.role)} replace />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

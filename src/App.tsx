@@ -31,6 +31,7 @@ import Terms from "./pages/Terms";
 import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 import { BackButton } from "./components/BackButton";
+import { RequireAuth } from "./components/RequireAuth";
 
 const queryClient = new QueryClient();
 
@@ -44,30 +45,64 @@ const App = () => (
           <AuthProvider>
             <BackButton />
             <Routes>
+              {/* Public */}
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/features" element={<Features />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/verify-otp" element={<VerifyOtp />} />
-              <Route path="/sign-in-check" element={<SignInCheck />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/credentials" element={<Credentials />} />
-              <Route path="/issue-credential" element={<IssueCredential />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/request-credential" element={<RequestCredential />} />
-              <Route path="/manage-requests" element={<ManageRequests />} />
-              <Route path="/manage-institutions" element={<ManageInstitutions />} />
-              <Route path="/profile-settings" element={<ProfileSettings />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/docs" element={<Documentation />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/security" element={<Security />} />
+
+              {/* Pending users allowed (verification step) */}
+              <Route
+                path="/verify-otp"
+                element={
+                  <RequireAuth requireActive={false}>
+                    <VerifyOtp />
+                  </RequireAuth>
+                }
+              />
+
+              {/* Any active signed-in user */}
+              <Route path="/sign-in-check" element={<RequireAuth><SignInCheck /></RequireAuth>} />
+              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/credentials" element={<RequireAuth><Credentials /></RequireAuth>} />
+              <Route path="/profile-settings" element={<RequireAuth><ProfileSettings /></RequireAuth>} />
+
+              {/* Student-only */}
+              <Route
+                path="/request-credential"
+                element={<RequireAuth roles={["student"]}><RequestCredential /></RequireAuth>}
+              />
+
+              {/* Institute-only */}
+              <Route
+                path="/issue-credential"
+                element={<RequireAuth roles={["institute"]}><IssueCredential /></RequireAuth>}
+              />
+              <Route
+                path="/manage-requests"
+                element={<RequireAuth roles={["institute"]}><ManageRequests /></RequireAuth>}
+              />
+              <Route
+                path="/manage-institutions"
+                element={<RequireAuth roles={["institute"]}><ManageInstitutions /></RequireAuth>}
+              />
+
+              {/* Institute + Company analytics */}
+              <Route
+                path="/admin"
+                element={<RequireAuth roles={["institute", "company"]}><AdminDashboard /></RequireAuth>}
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

@@ -60,6 +60,36 @@ serve(async (req: Request): Promise<Response> => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
+    // Authenticate caller and assert it matches the requested userId.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace("Bearer ", "");
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
+    if (userErr || !userData?.user || userData.user.id !== userId) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Block suspended accounts from re-activating via OTP.
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("status")
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (profile?.status === "suspended") {
+      return new Response(
+        JSON.stringify({ error: "Account is suspended. Please contact support." }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const { data: otpRecord, error: fetchError } = await supabaseAdmin
       .from("otp_codes")
       .select("*")
@@ -117,7 +147,8 @@ serve(async (req: Request): Promise<Response> => {
     const { error: updateError } = await supabaseAdmin
       .from("profiles")
       .update({ status: "active" })
-      .eq("user_id", userId);
+      .eq("user_id", userId)
+      .eq("status", "pending");
 
     if (updateError) {
       console.error("Error updating profile status:", updateError);

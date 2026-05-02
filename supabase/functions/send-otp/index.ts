@@ -21,6 +21,33 @@ function generateOtp(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+async function logEvent(
+  admin: ReturnType<typeof createClient>,
+  payload: {
+    user_id?: string | null;
+    email?: string | null;
+    event_type: string;
+    outcome: string;
+    attempts?: number | null;
+    error_message?: string | null;
+    metadata?: Record<string, unknown>;
+  },
+) {
+  try {
+    await admin.from("otp_audit_log").insert({
+      user_id: payload.user_id ?? null,
+      email: payload.email ?? null,
+      event_type: payload.event_type,
+      outcome: payload.outcome,
+      attempts: payload.attempts ?? null,
+      error_message: payload.error_message ?? null,
+      metadata: payload.metadata ?? {},
+    });
+  } catch (e) {
+    console.error("Failed to write otp_audit_log:", e);
+  }
+}
+
 // Hash OTP using Web Crypto API (SHA-256) with a random salt
 async function hashOtp(otp: string): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16));

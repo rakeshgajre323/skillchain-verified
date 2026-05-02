@@ -132,6 +132,12 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (!otpRecord) {
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email: userData.user.email,
+        event_type: "otp_verify",
+        outcome: "no_code",
+      });
       return new Response(
         JSON.stringify({ error: "No verification code found. Please request a new one." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -140,6 +146,13 @@ serve(async (req: Request): Promise<Response> => {
 
     if (new Date(otpRecord.expires_at) < new Date()) {
       await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email: userData.user.email,
+        event_type: "otp_verify",
+        outcome: "expired",
+        attempts: otpRecord.attempts,
+      });
       return new Response(
         JSON.stringify({ error: "Verification code has expired. Please request a new one." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -148,6 +161,13 @@ serve(async (req: Request): Promise<Response> => {
 
     if (otpRecord.attempts >= 5) {
       await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email: userData.user.email,
+        event_type: "otp_verify",
+        outcome: "too_many_attempts",
+        attempts: otpRecord.attempts,
+      });
       return new Response(
         JSON.stringify({ error: "Too many attempts. Please request a new verification code." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -157,15 +177,27 @@ serve(async (req: Request): Promise<Response> => {
     const isValid = await verifyOtp(code, otpRecord.code_hash);
 
     if (!isValid) {
+      const newAttempts = otpRecord.attempts + 1;
       await supabaseAdmin
         .from("otp_codes")
-        .update({ attempts: otpRecord.attempts + 1 })
+        .update({ attempts: newAttempts })
         .eq("user_id", userId);
 
-      const remainingAttempts = 4 - otpRecord.attempts;
+      const remainingAttempts = Math.max(0, 5 - newAttempts);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email: userData.user.email,
+        event_type: "otp_verify",
+        outcome: "invalid_code",
+        attempts: newAttempts,
+        metadata: { remaining_attempts: remainingAttempts },
+      });
       return new Response(
-        JSON.stringify({ 
-          error: `Invalid verification code. ${remainingAttempts > 0 ? `${remainingAttempts} attempts remaining.` : 'No attempts remaining.'}` 
+        JSON.stringify({
+          error: remainingAttempts > 0
+            ? `Invalid verification code. ${remainingAttempts} attempt${remainingAttempts === 1 ? "" : "s"} remaining.`
+            : "Invalid verification code. No attempts remaining — please request a new code.",
+          remainingAttempts,
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -179,6 +211,13 @@ serve(async (req: Request): Promise<Response> => {
 
     if (updateError) {
       console.error("Error updating profile status:", updateError);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email: userData.user.email,
+        event_type: "otp_verify",
+        outcome: "activation_failed",
+        error_message: updateError.message,
+      });
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -186,6 +225,14 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     await supabaseAdmin.from("otp_codes").delete().eq("user_id", userId);
+
+    await logEvent(supabaseAdmin, {
+      user_id: userId,
+      email: userData.user.email,
+      event_type: "otp_verify",
+      outcome: "success",
+      attempts: otpRecord.attempts + 1,
+    });
 
     console.log(`OTP verified successfully for user ${userId}`);
 

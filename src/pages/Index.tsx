@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
+import { useAuth } from "@/hooks/useAuth";
+import { getHomeForRole } from "@/lib/roleRoutes";
 import {
   Shield,
   CheckCircle2,

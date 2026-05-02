@@ -21,6 +21,33 @@ function generateOtp(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+async function logEvent(
+  admin: ReturnType<typeof createClient>,
+  payload: {
+    user_id?: string | null;
+    email?: string | null;
+    event_type: string;
+    outcome: string;
+    attempts?: number | null;
+    error_message?: string | null;
+    metadata?: Record<string, unknown>;
+  },
+) {
+  try {
+    await admin.from("otp_audit_log").insert({
+      user_id: payload.user_id ?? null,
+      email: payload.email ?? null,
+      event_type: payload.event_type,
+      outcome: payload.outcome,
+      attempts: payload.attempts ?? null,
+      error_message: payload.error_message ?? null,
+      metadata: payload.metadata ?? {},
+    });
+  } catch (e) {
+    console.error("Failed to write otp_audit_log:", e);
+  }
+}
+
 // Hash OTP using Web Crypto API (SHA-256) with a random salt
 async function hashOtp(otp: string): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -117,6 +144,13 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     if (recentOtps && recentOtps.length >= MAX_OTP_REQUESTS_PER_HOUR) {
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_request",
+        outcome: "rate_limited",
+        metadata: { recent_count: recentOtps.length, window_ms: RATE_LIMIT_WINDOW_MS },
+      });
       return new Response(
         JSON.stringify({ error: "Too many verification requests. Please try again later." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -138,11 +172,26 @@ serve(async (req: Request): Promise<Response> => {
 
     if (insertError) {
       console.error("Error inserting OTP:", insertError);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_generate",
+        outcome: "db_error",
+        error_message: insertError.message,
+      });
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    await logEvent(supabaseAdmin, {
+      user_id: userId,
+      email,
+      event_type: "otp_generate",
+      outcome: "success",
+      metadata: { expires_at: expiresAt },
+    });
 
     const { error: emailError } = await resend.emails.send({
       from: "CertiVault <onboarding@resend.dev>",
@@ -187,11 +236,25 @@ serve(async (req: Request): Promise<Response> => {
 
     if (emailError) {
       console.error("Error sending email:", emailError);
+      await logEvent(supabaseAdmin, {
+        user_id: userId,
+        email,
+        event_type: "otp_email",
+        outcome: "send_failed",
+        error_message: (emailError as { message?: string })?.message ?? String(emailError),
+      });
       return new Response(
         JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    await logEvent(supabaseAdmin, {
+      user_id: userId,
+      email,
+      event_type: "otp_email",
+      outcome: "sent",
+    });
 
     console.log(`OTP sent successfully to ${email}`);
 

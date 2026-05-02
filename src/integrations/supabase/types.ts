@@ -167,6 +167,42 @@ export type Database = {
         }
         Relationships: []
       }
+      otp_audit_log: {
+        Row: {
+          attempts: number | null
+          created_at: string
+          email: string | null
+          error_message: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          outcome: string
+          user_id: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string
+          email?: string | null
+          error_message?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          outcome: string
+          user_id?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string
+          email?: string | null
+          error_message?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          outcome?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           attempts: number

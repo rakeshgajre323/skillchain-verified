@@ -332,6 +332,22 @@ export default function ProfileSettings() {
                       placeholder="Enter your phone number"
                     />
                   </div>
+                  {profile?.appar_id && (
+                    <div className="space-y-2">
+                      <Label className="flex items-center gap-2">
+                        <Fingerprint className="h-4 w-4" />
+                        Appar ID
+                      </Label>
+                      <Input
+                        value={profile.appar_id}
+                        disabled
+                        className="bg-muted font-mono"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Assigned during registration. Cannot be changed.
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
 

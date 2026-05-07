@@ -301,14 +301,23 @@ export type Database = {
           month: string
         }[]
       }
-      get_credential_issuer_info: {
-        Args: { _credential_id: string }
+      get_my_credentials_with_issuer: {
+        Args: never
         Returns: {
-          appar_id: string
-          email: string
-          full_name: string
-          institute_name: string
+          certificate_file_url: string
+          credential_type: string
+          description: string
+          expiry_date: string
+          id: string
+          issued_date: string
+          issuer_appar_id: string
+          issuer_email: string
+          issuer_full_name: string
           issuer_id: string
+          issuer_institute_name: string
+          issuer_name: string
+          title: string
+          verification_status: string
         }[]
       }
       get_status_distribution: {

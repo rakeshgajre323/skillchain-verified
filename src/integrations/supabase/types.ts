@@ -301,6 +301,16 @@ export type Database = {
           month: string
         }[]
       }
+      get_credential_issuer_info: {
+        Args: { _credential_id: string }
+        Returns: {
+          appar_id: string
+          email: string
+          full_name: string
+          institute_name: string
+          issuer_id: string
+        }[]
+      }
       get_status_distribution: {
         Args: never
         Returns: {

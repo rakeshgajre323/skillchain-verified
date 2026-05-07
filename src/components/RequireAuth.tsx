@@ -56,9 +56,7 @@ export function RequireAuth({ children, roles, requireActive = true }: RequireAu
     );
   }
 
-  if (requireActive && profile.status !== "active") {
-    return <Navigate to="/verify-otp" replace />;
-  }
+  // OTP verification step removed — pending users are no longer blocked.
 
   if (roles && roles.length > 0 && !roles.includes(profile.role)) {
     return (

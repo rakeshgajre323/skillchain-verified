@@ -40,6 +40,7 @@ import {
   Clock,
   TrendingUp,
   ArrowRight,
+  Fingerprint,
 } from "lucide-react";
 
 const studentStats = [
@@ -387,6 +388,17 @@ export default function Dashboard() {
                       {profile?.status}
                     </span>
                   </div>
+                  {profile?.role === "student" && profile?.appar_id && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground flex items-center gap-1.5">
+                        <Fingerprint className="h-3.5 w-3.5" />
+                        Appar ID
+                      </span>
+                      <span className="font-mono text-xs font-medium truncate ml-2" title={profile.appar_id}>
+                        {profile.appar_id}
+                      </span>
+                    </div>
+                  )}
                   {profile?.phone && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Phone</span>

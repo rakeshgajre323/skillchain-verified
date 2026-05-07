@@ -138,16 +138,23 @@ export default function IssueCredential() {
       const fileUrl = path;
 
       // 2. Determine the student user_id. If we came from an approved request,
-      // use the verified student_id from the request. Otherwise best-effort lookup.
+      // use the verified student_id from the request. Otherwise look up via
+      // a secure RPC that matches by email then APPAR ID.
       let targetUserId = linkedStudentId;
       if (!targetUserId) {
-        const { data: studentProfile } = await supabase
-          .from("profiles")
-          .select("user_id")
-          .eq("role", "student")
-          .ilike("full_name", form.student_full_name)
-          .maybeSingle();
-        targetUserId = studentProfile?.user_id ?? user.id;
+        const { data: foundId, error: lookupErr } = await supabase.rpc("find_student_user_id", {
+          _email: parsed.data.student_email,
+          _appar_id: parsed.data.student_appar_id,
+        });
+        if (lookupErr) {
+          throw new Error("Could not look up student account: " + lookupErr.message);
+        }
+        if (!foundId) {
+          throw new Error(
+            "No student account was found with that email or APPAR ID. Ask the student to sign up first, then re-issue."
+          );
+        }
+        targetUserId = foundId as string;
       }
 
       // 3. Insert credential

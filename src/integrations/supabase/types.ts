@@ -286,6 +286,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      find_student_user_id: {
+        Args: { _appar_id: string; _email: string }
+        Returns: string
+      }
       get_admin_counts: {
         Args: never
         Returns: {

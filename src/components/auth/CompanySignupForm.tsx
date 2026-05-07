@@ -32,7 +32,7 @@ export function CompanySignupForm() {
         company_name: data.companyName,
         phone: data.phone,
         website: data.website || null,
-        status: "pending",
+        status: "active",
       });
 
       if (error) {
@@ -45,18 +45,8 @@ export function CompanySignupForm() {
       }
 
       if (userId) {
-        const { error: otpError } = await supabase.functions.invoke("send-otp", {
-          body: { userId, email: data.officialEmail },
-        });
-
-        if (otpError) {
-          toast.error("Account created but failed to send verification code.");
-          navigate("/login");
-          return;
-        }
-
-        toast.success("Account created! Please verify your email.");
-        navigate("/verify-otp", { state: { userId, email: data.officialEmail } });
+        toast.success("Account created! You can now sign in.");
+        navigate("/login");
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");

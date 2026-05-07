@@ -32,7 +32,7 @@ export function StudentSignupForm() {
         full_name: data.fullName,
         phone: data.phone,
         appar_id: data.apparId || null,
-        status: "pending",
+        status: "active",
       });
 
       if (error) {
@@ -45,19 +45,8 @@ export function StudentSignupForm() {
       }
 
       if (userId) {
-        const { error: otpError } = await supabase.functions.invoke("send-otp", {
-          body: { userId, email: data.email },
-        });
-
-        if (otpError) {
-          console.error("Failed to send OTP:", otpError);
-          toast.error("Account created but failed to send verification code. Please login and request a new code.");
-          navigate("/login");
-          return;
-        }
-
-        toast.success("Account created! Please verify your email.");
-        navigate("/verify-otp", { state: { userId, email: data.email } });
+        toast.success("Account created! You can now sign in.");
+        navigate("/login");
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");

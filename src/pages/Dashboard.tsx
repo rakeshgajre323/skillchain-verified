@@ -40,6 +40,7 @@ import {
   Clock,
   TrendingUp,
   ArrowRight,
+  Fingerprint,
 } from "lucide-react";
 
 const studentStats = [

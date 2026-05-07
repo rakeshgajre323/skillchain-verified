@@ -25,6 +25,7 @@ import {
   ArrowLeft,
   Upload,
   Camera,
+  Fingerprint,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";

@@ -107,23 +107,37 @@ export function StudentIssuedCredentials({ userId }: { userId: string }) {
     }
     setActionId(c.id);
     try {
-      const url = await getSignedUrl(c.certificate_file_url);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Download failed (HTTP ${res.status})`);
-      const blob = await res.blob();
-      const ext = (c.certificate_file_url.split(".").pop() || "pdf").toLowerCase();
+      const path = c.certificate_file_url;
+      let blob: Blob;
+
+      if (/^https?:\/\//i.test(path)) {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error(`Download failed (HTTP ${res.status})`);
+        blob = await res.blob();
+      } else {
+        // Use Supabase storage SDK directly — avoids CORS issues with signed URLs
+        const { data, error } = await supabase.storage.from("certificates").download(path);
+        if (error || !data) throw new Error(error?.message || "File not found in storage");
+        blob = data;
+      }
+
+      const ext = (path.split(".").pop() || "pdf").toLowerCase().split("?")[0];
       const safeTitle = c.title.replace(/[^a-z0-9_-]+/gi, "_").slice(0, 60) || "certificate";
+      const objectUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
+      a.href = objectUrl;
       a.download = `${safeTitle}.${ext}`;
+      a.rel = "noopener";
       document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(a.href);
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 4000);
+
       setFileErrors((p) => {
         const { [c.id]: _, ...rest } = p;
         return rest;
       });
+      toast.success("Certificate downloaded");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Could not download certificate";
       setFileErrors((p) => ({ ...p, [c.id]: msg }));

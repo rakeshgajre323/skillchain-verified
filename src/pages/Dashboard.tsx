@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { StudentIssuedCredentials } from "@/components/StudentIssuedCredentials";
 
 interface IssuedCredential {
   id: string;
@@ -341,6 +342,8 @@ export default function Dashboard() {
                       </div>
                     )}
                   </div>
+                ) : profile?.role === "student" ? (
+                  <StudentIssuedCredentials userId={user.id} />
                 ) : (
                   <div className="rounded-2xl border border-border bg-card p-8 text-center">
                     <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">
@@ -348,15 +351,13 @@ export default function Dashboard() {
                     </div>
                     <h3 className="font-semibold text-lg mb-2">No credentials yet</h3>
                     <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
-                      {profile?.role === "student" &&
-                        "Your verified credentials will appear here. Ask your institution to issue your first credential."}
                       {profile?.role === "company" &&
                         "When you verify candidate credentials, they'll be stored here for your records."}
                     </p>
                     <Link to="/credentials">
                       <Button>
                         <Plus className="h-4 w-4 mr-2" />
-                        {profile?.role === "student" ? "Request Credential" : "Verify Credential"}
+                        Verify Credential
                       </Button>
                     </Link>
                   </div>

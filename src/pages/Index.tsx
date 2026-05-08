@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
+import { IssuanceAnimation } from "@/components/IssuanceAnimation";
 import { useAuth } from "@/hooks/useAuth";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import {
@@ -159,6 +160,8 @@ export default function Index() {
 
         {/* Partner Institutions Marquee */}
         <InstitutionsMarquee />
+
+        <IssuanceAnimation />
 
         {/* Stats Section */}
         <section className="py-[72px] border-y border-border bg-card/50">

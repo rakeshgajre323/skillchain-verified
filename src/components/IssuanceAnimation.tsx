@@ -1,10 +1,55 @@
-import { Award, CheckCircle2, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Award, CheckCircle2, Gauge, Pause, Play, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type Speed = "slow" | "normal" | "fast";
+
+const SPEED_SECONDS: Record<Speed, number> = {
+  slow: 8,
+  normal: 5,
+  fast: 2.5,
+};
 
 /**
  * Animated illustration showing a professor (institute) issuing a certificate
  * to a student. Pure CSS/SVG — no external assets, fully themed.
+ *
+ * Includes user controls for animation speed and play/pause, and automatically
+ * downshifts to a slower speed (or honors prefers-reduced-motion) on small
+ * screens so it isn't visually overwhelming on mobile.
  */
 export function IssuanceAnimation() {
+  const [speed, setSpeed] = useState<Speed>("normal");
+  const [playing, setPlaying] = useState(true);
+  const [autoLimited, setAutoLimited] = useState(false);
+
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const small = window.matchMedia("(max-width: 640px)");
+
+    const apply = () => {
+      if (reduced.matches) {
+        setPlaying(false);
+        setAutoLimited(true);
+      } else if (small.matches) {
+        setSpeed("slow");
+        setAutoLimited(true);
+      } else {
+        setAutoLimited(false);
+      }
+    };
+    apply();
+    reduced.addEventListener("change", apply);
+    small.addEventListener("change", apply);
+    return () => {
+      reduced.removeEventListener("change", apply);
+      small.removeEventListener("change", apply);
+    };
+  }, []);
+
+  const seconds = SPEED_SECONDS[speed];
+  const playState = playing ? "running" : "paused";
+
   return (
     <section className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
       <style>{`

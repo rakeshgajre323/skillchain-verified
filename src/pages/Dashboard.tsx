@@ -407,8 +407,16 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
+                {profile?.role === "student" && (
+                  <Link to="/request-credential">
+                    <Button variant="hero" className="w-full mt-4" size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Request Certificate from Institute
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/profile-settings">
-                  <Button variant="outline" className="w-full mt-4" size="sm">
+                  <Button variant="outline" className="w-full mt-2" size="sm">
                     Edit Profile
                   </Button>
                 </Link>

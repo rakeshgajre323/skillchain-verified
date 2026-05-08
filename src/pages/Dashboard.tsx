@@ -135,8 +135,8 @@ export default function Dashboard() {
       case "student":
         return [
           { label: "Request Credential", icon: Plus, href: "/request-credential" },
+          { label: "My Requests", icon: FileText, href: "/my-requests" },
           { label: "View Credentials", icon: Award, href: "/credentials" },
-          { label: "Share Credentials", icon: Users, href: "/credentials" },
         ];
       case "institute":
         return [

@@ -136,13 +136,20 @@ export function StudentSignupForm() {
       <div className="space-y-2">
         <Label htmlFor="apparId" className="flex items-center gap-2">
           <IdCard className="h-4 w-4 text-muted-foreground" />
-          APPAR ID <span className="text-muted-foreground">(Optional)</span>
+          APPAR ID
         </Label>
         <Input
           id="apparId"
-          placeholder="Enter your APPAR ID"
+          placeholder="Enter your unique APPAR ID"
           {...register("apparId")}
+          className={errors.apparId ? "border-destructive" : ""}
         />
+        {errors.apparId && (
+          <p className="text-sm text-destructive">{errors.apparId.message}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Your APPAR ID is your unique student identifier. It cannot be shared with another account.
+        </p>
       </div>
 
       <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>

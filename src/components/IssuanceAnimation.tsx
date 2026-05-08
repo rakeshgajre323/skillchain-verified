@@ -51,7 +51,17 @@ export function IssuanceAnimation() {
   const playState = playing ? "running" : "paused";
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
+    <section
+      className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden"
+      style={
+        {
+          ["--ic-duration" as string]: `${seconds}s`,
+          ["--ic-bob-duration" as string]: `${Math.max(2, seconds * 0.8)}s`,
+          ["--ic-sparkle-duration" as string]: `${Math.max(1.2, seconds * 0.5)}s`,
+          ["--ic-play" as string]: playState,
+        } as React.CSSProperties
+      }
+    >
       <style>{`
         @keyframes ic-bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
         @keyframes ic-bob-delay { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
@@ -84,18 +94,18 @@ export function IssuanceAnimation() {
           30% { opacity: 1; }
           100% { stroke-dashoffset: 0; opacity: 0.4; }
         }
-        .ic-bob { animation: ic-bob 4s ease-in-out infinite; }
-        .ic-bob-delay { animation: ic-bob-delay 4s ease-in-out infinite 0.6s; }
-        .ic-cert { animation: ic-cert-fly 5s ease-in-out infinite; transform-origin: center; }
-        .ic-arm-give { animation: ic-arm-give 5s ease-in-out infinite; transform-origin: 50% 8%; }
-        .ic-arm-receive { animation: ic-arm-receive 5s ease-in-out infinite; transform-origin: 50% 8%; }
-        .ic-sparkle { animation: ic-sparkle 2.4s ease-in-out infinite; }
-        .ic-stamp { animation: ic-stamp-pop 5s ease-in-out infinite; transform-origin: center; }
-        .ic-line { stroke-dasharray: 60; animation: ic-line-pulse 5s ease-in-out infinite; }
+        .ic-bob { animation: ic-bob var(--ic-bob-duration) ease-in-out infinite; animation-play-state: var(--ic-play); }
+        .ic-bob-delay { animation: ic-bob-delay var(--ic-bob-duration) ease-in-out infinite 0.6s; animation-play-state: var(--ic-play); }
+        .ic-cert { animation: ic-cert-fly var(--ic-duration) ease-in-out infinite; transform-origin: center; animation-play-state: var(--ic-play); }
+        .ic-arm-give { animation: ic-arm-give var(--ic-duration) ease-in-out infinite; transform-origin: 50% 8%; animation-play-state: var(--ic-play); }
+        .ic-arm-receive { animation: ic-arm-receive var(--ic-duration) ease-in-out infinite; transform-origin: 50% 8%; animation-play-state: var(--ic-play); }
+        .ic-sparkle { animation: ic-sparkle var(--ic-sparkle-duration) ease-in-out infinite; animation-play-state: var(--ic-play); }
+        .ic-stamp { animation: ic-stamp-pop var(--ic-duration) ease-in-out infinite; transform-origin: center; animation-play-state: var(--ic-play); }
+        .ic-line { stroke-dasharray: 60; animation: ic-line-pulse var(--ic-duration) ease-in-out infinite; animation-play-state: var(--ic-play); }
       `}</style>
 
       <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-8">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
             <Sparkles className="h-3.5 w-3.5" />
             How Issuance Works
@@ -106,6 +116,40 @@ export function IssuanceAnimation() {
           <p className="text-muted-foreground">
             Watch how a professor issues a verified certificate that lands directly in the student's secure dashboard.
           </p>
+        </div>
+
+        {/* Animation controls */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card/60 backdrop-blur-sm p-1">
+            <Gauge className="h-4 w-4 text-muted-foreground ml-2 mr-1" aria-hidden="true" />
+            {(["slow", "normal", "fast"] as Speed[]).map((s) => (
+              <Button
+                key={s}
+                size="sm"
+                variant={speed === s ? "default" : "ghost"}
+                className="rounded-full h-7 px-3 text-xs capitalize"
+                onClick={() => setSpeed(s)}
+                aria-pressed={speed === s}
+              >
+                {s}
+              </Button>
+            ))}
+          </div>
+          <Button
+            size="sm"
+            variant="outline"
+            className="rounded-full h-9"
+            onClick={() => setPlaying((p) => !p)}
+            aria-label={playing ? "Pause animation" : "Play animation"}
+          >
+            {playing ? <Pause className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5" />}
+            {playing ? "Pause" : "Play"}
+          </Button>
+          {autoLimited && (
+            <span className="text-xs text-muted-foreground ml-1">
+              Auto-adjusted for your device
+            </span>
+          )}
         </div>
 
         <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden">

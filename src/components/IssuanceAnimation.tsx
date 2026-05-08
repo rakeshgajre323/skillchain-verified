@@ -1,0 +1,255 @@
+import { Award, CheckCircle2, Sparkles } from "lucide-react";
+
+/**
+ * Animated illustration showing a professor (institute) issuing a certificate
+ * to a student. Pure CSS/SVG — no external assets, fully themed.
+ */
+export function IssuanceAnimation() {
+  return (
+    <section className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
+      <style>{`
+        @keyframes ic-bob { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+        @keyframes ic-bob-delay { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+        @keyframes ic-cert-fly {
+          0%   { transform: translate(0, 0) rotate(-6deg) scale(1);   opacity: 0; }
+          15%  { opacity: 1; }
+          50%  { transform: translate(140px, -28px) rotate(0deg) scale(1.06); }
+          85%  { transform: translate(280px, 0) rotate(6deg) scale(1); opacity: 1; }
+          100% { transform: translate(280px, 0) rotate(6deg) scale(1); opacity: 0; }
+        }
+        @keyframes ic-arm-give {
+          0%,100% { transform: rotate(0deg); }
+          40%, 70% { transform: rotate(-22deg); }
+        }
+        @keyframes ic-arm-receive {
+          0%,100% { transform: rotate(0deg); }
+          50%, 85% { transform: rotate(20deg); }
+        }
+        @keyframes ic-sparkle {
+          0%,100% { opacity: 0; transform: scale(0.6) }
+          50% { opacity: 1; transform: scale(1) }
+        }
+        @keyframes ic-stamp-pop {
+          0%, 60% { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+          70% { opacity: 1; transform: scale(1.2) rotate(-12deg); }
+          85%,100% { opacity: 1; transform: scale(1) rotate(-12deg); }
+        }
+        @keyframes ic-line-pulse {
+          0% { stroke-dashoffset: 60; opacity: 0; }
+          30% { opacity: 1; }
+          100% { stroke-dashoffset: 0; opacity: 0.4; }
+        }
+        .ic-bob { animation: ic-bob 4s ease-in-out infinite; }
+        .ic-bob-delay { animation: ic-bob-delay 4s ease-in-out infinite 0.6s; }
+        .ic-cert { animation: ic-cert-fly 5s ease-in-out infinite; transform-origin: center; }
+        .ic-arm-give { animation: ic-arm-give 5s ease-in-out infinite; transform-origin: 50% 8%; }
+        .ic-arm-receive { animation: ic-arm-receive 5s ease-in-out infinite; transform-origin: 50% 8%; }
+        .ic-sparkle { animation: ic-sparkle 2.4s ease-in-out infinite; }
+        .ic-stamp { animation: ic-stamp-pop 5s ease-in-out infinite; transform-origin: center; }
+        .ic-line { stroke-dasharray: 60; animation: ic-line-pulse 5s ease-in-out infinite; }
+      `}</style>
+
+      <div className="container">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
+            <Sparkles className="h-3.5 w-3.5" />
+            How Issuance Works
+          </span>
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
+            From Institute to Student — Instantly
+          </h2>
+          <p className="text-muted-foreground">
+            Watch how a professor issues a verified certificate that lands directly in the student's secure dashboard.
+          </p>
+        </div>
+
+        <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden">
+          {/* soft glow background */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(circle_at_70%_50%,hsl(var(--accent)/0.08),transparent_60%)]" />
+
+          <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-end gap-6 md:gap-4">
+            {/* PROFESSOR */}
+            <div className="flex flex-col items-center order-1">
+              <div className="ic-bob">
+                <Professor />
+              </div>
+              <div className="mt-4 text-center">
+                <p className="font-semibold text-sm">Prof. Institute</p>
+                <p className="text-xs text-muted-foreground">Issuer</p>
+              </div>
+            </div>
+
+            {/* CERTIFICATE FLIGHT PATH */}
+            <div className="relative h-44 md:h-56 order-3 md:order-2 w-full md:w-[280px] flex items-center justify-center">
+              {/* dashed connection line */}
+              <svg
+                className="absolute inset-0 w-full h-full"
+                viewBox="0 0 280 200"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M 10 150 Q 140 40 270 150"
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="2"
+                  strokeDasharray="4 6"
+                  className="ic-line"
+                  opacity="0.5"
+                />
+              </svg>
+
+              {/* flying certificate */}
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 ic-cert">
+                <Certificate />
+              </div>
+
+              {/* sparkles */}
+              <Sparkles className="absolute left-1/4 top-2 h-4 w-4 text-primary ic-sparkle" />
+              <Sparkles
+                className="absolute right-1/4 top-6 h-3 w-3 text-accent ic-sparkle"
+                style={{ animationDelay: "0.6s" }}
+              />
+              <Sparkles
+                className="absolute left-1/2 bottom-6 h-3 w-3 text-primary ic-sparkle"
+                style={{ animationDelay: "1.2s" }}
+              />
+            </div>
+
+            {/* STUDENT */}
+            <div className="flex flex-col items-center order-2 md:order-3">
+              <div className="ic-bob-delay">
+                <Student />
+              </div>
+              <div className="mt-4 text-center">
+                <p className="font-semibold text-sm">Student</p>
+                <p className="text-xs text-muted-foreground">Recipient</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Steps strip */}
+          <div className="relative mt-10 grid grid-cols-3 gap-3 max-w-3xl mx-auto text-center text-xs">
+            <div className="p-3 rounded-xl bg-background/60 border border-border">
+              <Award className="h-4 w-4 text-primary mx-auto mb-1" />
+              <p className="font-medium">Institute issues</p>
+            </div>
+            <div className="p-3 rounded-xl bg-background/60 border border-border">
+              <Sparkles className="h-4 w-4 text-accent mx-auto mb-1" />
+              <p className="font-medium">Verified & signed</p>
+            </div>
+            <div className="p-3 rounded-xl bg-background/60 border border-border">
+              <CheckCircle2 className="h-4 w-4 text-success mx-auto mb-1" />
+              <p className="font-medium">In student dashboard</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- SVG Characters ---------- */
+
+function Professor() {
+  return (
+    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+      {/* shadow */}
+      <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
+      {/* body / robe */}
+      <path
+        d="M40 185 L45 110 Q75 95 105 110 L110 185 Z"
+        fill="hsl(var(--primary))"
+      />
+      {/* robe trim */}
+      <path d="M65 110 L75 185 L85 110 Z" fill="hsl(var(--primary-foreground))" opacity="0.25" />
+      {/* neck */}
+      <rect x="68" y="80" width="14" height="14" fill="#e4b48c" />
+      {/* head */}
+      <circle cx="75" cy="65" r="22" fill="#f1c8a3" />
+      {/* glasses */}
+      <circle cx="67" cy="65" r="5" fill="none" stroke="hsl(var(--foreground))" strokeWidth="1.5" />
+      <circle cx="83" cy="65" r="5" fill="none" stroke="hsl(var(--foreground))" strokeWidth="1.5" />
+      <line x1="72" y1="65" x2="78" y2="65" stroke="hsl(var(--foreground))" strokeWidth="1.5" />
+      {/* smile */}
+      <path d="M68 74 Q75 78 82 74" stroke="hsl(var(--foreground))" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* hair / beard */}
+      <path d="M55 60 Q60 35 75 35 Q90 35 95 60 Q90 50 75 50 Q60 50 55 60 Z" fill="#5a4a3a" />
+      <path d="M60 75 Q65 88 75 90 Q85 88 90 75 Q85 80 75 80 Q65 80 60 75 Z" fill="#dcdcdc" />
+      {/* graduation cap */}
+      <rect x="50" y="32" width="50" height="6" fill="hsl(var(--foreground))" />
+      <polygon points="35,32 75,18 115,32 75,42" fill="hsl(var(--foreground))" />
+      <circle cx="75" cy="25" r="2" fill="hsl(var(--accent))" />
+      <line x1="75" y1="27" x2="105" y2="38" stroke="hsl(var(--accent))" strokeWidth="1.5" />
+      <circle cx="105" cy="40" r="2.5" fill="hsl(var(--accent))" />
+      {/* arm — animated giving */}
+      <g className="ic-arm-give">
+        <rect x="100" y="115" width="10" height="35" rx="5" fill="hsl(var(--primary))" />
+        <circle cx="105" cy="152" r="7" fill="#f1c8a3" />
+      </g>
+      {/* other arm static */}
+      <rect x="40" y="115" width="10" height="35" rx="5" fill="hsl(var(--primary))" />
+      <circle cx="45" cy="152" r="6" fill="#f1c8a3" />
+    </svg>
+  );
+}
+
+function Student() {
+  return (
+    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+      <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
+      {/* body / hoodie */}
+      <path d="M40 185 L48 115 Q75 105 102 115 L110 185 Z" fill="hsl(var(--accent))" />
+      {/* hoodie pocket */}
+      <rect x="60" y="140" width="30" height="18" rx="3" fill="hsl(var(--accent))" opacity="0.6" stroke="hsl(var(--foreground))" strokeOpacity="0.15" />
+      {/* neck */}
+      <rect x="68" y="80" width="14" height="14" fill="#d9a07a" />
+      {/* head */}
+      <circle cx="75" cy="65" r="22" fill="#ecc19a" />
+      {/* hair */}
+      <path d="M53 58 Q55 35 75 35 Q95 35 97 58 Q90 48 75 48 Q60 48 53 58 Z" fill="#3a2a1f" />
+      {/* eyes */}
+      <circle cx="68" cy="64" r="2" fill="hsl(var(--foreground))" />
+      <circle cx="82" cy="64" r="2" fill="hsl(var(--foreground))" />
+      {/* big smile */}
+      <path d="M65 73 Q75 82 85 73" stroke="hsl(var(--foreground))" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      {/* backpack strap */}
+      <rect x="44" y="115" width="6" height="55" fill="hsl(var(--foreground))" opacity="0.35" />
+      {/* arm — animated receiving */}
+      <g className="ic-arm-receive">
+        <rect x="40" y="115" width="10" height="35" rx="5" fill="hsl(var(--accent))" />
+        <circle cx="45" cy="152" r="7" fill="#ecc19a" />
+      </g>
+      {/* other arm */}
+      <rect x="100" y="115" width="10" height="35" rx="5" fill="hsl(var(--accent))" />
+      <circle cx="105" cy="152" r="6" fill="#ecc19a" />
+    </svg>
+  );
+}
+
+function Certificate() {
+  return (
+    <svg width="90" height="64" viewBox="0 0 90 64" aria-hidden="true">
+      {/* paper */}
+      <rect x="2" y="2" width="86" height="60" rx="4" fill="#fffdf7" stroke="hsl(var(--primary))" strokeWidth="2" />
+      {/* header bar */}
+      <rect x="2" y="2" width="86" height="10" rx="4" fill="hsl(var(--primary))" />
+      {/* title line */}
+      <rect x="14" y="20" width="62" height="3" rx="1.5" fill="hsl(var(--foreground))" opacity="0.8" />
+      {/* sub lines */}
+      <rect x="20" y="28" width="50" height="2" rx="1" fill="hsl(var(--muted-foreground))" />
+      <rect x="24" y="34" width="42" height="2" rx="1" fill="hsl(var(--muted-foreground))" />
+      <rect x="22" y="40" width="46" height="2" rx="1" fill="hsl(var(--muted-foreground))" />
+      {/* signature line */}
+      <line x1="14" y1="52" x2="40" y2="52" stroke="hsl(var(--foreground))" strokeWidth="1" opacity="0.5" />
+      {/* seal/stamp */}
+      <g className="ic-stamp" style={{ transformOrigin: "70px 50px" }}>
+        <circle cx="70" cy="50" r="9" fill="none" stroke="hsl(var(--accent))" strokeWidth="1.5" />
+        <circle cx="70" cy="50" r="6" fill="hsl(var(--accent))" opacity="0.85" />
+        <text x="70" y="52" textAnchor="middle" fontSize="6" fontWeight="700" fill="hsl(var(--accent-foreground))">
+          ✓
+        </text>
+      </g>
+    </svg>
+  );
+}

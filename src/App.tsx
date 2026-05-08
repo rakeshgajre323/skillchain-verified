@@ -17,6 +17,7 @@ import Credentials from "./pages/Credentials";
 import IssueCredential from "./pages/IssueCredential";
 import AdminDashboard from "./pages/AdminDashboard";
 import RequestCredential from "./pages/RequestCredential";
+import MyRequests from "./pages/MyRequests";
 import ManageRequests from "./pages/ManageRequests";
 import ManageInstitutions from "./pages/ManageInstitutions";
 import ProfileSettings from "./pages/ProfileSettings";
@@ -81,6 +82,10 @@ const App = () => (
               <Route
                 path="/request-credential"
                 element={<RequireAuth roles={["student"]}><RequestCredential /></RequireAuth>}
+              />
+              <Route
+                path="/my-requests"
+                element={<RequireAuth roles={["student"]}><MyRequests /></RequireAuth>}
               />
 
               {/* Institute-only */}

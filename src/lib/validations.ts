@@ -30,7 +30,11 @@ export const studentSignupSchema = z.object({
   email: emailSchema,
   phone: phoneSchema,
   password: passwordSchema,
-  apparId: z.string().optional(),
+  apparId: z
+    .string()
+    .trim()
+    .min(1, "APPAR ID is required")
+    .max(50, "APPAR ID must be less than 50 characters"),
 });
 
 export const instituteSignupSchema = z.object({

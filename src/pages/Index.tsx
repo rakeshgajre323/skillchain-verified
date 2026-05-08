@@ -277,6 +277,18 @@ export default function Index() {
             </Link>
           </div>
         </section>
+
+        {/* Developed By Section */}
+        <section className="py-12 border-t border-border bg-muted/30">
+          <div className="container text-center">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+              This Website Developed By
+            </p>
+            <h3 className="text-2xl md:text-3xl font-display font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Rakesh Gajre
+            </h3>
+          </div>
+        </section>
       </main>
 
       <Footer />

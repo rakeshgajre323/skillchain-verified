@@ -36,10 +36,16 @@ export function StudentSignupForm() {
       });
 
       if (error) {
-        if (error.message.includes("already registered")) {
+        const msg = error.message || "";
+        if (msg.includes("already registered")) {
           toast.error("This email is already registered. Please login instead.");
+        } else if (
+          msg.includes("profiles_student_appar_id_unique") ||
+          (msg.toLowerCase().includes("duplicate") && msg.toLowerCase().includes("appar"))
+        ) {
+          toast.error("This APPAR ID is already registered to another student.");
         } else {
-          toast.error(error.message);
+          toast.error(msg);
         }
         return;
       }

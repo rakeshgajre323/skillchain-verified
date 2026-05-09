@@ -94,9 +94,16 @@ export function Header() {
             aria-label="Digital India"
           >
             <img
+              src={digitalIndiaLogoLight}
+              alt="Digital India logo"
+              className="h-9 w-auto md:h-10 object-contain block dark:hidden"
+              loading="eager"
+              decoding="async"
+            />
+            <img
               src={digitalIndiaLogo}
               alt="Digital India logo"
-              className="h-9 w-auto md:h-10 object-contain"
+              className="h-9 w-auto md:h-10 object-contain hidden dark:block"
               loading="eager"
               decoding="async"
             />

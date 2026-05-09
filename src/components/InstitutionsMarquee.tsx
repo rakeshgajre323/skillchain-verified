@@ -73,6 +73,11 @@ export function InstitutionsMarquee() {
     samples: [] as { x: number; t: number }[],
   });
   const rafRef = useRef<number | null>(null);
+  const autoRafRef = useRef<number | null>(null);
+  const pausedRef = useRef(0); // >0 when paused (hover/focus/drag)
+  const resumeAtRef = useRef(0); // ms timestamp when auto-scroll may resume after interaction
+  const AUTO_SPEED = 0.03; // px/ms (~30 px/s, gentle marquee)
+  const RESUME_DELAY_MS = 1500;
 
   const cancelMomentum = useCallback(() => {
     if (rafRef.current !== null) {
@@ -223,6 +228,57 @@ export function InstitutionsMarquee() {
         scrollByAmount(-el.clientWidth);
         break;
     }
+  };
+
+  // Endless auto-scroll when idle. The logo list is duplicated, so we wrap
+  // scrollLeft modulo half the scrollWidth to create a seamless loop.
+  useEffect(() => {
+    let last = performance.now();
+    const tick = (now: number) => {
+      const el = scrollerRef.current;
+      if (!el) {
+        autoRafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      const dt = Math.min(now - last, 32);
+      last = now;
+      const canRun =
+        pausedRef.current === 0 &&
+        rafRef.current === null && // not flinging
+        now >= resumeAtRef.current;
+      if (canRun) {
+        const half = el.scrollWidth / 2;
+        if (half > 0) {
+          let next = el.scrollLeft + AUTO_SPEED * dt;
+          if (next >= half) next -= half;
+          el.scrollLeft = next;
+        }
+      }
+      autoRafRef.current = requestAnimationFrame(tick);
+    };
+    autoRafRef.current = requestAnimationFrame(tick);
+
+    // Pause when the tab is hidden (avoids drift / wasted work)
+    const onVisibility = () => {
+      if (document.hidden) pausedRef.current += 1;
+      else pausedRef.current = Math.max(0, pausedRef.current - 1);
+      last = performance.now();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      if (autoRafRef.current !== null) cancelAnimationFrame(autoRafRef.current);
+      autoRafRef.current = null;
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  const pause = () => {
+    pausedRef.current += 1;
+  };
+  const resume = () => {
+    pausedRef.current = Math.max(0, pausedRef.current - 1);
+    resumeAtRef.current = performance.now() + RESUME_DELAY_MS;
   };
 
   useEffect(() => () => cancelMomentum(), [cancelMomentum]);

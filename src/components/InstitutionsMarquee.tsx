@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import lpu128 from "@/assets/institutions/lpu-128.webp";
@@ -16,8 +17,6 @@ import jntuh224 from "@/assets/institutions/jntuh-224.webp";
 
 type Logo = { name: string; small: string; large: string; website_url?: string };
 
-// Default fallback list (bundled assets) — used until the DB-managed
-// list loads or if the user hasn't configured any logos yet.
 const FALLBACK_LOGOS: Logo[] = [
   { name: "Indian Institute of Technology, Delhi", small: iitD128, large: iitD224, website_url: "https://www.iitd.ac.in" },
   { name: "Indian Institute of Technology, Bombay", small: iitB128, large: iitB224, website_url: "https://www.iitb.ac.in" },
@@ -27,11 +26,15 @@ const FALLBACK_LOGOS: Logo[] = [
   { name: "Lovely Professional University", small: lpu128, large: lpu224, website_url: "https://www.lpu.in" },
 ];
 
+const DRAG_THRESHOLD = 6; // px before a press becomes a drag
+const FRICTION = 0.94; // per-frame velocity decay (~60fps)
+const MIN_VELOCITY = 0.05; // px/ms to stop the fling
+const VELOCITY_SAMPLE_MS = 80; // window for swipe-speed sampling
+
 export function InstitutionsMarquee() {
   const [logos, setLogos] = useState<Logo[]>(FALLBACK_LOGOS);
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
 
-  // Pull the admin-managed list (falls back to bundled defaults on error/empty)
   useEffect(() => {
     let cancelled = false;
     supabase
@@ -57,39 +60,172 @@ export function InstitutionsMarquee() {
 
   const loop = [...logos, ...logos];
 
-  // Mouse drag-to-scroll (touch already works natively with momentum)
   const scrollerRef = useRef<HTMLDivElement>(null);
-  const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0, moved: false });
+  const drag = useRef({
+    pointerId: null as number | null,
+    startX: 0,
+    lastX: 0,
+    lastT: 0,
+    velocity: 0, // px/ms; positive => content moves left (scrollLeft increases)
+    startScrollLeft: 0,
+    isDragging: false, // true once threshold crossed
+    suppressClickUntil: 0,
+    samples: [] as { x: number; t: number }[],
+  });
+  const rafRef = useRef<number | null>(null);
 
-  const onMouseDown = (e: React.MouseEvent) => {
+  const cancelMomentum = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  const startMomentum = useCallback(() => {
+    cancelMomentum();
+    let last = performance.now();
+    const tick = (now: number) => {
+      const el = scrollerRef.current;
+      if (!el) return;
+      const dt = Math.min(now - last, 32);
+      last = now;
+      const v = drag.current.velocity;
+      if (Math.abs(v) < MIN_VELOCITY) {
+        drag.current.velocity = 0;
+        rafRef.current = null;
+        return;
+      }
+      el.scrollLeft += v * dt;
+      // Stop at edges
+      if (el.scrollLeft <= 0 || el.scrollLeft >= el.scrollWidth - el.clientWidth) {
+        drag.current.velocity = 0;
+        rafRef.current = null;
+        return;
+      }
+      drag.current.velocity = v * Math.pow(FRICTION, dt / 16);
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }, [cancelMomentum]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
     const el = scrollerRef.current;
     if (!el) return;
-    dragState.current = {
-      isDown: true,
-      startX: e.pageX - el.offsetLeft,
-      scrollLeft: el.scrollLeft,
-      moved: false,
-    };
+    // Only primary button for mouse
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    cancelMomentum();
+    drag.current.pointerId = e.pointerId;
+    drag.current.startX = e.clientX;
+    drag.current.lastX = e.clientX;
+    drag.current.lastT = performance.now();
+    drag.current.startScrollLeft = el.scrollLeft;
+    drag.current.isDragging = false;
+    drag.current.velocity = 0;
+    drag.current.samples = [{ x: e.clientX, t: drag.current.lastT }];
   };
-  const onMouseMove = (e: React.MouseEvent) => {
+
+  const onPointerMove = (e: React.PointerEvent) => {
     const el = scrollerRef.current;
-    if (!el || !dragState.current.isDown) return;
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = x - dragState.current.startX;
-    if (Math.abs(walk) > 4) dragState.current.moved = true;
-    el.scrollLeft = dragState.current.scrollLeft - walk;
+    if (!el || drag.current.pointerId !== e.pointerId) return;
+    const dx = e.clientX - drag.current.startX;
+
+    if (!drag.current.isDragging) {
+      if (Math.abs(dx) < DRAG_THRESHOLD) return;
+      drag.current.isDragging = true;
+      try {
+        (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+    }
+
+    el.scrollLeft = drag.current.startScrollLeft - dx;
+
+    const now = performance.now();
+    drag.current.samples.push({ x: e.clientX, t: now });
+    // keep only recent samples
+    const cutoff = now - VELOCITY_SAMPLE_MS;
+    while (drag.current.samples.length > 2 && drag.current.samples[0].t < cutoff) {
+      drag.current.samples.shift();
+    }
+    drag.current.lastX = e.clientX;
+    drag.current.lastT = now;
   };
-  const endDrag = () => {
-    dragState.current.isDown = false;
+
+  const finishPointer = (e: React.PointerEvent) => {
+    if (drag.current.pointerId !== e.pointerId) return;
+    const wasDragging = drag.current.isDragging;
+    drag.current.pointerId = null;
+    drag.current.isDragging = false;
+
+    if (wasDragging) {
+      // Suppress the synthetic click that follows a drag so logo links don't trigger
+      drag.current.suppressClickUntil = performance.now() + 350;
+
+      // Compute fling velocity from recent samples
+      const samples = drag.current.samples;
+      if (samples.length >= 2) {
+        const first = samples[0];
+        const last = samples[samples.length - 1];
+        const dt = last.t - first.t;
+        if (dt > 0) {
+          // px/ms; invert because dragging right scrolls content left
+          drag.current.velocity = -(last.x - first.x) / dt;
+          startMomentum();
+        }
+      }
+    }
+    drag.current.samples = [];
   };
+
   const onClickCapture = (e: React.MouseEvent) => {
-    if (dragState.current.moved) {
+    if (performance.now() < drag.current.suppressClickUntil) {
       e.preventDefault();
       e.stopPropagation();
-      dragState.current.moved = false;
     }
   };
+
+  // Keyboard support on the scroller container
+  const scrollByAmount = (delta: number, smooth = true) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    cancelMomentum();
+    el.scrollBy({ left: delta, behavior: smooth ? "smooth" : "auto" });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const step = Math.max(160, el.clientWidth * 0.6);
+    switch (e.key) {
+      case "ArrowRight":
+        e.preventDefault();
+        scrollByAmount(step);
+        break;
+      case "ArrowLeft":
+        e.preventDefault();
+        scrollByAmount(-step);
+        break;
+      case "Home":
+        e.preventDefault();
+        el.scrollTo({ left: 0, behavior: "smooth" });
+        break;
+      case "End":
+        e.preventDefault();
+        el.scrollTo({ left: el.scrollWidth, behavior: "smooth" });
+        break;
+      case "PageDown":
+        e.preventDefault();
+        scrollByAmount(el.clientWidth);
+        break;
+      case "PageUp":
+        e.preventDefault();
+        scrollByAmount(-el.clientWidth);
+        break;
+    }
+  };
+
+  useEffect(() => () => cancelMomentum(), [cancelMomentum]);
 
   return (
     <section className="py-10 sm:py-14 md:py-16 bg-card/40 border-y border-border overflow-hidden">
@@ -107,15 +243,50 @@ export function InstitutionsMarquee() {
         <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-16 md:w-24 z-10 bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-16 md:w-24 z-10 bg-gradient-to-l from-background to-transparent" />
 
+        {/* Prev / Next buttons */}
+        <button
+          type="button"
+          aria-label="Scroll partner logos left"
+          onClick={() => {
+            const el = scrollerRef.current;
+            if (!el) return;
+            scrollByAmount(-Math.max(160, el.clientWidth * 0.6));
+          }}
+          className="hidden sm:flex absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full bg-background/90 border border-border shadow-md hover:bg-background hover:shadow-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="Scroll partner logos right"
+          onClick={() => {
+            const el = scrollerRef.current;
+            if (!el) return;
+            scrollByAmount(Math.max(160, el.clientWidth * 0.6));
+          }}
+          className="hidden sm:flex absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full bg-background/90 border border-border shadow-md hover:bg-background hover:shadow-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          <ChevronRight className="h-5 w-5" />
+        </button>
+
         <div
           ref={scrollerRef}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={endDrag}
-          onMouseLeave={endDrag}
+          role="region"
+          aria-label="Partner institutions, use arrow keys to scroll"
+          tabIndex={0}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={finishPointer}
+          onPointerCancel={finishPointer}
           onClickCapture={onClickCapture}
-          style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
-          className="flex w-full overflow-x-auto overflow-y-hidden gap-6 sm:gap-10 md:gap-14 lg:gap-16 px-6 sm:px-10 md:px-16 cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden"
+          onKeyDown={onKeyDown}
+          style={{
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            touchAction: "pan-y",
+            overscrollBehaviorX: "contain",
+          }}
+          className="flex w-full overflow-x-auto overflow-y-hidden gap-6 sm:gap-10 md:gap-14 lg:gap-16 px-6 sm:px-10 md:px-16 cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
         >
           {loop.map((inst, i) => {
             const eager = i < logos.length;
@@ -126,6 +297,7 @@ export function InstitutionsMarquee() {
                     href={inst.website_url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    draggable={false}
                     className="flex flex-col items-center justify-center gap-2 sm:gap-3 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl"
                     title={`${inst.name} — visit website`}
                   >
@@ -160,6 +332,7 @@ export function InstitutionsMarquee() {
                     decoding="async"
                     fetchPriority={eager ? "low" : "auto"}
                     aria-hidden={eager ? undefined : true}
+                    draggable={false}
                     onLoad={() =>
                       setLoaded((prev) =>
                         prev[inst.small] ? prev : { ...prev, [inst.small]: true },

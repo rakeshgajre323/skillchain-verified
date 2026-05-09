@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 import lpu128 from "@/assets/institutions/lpu-128.webp";
@@ -57,6 +57,40 @@ export function InstitutionsMarquee() {
 
   const loop = [...logos, ...logos];
 
+  // Mouse drag-to-scroll (touch already works natively with momentum)
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef({ isDown: false, startX: 0, scrollLeft: 0, moved: false });
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    dragState.current = {
+      isDown: true,
+      startX: e.pageX - el.offsetLeft,
+      scrollLeft: el.scrollLeft,
+      moved: false,
+    };
+  };
+  const onMouseMove = (e: React.MouseEvent) => {
+    const el = scrollerRef.current;
+    if (!el || !dragState.current.isDown) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = x - dragState.current.startX;
+    if (Math.abs(walk) > 4) dragState.current.moved = true;
+    el.scrollLeft = dragState.current.scrollLeft - walk;
+  };
+  const endDrag = () => {
+    dragState.current.isDown = false;
+  };
+  const onClickCapture = (e: React.MouseEvent) => {
+    if (dragState.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragState.current.moved = false;
+    }
+  };
+
   return (
     <section className="py-10 sm:py-14 md:py-16 bg-card/40 border-y border-border overflow-hidden">
       <div className="container mb-6 sm:mb-8 md:mb-10 text-center">
@@ -73,7 +107,16 @@ export function InstitutionsMarquee() {
         <div className="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-16 md:w-24 z-10 bg-gradient-to-r from-background to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-16 md:w-24 z-10 bg-gradient-to-l from-background to-transparent" />
 
-        <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-6 sm:gap-10 md:gap-14 lg:gap-16">
+        <div
+          ref={scrollerRef}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={endDrag}
+          onMouseLeave={endDrag}
+          onClickCapture={onClickCapture}
+          style={{ WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }}
+          className="flex w-full overflow-x-auto overflow-y-hidden gap-6 sm:gap-10 md:gap-14 lg:gap-16 px-6 sm:px-10 md:px-16 cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden"
+        >
           {loop.map((inst, i) => {
             const eager = i < logos.length;
             const isLoaded = loaded[inst.small];

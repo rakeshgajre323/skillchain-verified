@@ -14,17 +14,17 @@ import iitB224 from "@/assets/institutions/iit_b-224.webp";
 import jntuh128 from "@/assets/institutions/jntuh-128.webp";
 import jntuh224 from "@/assets/institutions/jntuh-224.webp";
 
-type Logo = { name: string; small: string; large: string };
+type Logo = { name: string; small: string; large: string; website_url?: string };
 
 // Default fallback list (bundled assets) — used until the DB-managed
 // list loads or if the user hasn't configured any logos yet.
 const FALLBACK_LOGOS: Logo[] = [
-  { name: "Indian Institute of Technology, Delhi", small: iitD128, large: iitD224 },
-  { name: "Indian Institute of Technology, Bombay", small: iitB128, large: iitB224 },
-  { name: "Jawaharlal Nehru Technological University, Hyderabad", small: jntuh128, large: jntuh224 },
-  { name: "Osmania University", small: ou128, large: ou224 },
-  { name: "University of Delhi", small: du128, large: du224 },
-  { name: "Lovely Professional University", small: lpu128, large: lpu224 },
+  { name: "Indian Institute of Technology, Delhi", small: iitD128, large: iitD224, website_url: "https://www.iitd.ac.in" },
+  { name: "Indian Institute of Technology, Bombay", small: iitB128, large: iitB224, website_url: "https://www.iitb.ac.in" },
+  { name: "Jawaharlal Nehru Technological University, Hyderabad", small: jntuh128, large: jntuh224, website_url: "https://jntuh.ac.in" },
+  { name: "Osmania University", small: ou128, large: ou224, website_url: "https://www.osmania.ac.in" },
+  { name: "University of Delhi", small: du128, large: du224, website_url: "https://www.du.ac.in" },
+  { name: "Lovely Professional University", small: lpu128, large: lpu224, website_url: "https://www.lpu.in" },
 ];
 
 export function InstitutionsMarquee() {
@@ -36,7 +36,7 @@ export function InstitutionsMarquee() {
     let cancelled = false;
     supabase
       .from("institution_logos")
-      .select("name, logo_url")
+      .select("name, logo_url, website_url")
       .eq("is_active", true)
       .order("display_order", { ascending: true })
       .then(({ data, error }) => {
@@ -46,6 +46,7 @@ export function InstitutionsMarquee() {
             name: row.name,
             small: row.logo_url,
             large: row.logo_url,
+            website_url: row.website_url,
           })),
         );
       });
@@ -76,12 +77,28 @@ export function InstitutionsMarquee() {
           {loop.map((inst, i) => {
             const eager = i < logos.length;
             const isLoaded = loaded[inst.small];
+            const Wrapper = inst.website_url
+              ? ({ children }: { children: React.ReactNode }) => (
+                  <a
+                    href={inst.website_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center justify-center gap-2 sm:gap-3 shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-xl"
+                    title={`${inst.name} — visit website`}
+                  >
+                    {children}
+                  </a>
+                )
+              : ({ children }: { children: React.ReactNode }) => (
+                  <div
+                    className="flex flex-col items-center justify-center gap-2 sm:gap-3 shrink-0"
+                    title={inst.name}
+                  >
+                    {children}
+                  </div>
+                );
             return (
-              <div
-                key={`${inst.name}-${i}`}
-                className="flex flex-col items-center justify-center gap-2 sm:gap-3 shrink-0"
-                title={inst.name}
-              >
+              <Wrapper key={`${inst.name}-${i}`}>
                 <div className="relative h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-28 lg:w-28 rounded-xl sm:rounded-2xl bg-background border border-border shadow-sm flex items-center justify-center p-2 sm:p-3 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                   {!isLoaded && (
                     <div
@@ -118,7 +135,7 @@ export function InstitutionsMarquee() {
                 <span className="text-[10px] sm:text-xs text-muted-foreground max-w-[7rem] sm:max-w-[9rem] md:max-w-[10rem] text-center line-clamp-2">
                   {inst.name}
                 </span>
-              </div>
+              </Wrapper>
             );
           })}
         </div>

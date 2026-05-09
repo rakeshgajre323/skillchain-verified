@@ -86,7 +86,7 @@ export function Header() {
       <div className="container flex h-[72px] items-center justify-between">
         <div className="flex items-center gap-3">
           <a
-            href="https://www.digitalindia.gov.in"
+            href="https://www.digitalindia.gov.in/"
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"

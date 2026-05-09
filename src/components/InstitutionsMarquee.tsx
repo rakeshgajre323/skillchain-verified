@@ -337,6 +337,10 @@ export function InstitutionsMarquee() {
           onPointerMove={onPointerMove}
           onPointerUp={finishPointer}
           onPointerCancel={finishPointer}
+          onPointerEnter={(e) => { if (e.pointerType === "mouse") pause(); }}
+          onPointerLeave={(e) => { if (e.pointerType === "mouse") resume(); }}
+          onFocus={pause}
+          onBlur={resume}
           onClickCapture={onClickCapture}
           onKeyDown={onKeyDown}
           style={{

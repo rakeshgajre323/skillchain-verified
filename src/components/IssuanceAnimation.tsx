@@ -23,6 +23,7 @@ export function IssuanceAnimation() {
   const [speed, setSpeed] = useState<Speed>("normal");
   const [playing, setPlaying] = useState(true);
   const [autoLimited, setAutoLimited] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");

@@ -33,8 +33,8 @@ export const studentSignupSchema = z.object({
   apparId: z
     .string()
     .trim()
-    .min(1, "APPAR ID is required")
-    .max(50, "APPAR ID must be less than 50 characters"),
+    .length(12, "APAAR ID must be exactly 12 digits")
+    .regex(/^\d{12}$/, "APAAR ID must contain only numbers"),
 });
 
 export const instituteSignupSchema = z.object({

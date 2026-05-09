@@ -119,6 +119,7 @@ export function InstitutionsMarquee() {
     // Only primary button for mouse
     if (e.pointerType === "mouse" && e.button !== 0) return;
     cancelMomentum();
+    pause();
     drag.current.pointerId = e.pointerId;
     drag.current.startX = e.clientX;
     drag.current.lastX = e.clientX;
@@ -162,6 +163,7 @@ export function InstitutionsMarquee() {
     const wasDragging = drag.current.isDragging;
     drag.current.pointerId = null;
     drag.current.isDragging = false;
+    resume();
 
     if (wasDragging) {
       // Suppress the synthetic click that follows a drag so logo links don't trigger
@@ -195,6 +197,7 @@ export function InstitutionsMarquee() {
     const el = scrollerRef.current;
     if (!el) return;
     cancelMomentum();
+    resumeAtRef.current = performance.now() + RESUME_DELAY_MS;
     el.scrollBy({ left: delta, behavior: smooth ? "smooth" : "auto" });
   };
 

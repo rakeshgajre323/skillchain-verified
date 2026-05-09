@@ -262,7 +262,7 @@ export function IssuanceAnimation() {
 
 function Professor() {
   return (
-    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+    <svg viewBox="0 0 150 200" className="w-full h-auto" aria-hidden="true">
       {/* shadow */}
       <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
       {/* body / robe */}
@@ -305,7 +305,7 @@ function Professor() {
 
 function Student() {
   return (
-    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+    <svg viewBox="0 0 150 200" className="w-full h-auto" aria-hidden="true">
       <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
       {/* body / hoodie */}
       <path d="M40 185 L48 115 Q75 105 102 115 L110 185 Z" fill="hsl(var(--accent))" />

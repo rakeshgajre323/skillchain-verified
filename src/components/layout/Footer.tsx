@@ -173,7 +173,7 @@ export function Footer() {
               className="inline-block rounded-md bg-background/95 p-2 shadow-md hover:shadow-lg transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground"
             >
               <img
-                src={indiaGovLogo}
+                src={resolvedTheme === "dark" ? indiaGovLogoDark : indiaGovLogo}
                 alt="india.gov.in — National Portal of India"
                 className="h-12 w-auto md:h-14 object-contain"
                 loading="lazy"

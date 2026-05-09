@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import indiaGovLogo from "@/assets/india-gov-in.svg";
+import digiLockerLogo from "@/assets/digilocker.png";
 
 function VisitorCounter({ value }: { value: number | null }) {
   // Pad to 7 digits like the reference odometer style
@@ -171,6 +172,22 @@ export function Footer() {
               <img
                 src={indiaGovLogo}
                 alt="india.gov.in — National Portal of India"
+                className="h-12 w-auto md:h-14 object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <a
+              href="https://www.digilocker.gov.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit DigiLocker"
+              title="DigiLocker — Your documents anytime, anywhere"
+              className="inline-block rounded-md bg-background/95 p-2 shadow-md hover:shadow-lg transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground"
+            >
+              <img
+                src={digiLockerLogo}
+                alt="DigiLocker"
                 className="h-12 w-auto md:h-14 object-contain"
                 loading="lazy"
                 decoding="async"

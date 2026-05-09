@@ -33,6 +33,7 @@ function VisitorCounter({ value }: { value: number | null }) {
 
 export function Footer() {
   const [visitors, setVisitors] = useState<number | null>(null);
+  const { resolvedTheme } = useTheme();
   
   const lastUpdated = new Date().toLocaleDateString("en-US", {
     year: "numeric",

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import digiLockerLogo from "@/assets/digilocker.png";
 import npiLogoLight from "@/assets/npi-logo-light.svg";
 import npiLogoDark from "@/assets/npi-logo-dark.svg";
+import apaarLogo from "@/assets/apaar-logo.svg";
 import { useTheme } from "@/components/ThemeProvider";
 
 function VisitorCounter({ value }: { value: number | null }) {
@@ -200,7 +201,26 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/15 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+        {/* APAAR ID info */}
+        <div className="border-t border-primary-foreground/15 mt-10 pt-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 max-w-3xl">
+            <div className="rounded-lg bg-background/95 px-4 py-3 shadow-md flex-shrink-0">
+              <img
+                src={apaarLogo}
+                alt="APAAR - One Nation, One Student ID"
+                className="h-10 w-auto md:h-12 object-contain"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <p className="text-sm text-primary-foreground/85 leading-relaxed">
+              <span className="font-semibold text-primary-foreground">APAAR ID</span> provides a unique identification for students,
+              enabling them to easily access and transfer their academic records across institutions.
+            </p>
+          </div>
+        </div>
+
+        <div className="border-t border-primary-foreground/15 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-primary-foreground/80">
             © {new Date().getFullYear()} CertiVault Credentials. All rights reserved.
           </p>

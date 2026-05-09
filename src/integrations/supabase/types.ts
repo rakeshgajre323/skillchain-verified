@@ -284,6 +284,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_stats: {
+        Row: {
+          id: number
+          updated_at: string
+          visitor_count: number
+        }
+        Insert: {
+          id?: number
+          updated_at?: string
+          visitor_count?: number
+        }
+        Update: {
+          id?: number
+          updated_at?: string
+          visitor_count?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -341,6 +359,7 @@ export type Database = {
           users: number
         }[]
       }
+      increment_visitor_count: { Args: never; Returns: number }
       verify_credential: {
         Args: { _credential_id: string }
         Returns: {

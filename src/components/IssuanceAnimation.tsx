@@ -30,7 +30,7 @@ export function IssuanceAnimation() {
     const small = window.matchMedia("(max-width: 640px)");
 
     const apply = () => {
-      if (reduced.matches) {
+      if (reduced.matches || reduceMotion) {
         setPlaying(false);
         setAutoLimited(true);
       } else if (small.matches) {
@@ -47,7 +47,7 @@ export function IssuanceAnimation() {
       reduced.removeEventListener("change", apply);
       small.removeEventListener("change", apply);
     };
-  }, []);
+  }, [reduceMotion]);
 
   const seconds = SPEED_SECONDS[speed];
   const playState = playing ? "running" : "paused";

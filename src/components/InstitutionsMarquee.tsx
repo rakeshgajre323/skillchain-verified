@@ -14,17 +14,17 @@ import iitB224 from "@/assets/institutions/iit_b-224.webp";
 import jntuh128 from "@/assets/institutions/jntuh-128.webp";
 import jntuh224 from "@/assets/institutions/jntuh-224.webp";
 
-type Logo = { name: string; small: string; large: string };
+type Logo = { name: string; small: string; large: string; website_url?: string };
 
 // Default fallback list (bundled assets) — used until the DB-managed
 // list loads or if the user hasn't configured any logos yet.
 const FALLBACK_LOGOS: Logo[] = [
-  { name: "Indian Institute of Technology, Delhi", small: iitD128, large: iitD224 },
-  { name: "Indian Institute of Technology, Bombay", small: iitB128, large: iitB224 },
-  { name: "Jawaharlal Nehru Technological University, Hyderabad", small: jntuh128, large: jntuh224 },
-  { name: "Osmania University", small: ou128, large: ou224 },
-  { name: "University of Delhi", small: du128, large: du224 },
-  { name: "Lovely Professional University", small: lpu128, large: lpu224 },
+  { name: "Indian Institute of Technology, Delhi", small: iitD128, large: iitD224, website_url: "https://www.iitd.ac.in" },
+  { name: "Indian Institute of Technology, Bombay", small: iitB128, large: iitB224, website_url: "https://www.iitb.ac.in" },
+  { name: "Jawaharlal Nehru Technological University, Hyderabad", small: jntuh128, large: jntuh224, website_url: "https://jntuh.ac.in" },
+  { name: "Osmania University", small: ou128, large: ou224, website_url: "https://www.osmania.ac.in" },
+  { name: "University of Delhi", small: du128, large: du224, website_url: "https://www.du.ac.in" },
+  { name: "Lovely Professional University", small: lpu128, large: lpu224, website_url: "https://www.lpu.in" },
 ];
 
 export function InstitutionsMarquee() {

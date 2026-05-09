@@ -83,19 +83,38 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/70 backdrop-blur-xl">
       <div className="container flex h-[72px] items-center justify-between">
-        <Link to={homeHref} className="flex items-center gap-2 group">
-          <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-            <Shield className="h-6 w-6 text-primary" />
-          </div>
-          <span className="font-display font-bold text-xl">
-            Certi<span className="text-primary">Vault</span>
-          </span>
-          {isAuthed && profile?.role && (
-            <span className="hidden lg:inline-flex ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
-              {profile.role}
+        <div className="flex items-center gap-3">
+          <a
+            href="https://www.digitalindia.gov.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            title="Digital India — visit website"
+            aria-label="Digital India"
+          >
+            <img
+              src={digitalIndiaLogo}
+              alt="Digital India logo"
+              className="h-9 w-auto md:h-10 object-contain"
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+          <span className="hidden sm:block h-8 w-px bg-border/70" aria-hidden="true" />
+          <Link to={homeHref} className="flex items-center gap-2 group">
+            <div className="p-2 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Shield className="h-6 w-6 text-primary" />
+            </div>
+            <span className="font-display font-bold text-xl">
+              Certi<span className="text-primary">Vault</span>
             </span>
-          )}
-        </Link>
+            {isAuthed && profile?.role && (
+              <span className="hidden lg:inline-flex ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                {profile.role}
+              </span>
+            )}
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">

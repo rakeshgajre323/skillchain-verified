@@ -64,6 +64,43 @@ export function StudentSignupForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* APAAR ID — primary, most important field */}
+      <div className="relative space-y-2 rounded-2xl border-2 border-primary/40 bg-primary/5 p-4 shadow-sm ring-1 ring-primary/10">
+        <span className="absolute -top-2.5 left-4 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
+          Required
+        </span>
+        <Label htmlFor="apparId" className="flex items-center gap-2 text-base font-semibold">
+          <IdCard className="h-5 w-5 text-primary" />
+          APAAR ID
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger type="button" aria-label="Why is APAAR ID required?">
+                <HelpCircle className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                APAAR ID (Automated Permanent Academic Account Registry) is a
+                government-issued 12-digit lifetime ID linked to your Aadhaar.
+                It uniquely identifies you as a student so issued credentials
+                are tied to the right person and can be verified across
+                institutions.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </Label>
+        <Input
+          id="apparId"
+          placeholder="Enter your 12-digit APAAR ID"
+          {...register("apparId")}
+          className={`h-12 text-base font-mono tracking-wider bg-background ${errors.apparId ? "border-destructive" : "border-primary/30 focus-visible:ring-primary"}`}
+        />
+        {errors.apparId && (
+          <p className="text-sm text-destructive">{errors.apparId.message}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Your APAAR ID is your unique lifetime student identifier. It cannot be shared with another account and is required to receive verified credentials.
+        </p>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="fullName" className="flex items-center gap-2">
           <User className="h-4 w-4 text-muted-foreground" />
@@ -134,38 +171,7 @@ export function StudentSignupForm() {
         </p>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="apparId" className="flex items-center gap-2">
-          <IdCard className="h-4 w-4 text-muted-foreground" />
-          APAAR ID
-          <TooltipProvider delayDuration={150}>
-            <Tooltip>
-              <TooltipTrigger type="button" aria-label="Why is APAAR ID required?">
-                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
-                APAAR ID (Automated Permanent Academic Account Registry) is a
-                government-issued 12-digit lifetime ID linked to your Aadhaar.
-                It uniquely identifies you as a student so issued credentials
-                are tied to the right person and can be verified across
-                institutions.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Label>
-        <Input
-          id="apparId"
-          placeholder="Enter your unique APPAR ID"
-          {...register("apparId")}
-          className={errors.apparId ? "border-destructive" : ""}
-        />
-        {errors.apparId && (
-          <p className="text-sm text-destructive">{errors.apparId.message}</p>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Your APPAR ID is your unique student identifier. It cannot be shared with another account.
-        </p>
-      </div>
+
 
       <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
         {isLoading ? (

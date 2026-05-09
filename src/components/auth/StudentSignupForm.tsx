@@ -9,7 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, User, Mail, Phone, Lock, IdCard } from "lucide-react";
+import { Loader2, User, Mail, Phone, Lock, IdCard, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function StudentSignupForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -136,7 +137,21 @@ export function StudentSignupForm() {
       <div className="space-y-2">
         <Label htmlFor="apparId" className="flex items-center gap-2">
           <IdCard className="h-4 w-4 text-muted-foreground" />
-          APPAR ID
+          APAAR ID
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger type="button" aria-label="Why is APAAR ID required?">
+                <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-primary transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                APAAR ID (Automated Permanent Academic Account Registry) is a
+                government-issued 12-digit lifetime ID linked to your Aadhaar.
+                It uniquely identifies you as a student so issued credentials
+                are tied to the right person and can be verified across
+                institutions.
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </Label>
         <Input
           id="apparId"

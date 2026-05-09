@@ -343,7 +343,22 @@ export default function Dashboard() {
                     )}
                   </div>
                 ) : profile?.role === "student" ? (
-                  <StudentIssuedCredentials userId={user.id} />
+                  <div className="space-y-4">
+                    {profile?.appar_id && (
+                      <div className="rounded-xl border border-border bg-card/50 backdrop-blur p-4 flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <Fingerprint className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-muted-foreground">Your APAAR ID</div>
+                          <div className="font-mono text-sm font-semibold truncate">
+                            {profile.appar_id}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <StudentIssuedCredentials userId={user.id} />
+                  </div>
                 ) : (
                   <div className="rounded-2xl border border-border bg-card p-8 text-center">
                     <div className="p-4 rounded-full bg-muted w-fit mx-auto mb-4">

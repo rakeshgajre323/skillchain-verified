@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { getHomeForRole } from "@/lib/roleRoutes";
-import digitalIndiaLogo from "@/assets/digital-india-logo.png";
+import digitalIndiaLogo from "@/assets/digital-india-logo-dark.svg";
 import digitalIndiaLogoLight from "@/assets/digital-india-logo-light.svg";
 import startupIndiaLogo from "@/assets/startup-india.png";
 

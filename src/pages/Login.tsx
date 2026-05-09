@@ -182,16 +182,16 @@ export default function Login() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1 flex items-center justify-center py-12 px-4">
+      <main className="flex-1 flex items-center justify-center py-8 sm:py-12 px-4">
         <div className="w-full max-w-xl">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-primary/10 mb-4">
-              <Shield className="h-8 w-8 text-primary" />
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center justify-center p-2.5 sm:p-3 rounded-2xl bg-primary/10 mb-3 sm:mb-4">
+              <Shield className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
             </div>
-            <h1 className="text-3xl font-display font-bold mb-2">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold mb-1.5 sm:mb-2">
               Welcome Back
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Choose your role to sign in to CertiVault
             </p>
           </div>

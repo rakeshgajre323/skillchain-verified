@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import digitalIndiaLogo from "@/assets/digital-india-logo.png";
 import digitalIndiaLogoLight from "@/assets/digital-india-logo-light.svg";
+import startupIndiaLogo from "@/assets/startup-india.png";
 
 type NavItem = { to: string; label: string; icon?: typeof Shield };
 
@@ -104,6 +105,23 @@ export function Header() {
               src={digitalIndiaLogo}
               alt="Digital India logo"
               className="h-9 w-auto md:h-10 object-contain hidden dark:block"
+              loading="eager"
+              decoding="async"
+            />
+          </a>
+          <span className="hidden sm:block h-8 w-px bg-border/70" aria-hidden="true" />
+          <a
+            href="https://www.startupindia.gov.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            title="Startup India — visit website"
+            aria-label="Startup India"
+          >
+            <img
+              src={startupIndiaLogo}
+              alt="Startup India logo"
+              className="h-9 w-auto md:h-10 object-contain"
               loading="eager"
               decoding="async"
             />

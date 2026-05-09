@@ -110,10 +110,10 @@ export default function Index() {
             <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
               <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in border border-primary/20 backdrop-blur-sm hover:bg-primary/15 transition-colors">
                 <Sparkles className="h-4 w-4 flex-shrink-0 animate-pulse-slow" />
-                <span className="text-balance">Trusted by 500+ institutions worldwide</span>
+                <span className="text-balance font-sans">Trusted and Secure </span>
               </div>
 
-              <h1 className="font-display tracking-tight animate-fade-in-up text-balance">
+              <h1 className="font-display tracking-tight animate-fade-in-up text-balance font-sans">
                 Secure, Verifiable{" "}
                 <span
                   className="gradient-text font-sans animate-shimmer"
@@ -127,7 +127,7 @@ export default function Index() {
                 for Everyone
               </h1>
 
-              <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto animate-fade-in-up text-balance" style={{ animationDelay: "0.1s" }}>
+              <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto animate-fade-in-up text-balance font-sans" style={{ animationDelay: "0.1s" }}>
                 Issue, manage, and verify academic and professional credentials with blockchain-grade security. Empowering students, institutions, and employers.
               </p>
 

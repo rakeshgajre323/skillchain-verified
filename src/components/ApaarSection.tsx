@@ -47,7 +47,7 @@ export function ApaarSection() {
               <span>APAAR ID</span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-display font-bold font-serif text-balance">
+            <h2 className="text-3xl md:text-4xl font-display font-bold font-serif text-balance font-sans">
               What is{" "}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 APAAR ID
@@ -55,7 +55,7 @@ export function ApaarSection() {
               ?
             </h2>
 
-            <p className="text-lg text-muted-foreground text-balance">
+            <p className="text-lg text-muted-foreground text-balance font-sans">
               <strong className="text-foreground">APAAR</strong> (Automated Permanent Academic Account Registry) is a
               unique identification system for every student in India. Linked to your Aadhaar, it serves as a
               <strong className="text-foreground"> One Nation, One Student ID</strong> — making it easy to store,

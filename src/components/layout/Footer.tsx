@@ -2,10 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import indiaGovLogo from "@/assets/india-gov-in.svg";
-import indiaGovLogoDark from "@/assets/npi-logo-dark.svg";
 import digiLockerLogo from "@/assets/digilocker.png";
-import { useTheme } from "@/components/ThemeProvider";
 
 function VisitorCounter({ value }: { value: number | null }) {
   // Pad to 7 digits like the reference odometer style
@@ -161,25 +158,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* India.gov.in badge */}
+          {/* Partner badges */}
           <div className="md:col-span-2 flex md:flex-col items-start md:items-end justify-between md:justify-start gap-3">
-            <h4 className="font-semibold mb-0 md:mb-4">National Portal</h4>
-            <a
-              href="https://www.india.gov.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Visit india.gov.in — National Portal of India"
-              title="National Portal of India"
-              className="inline-block rounded-md bg-background/95 p-2 shadow-md hover:shadow-lg transition-shadow outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground"
-            >
-              <img
-                src={resolvedTheme === "dark" ? indiaGovLogoDark : indiaGovLogo}
-                alt="india.gov.in — National Portal of India"
-                className="h-12 w-auto md:h-14 object-contain"
-                loading="lazy"
-                decoding="async"
-              />
-            </a>
+            <h4 className="font-semibold mb-0 md:mb-4">Partner</h4>
             <a
               href="https://www.digilocker.gov.in/"
               target="_blank"

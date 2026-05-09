@@ -132,6 +132,7 @@ export function IssuanceAnimation() {
                 className="rounded-full h-7 px-3 text-xs capitalize"
                 onClick={() => setSpeed(s)}
                 aria-pressed={speed === s}
+                disabled={reduceMotion}
               >
                 {s}
               </Button>
@@ -143,11 +144,23 @@ export function IssuanceAnimation() {
             className="rounded-full h-9"
             onClick={() => setPlaying((p) => !p)}
             aria-label={playing ? "Pause animation" : "Play animation"}
+            disabled={reduceMotion}
           >
             {playing ? <Pause className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5" />}
             {playing ? "Pause" : "Play"}
           </Button>
-          {autoLimited && (
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur-sm px-3 py-1.5">
+            <Switch
+              id="reduce-motion"
+              checked={reduceMotion}
+              onCheckedChange={setReduceMotion}
+              aria-label="Reduce motion"
+            />
+            <label htmlFor="reduce-motion" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Reduce motion
+            </label>
+          </div>
+          {autoLimited && !reduceMotion && (
             <span className="text-xs text-muted-foreground ml-1">
               Auto-adjusted for your device
             </span>

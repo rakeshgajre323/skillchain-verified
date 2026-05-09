@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import indiaGovLogo from "@/assets/india-gov-in.svg";
+import indiaGovLogoDark from "@/assets/npi-logo-dark.svg";
 import digiLockerLogo from "@/assets/digilocker.png";
+import { useTheme } from "@/components/ThemeProvider";
 
 function VisitorCounter({ value }: { value: number | null }) {
   // Pad to 7 digits like the reference odometer style
@@ -31,6 +33,7 @@ function VisitorCounter({ value }: { value: number | null }) {
 
 export function Footer() {
   const [visitors, setVisitors] = useState<number | null>(null);
+  const { resolvedTheme } = useTheme();
   const lastUpdated = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",

@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
 import { IssuanceAnimation } from "@/components/IssuanceAnimation";
 import { GettingStarted } from "@/components/GettingStarted";
+import { ApaarSection } from "@/components/ApaarSection";
 import { useAuth } from "@/hooks/useAuth";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import {
@@ -165,6 +166,8 @@ export default function Index() {
         <IssuanceAnimation />
 
         <GettingStarted />
+
+        <ApaarSection />
 
         {/* Stats Section */}
         <section className="py-[72px] border-y border-border bg-card/50">

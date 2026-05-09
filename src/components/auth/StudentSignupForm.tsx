@@ -89,6 +89,9 @@ export function StudentSignupForm() {
         </Label>
         <Input
           id="apparId"
+          inputMode="numeric"
+          autoComplete="off"
+          maxLength={12}
           placeholder="Enter your 12-digit APAAR ID"
           {...register("apparId")}
           className={`h-12 text-base font-mono tracking-wider bg-background ${errors.apparId ? "border-destructive" : "border-primary/30 focus-visible:ring-primary"}`}

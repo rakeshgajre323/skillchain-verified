@@ -29,7 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import digitalIndiaLogo from "@/assets/digital-india-logo.png";
-import digitalIndiaLogoLight from "@/assets/digital-india-logo-light.png";
+import digitalIndiaLogoLight from "@/assets/digital-india-logo-light.svg";
 
 type NavItem = { to: string; label: string; icon?: typeof Shield };
 

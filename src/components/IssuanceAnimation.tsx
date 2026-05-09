@@ -70,9 +70,9 @@ export function IssuanceAnimation() {
         @keyframes ic-cert-fly {
           0%   { transform: translate(0, 0) rotate(-6deg) scale(1);   opacity: 0; }
           15%  { opacity: 1; }
-          50%  { transform: translate(140px, -28px) rotate(0deg) scale(1.06); }
-          85%  { transform: translate(280px, 0) rotate(6deg) scale(1); opacity: 1; }
-          100% { transform: translate(280px, 0) rotate(6deg) scale(1); opacity: 0; }
+          50%  { transform: translate(calc(var(--ic-fly) * 0.5), -22px) rotate(0deg) scale(1.06); }
+          85%  { transform: translate(var(--ic-fly), 0) rotate(6deg) scale(1); opacity: 1; }
+          100% { transform: translate(var(--ic-fly), 0) rotate(6deg) scale(1); opacity: 0; }
         }
         @keyframes ic-arm-give {
           0%,100% { transform: rotate(0deg); }
@@ -104,6 +104,11 @@ export function IssuanceAnimation() {
         .ic-sparkle { animation: ic-sparkle var(--ic-sparkle-duration) ease-in-out infinite; animation-play-state: var(--ic-play); }
         .ic-stamp { animation: ic-stamp-pop var(--ic-duration) ease-in-out infinite; transform-origin: center; animation-play-state: var(--ic-play); }
         .ic-line { stroke-dasharray: 60; animation: ic-line-pulse var(--ic-duration) ease-in-out infinite; animation-play-state: var(--ic-play); }
+
+        /* Responsive flight distance — matches the path width on each breakpoint */
+        .ic-stage { --ic-fly: 110px; }
+        @media (min-width: 480px) { .ic-stage { --ic-fly: 160px; } }
+        @media (min-width: 768px) { .ic-stage { --ic-fly: 240px; } }
       `}</style>
 
       <div className="container">
@@ -167,24 +172,24 @@ export function IssuanceAnimation() {
           )}
         </div>
 
-        <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden">
+        <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-3 sm:p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden ic-stage">
           {/* soft glow background */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(circle_at_70%_50%,hsl(var(--accent)/0.08),transparent_60%)]" />
 
-          <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-end gap-6 md:gap-4">
+          <div className="relative grid grid-cols-[auto_1fr_auto] items-end gap-1 sm:gap-3 md:gap-4">
             {/* PROFESSOR */}
-            <div className="flex flex-col items-center order-1">
-              <div className="ic-bob">
+            <div className="flex flex-col items-center">
+              <div className="ic-bob w-20 sm:w-28 md:w-[150px]">
                 <Professor />
               </div>
-              <div className="mt-4 text-center">
-                <p className="font-semibold text-sm">Prof. Institute</p>
-                <p className="text-xs text-muted-foreground">Issuer</p>
+              <div className="mt-2 sm:mt-4 text-center">
+                <p className="font-semibold text-xs sm:text-sm">Prof. Institute</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Issuer</p>
               </div>
             </div>
 
             {/* CERTIFICATE FLIGHT PATH */}
-            <div className="relative h-44 md:h-56 order-3 md:order-2 w-full md:w-[280px] flex items-center justify-center">
+            <div className="relative h-32 sm:h-44 md:h-56 w-full flex items-center justify-center">
               {/* dashed connection line */}
               <svg
                 className="absolute inset-0 w-full h-full"
@@ -204,12 +209,12 @@ export function IssuanceAnimation() {
               </svg>
 
               {/* flying certificate */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 ic-cert">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 ic-cert scale-75 sm:scale-90 md:scale-100 origin-left">
                 <Certificate />
               </div>
 
               {/* sparkles */}
-              <Sparkles className="absolute left-1/4 top-2 h-4 w-4 text-primary ic-sparkle" />
+              <Sparkles className="absolute left-1/4 top-2 h-3 w-3 sm:h-4 sm:w-4 text-primary ic-sparkle" />
               <Sparkles
                 className="absolute right-1/4 top-6 h-3 w-3 text-accent ic-sparkle"
                 style={{ animationDelay: "0.6s" }}
@@ -221,13 +226,13 @@ export function IssuanceAnimation() {
             </div>
 
             {/* STUDENT */}
-            <div className="flex flex-col items-center order-2 md:order-3">
-              <div className="ic-bob-delay">
+            <div className="flex flex-col items-center">
+              <div className="ic-bob-delay w-20 sm:w-28 md:w-[150px]">
                 <Student />
               </div>
-              <div className="mt-4 text-center">
-                <p className="font-semibold text-sm">Student</p>
-                <p className="text-xs text-muted-foreground">Recipient</p>
+              <div className="mt-2 sm:mt-4 text-center">
+                <p className="font-semibold text-xs sm:text-sm">Student</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Recipient</p>
               </div>
             </div>
           </div>
@@ -257,7 +262,7 @@ export function IssuanceAnimation() {
 
 function Professor() {
   return (
-    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+    <svg viewBox="0 0 150 200" className="w-full h-auto" aria-hidden="true">
       {/* shadow */}
       <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
       {/* body / robe */}
@@ -300,7 +305,7 @@ function Professor() {
 
 function Student() {
   return (
-    <svg width="150" height="200" viewBox="0 0 150 200" aria-hidden="true">
+    <svg viewBox="0 0 150 200" className="w-full h-auto" aria-hidden="true">
       <ellipse cx="75" cy="190" rx="42" ry="5" fill="hsl(var(--foreground))" opacity="0.08" />
       {/* body / hoodie */}
       <path d="M40 185 L48 115 Q75 105 102 115 L110 185 Z" fill="hsl(var(--accent))" />

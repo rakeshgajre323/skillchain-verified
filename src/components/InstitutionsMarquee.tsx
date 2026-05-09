@@ -36,7 +36,7 @@ export function InstitutionsMarquee() {
     let cancelled = false;
     supabase
       .from("institution_logos")
-      .select("name, logo_url")
+      .select("name, logo_url, website_url")
       .eq("is_active", true)
       .order("display_order", { ascending: true })
       .then(({ data, error }) => {
@@ -46,6 +46,7 @@ export function InstitutionsMarquee() {
             name: row.name,
             small: row.logo_url,
             large: row.logo_url,
+            website_url: row.website_url,
           })),
         );
       });

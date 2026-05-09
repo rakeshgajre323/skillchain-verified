@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Award, CheckCircle2, Gauge, Pause, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 type Speed = "slow" | "normal" | "fast";
 
@@ -22,13 +23,14 @@ export function IssuanceAnimation() {
   const [speed, setSpeed] = useState<Speed>("normal");
   const [playing, setPlaying] = useState(true);
   const [autoLimited, setAutoLimited] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const small = window.matchMedia("(max-width: 640px)");
 
     const apply = () => {
-      if (reduced.matches) {
+      if (reduced.matches || reduceMotion) {
         setPlaying(false);
         setAutoLimited(true);
       } else if (small.matches) {
@@ -45,7 +47,7 @@ export function IssuanceAnimation() {
       reduced.removeEventListener("change", apply);
       small.removeEventListener("change", apply);
     };
-  }, []);
+  }, [reduceMotion]);
 
   const seconds = SPEED_SECONDS[speed];
   const playState = playing ? "running" : "paused";
@@ -130,6 +132,7 @@ export function IssuanceAnimation() {
                 className="rounded-full h-7 px-3 text-xs capitalize"
                 onClick={() => setSpeed(s)}
                 aria-pressed={speed === s}
+                disabled={reduceMotion}
               >
                 {s}
               </Button>
@@ -141,11 +144,23 @@ export function IssuanceAnimation() {
             className="rounded-full h-9"
             onClick={() => setPlaying((p) => !p)}
             aria-label={playing ? "Pause animation" : "Play animation"}
+            disabled={reduceMotion}
           >
             {playing ? <Pause className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5" />}
             {playing ? "Pause" : "Play"}
           </Button>
-          {autoLimited && (
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur-sm px-3 py-1.5">
+            <Switch
+              id="reduce-motion"
+              checked={reduceMotion}
+              onCheckedChange={setReduceMotion}
+              aria-label="Reduce motion"
+            />
+            <label htmlFor="reduce-motion" className="text-xs text-muted-foreground cursor-pointer select-none">
+              Reduce motion
+            </label>
+          </div>
+          {autoLimited && !reduceMotion && (
             <span className="text-xs text-muted-foreground ml-1">
               Auto-adjusted for your device
             </span>

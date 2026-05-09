@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
 import { IssuanceAnimation } from "@/components/IssuanceAnimation";
+import { GettingStarted } from "@/components/GettingStarted";
 import { useAuth } from "@/hooks/useAuth";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import {
@@ -162,6 +163,8 @@ export default function Index() {
         <InstitutionsMarquee />
 
         <IssuanceAnimation />
+
+        <GettingStarted />
 
         {/* Stats Section */}
         <section className="py-[72px] border-y border-border bg-card/50">

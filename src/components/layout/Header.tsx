@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { getHomeForRole } from "@/lib/roleRoutes";
+import digitalIndiaLogo from "@/assets/digital-india-logo.png";
 
 type NavItem = { to: string; label: string; icon?: typeof Shield };
 

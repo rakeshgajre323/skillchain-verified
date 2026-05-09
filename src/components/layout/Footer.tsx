@@ -38,30 +38,22 @@ export function Footer() {
 
   useEffect(() => {
     let cancelled = false;
-    const counted = sessionStorage.getItem("cv_counted");
-
-    const fetchOnly = async () => {
-      const { data } = await supabase
-        .from("site_stats")
-        .select("visitor_count")
-        .eq("id", 1)
-        .maybeSingle();
-      if (!cancelled && data) setVisitors(Number(data.visitor_count));
-    };
-
-    if (counted) {
-      fetchOnly();
-    } else {
-      supabase.rpc("increment_visitor_count").then(({ data, error }) => {
-        if (cancelled) return;
-        if (!error && data !== null) {
-          sessionStorage.setItem("cv_counted", "1");
-          setVisitors(Number(data));
-        } else {
-          fetchOnly();
-        }
-      });
-    }
+    supabase.rpc("increment_visitor_count").then(({ data, error }) => {
+      if (cancelled) return;
+      if (!error && data !== null) {
+        setVisitors(Number(data));
+      } else {
+        // Fallback: just read the current count
+        supabase
+          .from("site_stats")
+          .select("visitor_count")
+          .eq("id", 1)
+          .maybeSingle()
+          .then(({ data: row }) => {
+            if (!cancelled && row) setVisitors(Number(row.visitor_count));
+          });
+      }
+    });
     return () => {
       cancelled = true;
     };

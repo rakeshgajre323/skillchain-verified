@@ -29,6 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getHomeForRole } from "@/lib/roleRoutes";
 import digitalIndiaLogo from "@/assets/digital-india-logo.png";
+import digitalIndiaLogoLight from "@/assets/digital-india-logo-light.png";
 
 type NavItem = { to: string; label: string; icon?: typeof Shield };
 
@@ -93,9 +94,16 @@ export function Header() {
             aria-label="Digital India"
           >
             <img
+              src={digitalIndiaLogoLight}
+              alt="Digital India logo"
+              className="h-9 w-auto md:h-10 object-contain block dark:hidden"
+              loading="eager"
+              decoding="async"
+            />
+            <img
               src={digitalIndiaLogo}
               alt="Digital India logo"
-              className="h-9 w-auto md:h-10 object-contain"
+              className="h-9 w-auto md:h-10 object-contain hidden dark:block"
               loading="eager"
               decoding="async"
             />

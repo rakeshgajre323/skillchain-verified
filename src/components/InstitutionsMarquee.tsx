@@ -349,9 +349,10 @@ export function InstitutionsMarquee() {
             touchAction: "pan-y",
             overscrollBehaviorX: "contain",
           }}
-          className="flex w-full overflow-x-auto overflow-y-hidden gap-6 sm:gap-10 md:gap-14 lg:gap-16 px-6 sm:px-10 md:px-16 cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
+          className="w-full overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
         >
-          {loop.map((inst, i) => {
+          <div className="flex gap-6 sm:gap-10 md:gap-14 lg:gap-16 px-6 sm:px-10 md:px-16">
+            {loop.map((inst, i) => {
             const eager = i < logos.length;
             const isLoaded = loaded[inst.small];
             const Wrapper = inst.website_url
@@ -419,6 +420,7 @@ export function InstitutionsMarquee() {
           })}
         </div>
       </div>
+    </div>
     </section>
   );
 }

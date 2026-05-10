@@ -21,7 +21,7 @@ const highlights = [
 
 export function ApaarSection() {
   return (
-    <section className="py-[72px] bg-background relative overflow-hidden">
+    <section className="py-10 bg-background relative overflow-hidden">
       <div className="pointer-events-none absolute -top-20 -right-20 w-96 h-96 rounded-full blur-3xl opacity-30"
            style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)" }} />
       <div className="pointer-events-none absolute -bottom-20 -left-20 w-96 h-96 rounded-full blur-3xl opacity-30"

@@ -170,7 +170,7 @@ export default function Index() {
         <ApaarSection />
 
         {/* Stats Section */}
-        <section className="py-[72px] border-y border-border bg-card/50">
+        <section className="py-10 border-y border-border bg-card/50">
           <div className="container">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
               {stats.map((stat, index) => (
@@ -190,7 +190,7 @@ export default function Index() {
         </section>
 
         {/* Features Section */}
-        <section className="py-[72px] bg-background">
+        <section className="py-10 bg-background">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
@@ -223,7 +223,7 @@ export default function Index() {
         </section>
 
         {/* Roles Section */}
-        <section className="py-[72px] bg-muted/30">
+        <section className="py-10 bg-muted/30">
           <div className="container">
             <div className="text-center max-w-2xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
@@ -266,7 +266,7 @@ export default function Index() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-[72px] bg-primary text-primary-foreground relative overflow-hidden">
+        <section className="py-10 bg-primary text-primary-foreground relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent opacity-90" />
           <div className="absolute inset-0 bg-hero-pattern opacity-10" />
 
@@ -288,7 +288,7 @@ export default function Index() {
         </section>
 
         {/* Developed By Section */}
-        <section className="py-12 border-t border-border bg-muted/30">
+        <section className="py-8 border-t border-border bg-muted/30">
           <div className="container text-center">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
               This Website Developed By

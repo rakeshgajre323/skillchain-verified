@@ -125,6 +125,7 @@ export default function GenerateCertificateAI() {
                 onChange={(e) => setStudentName(e.target.value)}
                 placeholder="e.g. Aarav Sharma"
                 maxLength={100}
+                disabled={generating}
               />
             </div>
             <div>
@@ -135,6 +136,7 @@ export default function GenerateCertificateAI() {
                 onChange={(e) => setRollNumber(e.target.value)}
                 placeholder="e.g. CS-2024-018"
                 maxLength={50}
+                disabled={generating}
               />
             </div>
             <div>
@@ -146,6 +148,7 @@ export default function GenerateCertificateAI() {
                 rows={3}
                 placeholder="e.g. Completion of Advanced Web Development workshop with distinction"
                 maxLength={500}
+                disabled={generating}
               />
             </div>
             <div className="flex justify-end">

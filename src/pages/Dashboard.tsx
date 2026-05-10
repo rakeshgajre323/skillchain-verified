@@ -140,8 +140,15 @@ export default function Dashboard() {
 
   const getRoleStats = () => {
     switch (profile?.role) {
-      case "student":
-        return studentStats;
+      case "student": {
+        const { total, verified, pending } = studentCounts;
+        return [
+          { label: "Total Credentials", value: String(total), icon: Award, trend: total === 0 ? "No credentials yet" : `${total} issued` },
+          { label: "Verified", value: String(verified), icon: CheckCircle2, trend: total === 0 ? "—" : `${Math.round((verified / total) * 100)}% verified` },
+          { label: "Pending", value: String(pending), icon: Clock, trend: pending === 0 ? "None pending" : "Awaiting verification" },
+          { label: "Shared", value: "0", icon: Users, trend: "Not shared yet" },
+        ];
+      }
       case "institute":
         return instituteStats;
       case "company":

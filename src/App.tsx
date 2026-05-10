@@ -15,6 +15,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Credentials from "./pages/Credentials";
 import IssueCredential from "./pages/IssueCredential";
+import GenerateCertificateAI from "./pages/GenerateCertificateAI";
 import AdminDashboard from "./pages/AdminDashboard";
 import RequestCredential from "./pages/RequestCredential";
 import MyRequests from "./pages/MyRequests";
@@ -92,6 +93,10 @@ const App = () => (
               <Route
                 path="/issue-credential"
                 element={<RequireAuth roles={["institute"]}><IssueCredential /></RequireAuth>}
+              />
+              <Route
+                path="/generate-certificate-ai"
+                element={<RequireAuth roles={["institute"]}><GenerateCertificateAI /></RequireAuth>}
               />
               <Route
                 path="/manage-requests"

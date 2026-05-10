@@ -1,66 +1,19 @@
-import { useEffect, useState } from "react";
-import { Award, CheckCircle2, Gauge, Pause, Play, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-
-type Speed = "slow" | "normal" | "fast";
-
-const SPEED_SECONDS: Record<Speed, number> = {
-  slow: 8,
-  normal: 5,
-  fast: 2.5,
-};
+import { Award, CheckCircle2, Sparkles } from "lucide-react";
 
 /**
  * Animated illustration showing a professor (institute) issuing a certificate
  * to a student. Pure CSS/SVG — no external assets, fully themed.
- *
- * Includes user controls for animation speed and play/pause, and automatically
- * downshifts to a slower speed (or honors prefers-reduced-motion) on small
- * screens so it isn't visually overwhelming on mobile.
  */
 export function IssuanceAnimation() {
-  const [speed, setSpeed] = useState<Speed>("normal");
-  const [playing, setPlaying] = useState(true);
-  const [autoLimited, setAutoLimited] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
-
-  useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const small = window.matchMedia("(max-width: 640px)");
-
-    const apply = () => {
-      if (reduced.matches || reduceMotion) {
-        setPlaying(false);
-        setAutoLimited(true);
-      } else if (small.matches) {
-        setSpeed("slow");
-        setAutoLimited(true);
-      } else {
-        setAutoLimited(false);
-      }
-    };
-    apply();
-    reduced.addEventListener("change", apply);
-    small.addEventListener("change", apply);
-    return () => {
-      reduced.removeEventListener("change", apply);
-      small.removeEventListener("change", apply);
-    };
-  }, [reduceMotion]);
-
-  const seconds = SPEED_SECONDS[speed];
-  const playState = playing ? "running" : "paused";
-
   return (
     <section
       className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden"
       style={
         {
-          ["--ic-duration" as string]: `${seconds}s`,
-          ["--ic-bob-duration" as string]: `${Math.max(2, seconds * 0.8)}s`,
-          ["--ic-sparkle-duration" as string]: `${Math.max(1.2, seconds * 0.5)}s`,
-          ["--ic-play" as string]: playState,
+          ["--ic-duration" as string]: `5s`,
+          ["--ic-bob-duration" as string]: `4s`,
+          ["--ic-sparkle-duration" as string]: `2.5s`,
+          ["--ic-play" as string]: "running",
         } as React.CSSProperties
       }
     >
@@ -123,53 +76,6 @@ export function IssuanceAnimation() {
           <p className="text-muted-foreground">
             Watch how a professor issues a verified certificate that lands directly in the student's secure dashboard.
           </p>
-        </div>
-
-        {/* Animation controls */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card/60 backdrop-blur-sm p-1">
-            <Gauge className="h-4 w-4 text-muted-foreground ml-2 mr-1" aria-hidden="true" />
-            {(["slow", "normal", "fast"] as Speed[]).map((s) => (
-              <Button
-                key={s}
-                size="sm"
-                variant={speed === s ? "default" : "ghost"}
-                className="rounded-full h-7 px-3 text-xs capitalize"
-                onClick={() => setSpeed(s)}
-                aria-pressed={speed === s}
-                disabled={reduceMotion}
-              >
-                {s}
-              </Button>
-            ))}
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="rounded-full h-9"
-            onClick={() => setPlaying((p) => !p)}
-            aria-label={playing ? "Pause animation" : "Play animation"}
-            disabled={reduceMotion}
-          >
-            {playing ? <Pause className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5" />}
-            {playing ? "Pause" : "Play"}
-          </Button>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur-sm px-3 py-1.5">
-            <Switch
-              id="reduce-motion"
-              checked={reduceMotion}
-              onCheckedChange={setReduceMotion}
-              aria-label="Reduce motion"
-            />
-            <label htmlFor="reduce-motion" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Reduce motion
-            </label>
-          </div>
-          {autoLimited && !reduceMotion && (
-            <span className="text-xs text-muted-foreground ml-1">
-              Auto-adjusted for your device
-            </span>
-          )}
         </div>
 
         <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-3 sm:p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden ic-stage">

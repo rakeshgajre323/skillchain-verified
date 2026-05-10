@@ -9,7 +9,7 @@ const steps = [
 
 export function GettingStarted() {
   return (
-    <section className="py-[72px] bg-muted/30">
+    <section className="py-10 bg-muted/30">
       <div className="container">
         <div className="rounded-3xl bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 border border-border p-8 md:p-12">
           <div className="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-12 items-center">

@@ -7,7 +7,7 @@ import { Award, CheckCircle2, Sparkles } from "lucide-react";
 export function IssuanceAnimation() {
   return (
     <section
-      className="py-20 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden"
+      className="py-12 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden"
       style={
         {
           ["--ic-duration" as string]: `5s`,

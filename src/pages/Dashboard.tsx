@@ -42,6 +42,7 @@ import {
   TrendingUp,
   ArrowRight,
   Fingerprint,
+  Sparkles,
 } from "lucide-react";
 
 const studentStats = [
@@ -142,6 +143,7 @@ export default function Dashboard() {
         return [
           { label: "Manage Requests", icon: Users, href: "/manage-requests" },
           { label: "Upload Certificate", icon: Plus, href: "/issue-credential" },
+          { label: "Create with AI", icon: Sparkles, href: "/generate-certificate-ai" },
           { label: "View Analytics", icon: TrendingUp, href: "/admin" },
         ];
       case "company":

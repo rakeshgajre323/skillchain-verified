@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { Award, CheckCircle2, Gauge, Pause, Play, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+import { Award, CheckCircle2, Sparkles } from "lucide-react";
 
 type Speed = "slow" | "normal" | "fast";
 

@@ -78,53 +78,6 @@ export function IssuanceAnimation() {
           </p>
         </div>
 
-        {/* Animation controls */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-card/60 backdrop-blur-sm p-1">
-            <Gauge className="h-4 w-4 text-muted-foreground ml-2 mr-1" aria-hidden="true" />
-            {(["slow", "normal", "fast"] as Speed[]).map((s) => (
-              <Button
-                key={s}
-                size="sm"
-                variant={speed === s ? "default" : "ghost"}
-                className="rounded-full h-7 px-3 text-xs capitalize"
-                onClick={() => setSpeed(s)}
-                aria-pressed={speed === s}
-                disabled={reduceMotion}
-              >
-                {s}
-              </Button>
-            ))}
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="rounded-full h-9"
-            onClick={() => setPlaying((p) => !p)}
-            aria-label={playing ? "Pause animation" : "Play animation"}
-            disabled={reduceMotion}
-          >
-            {playing ? <Pause className="h-4 w-4 mr-1.5" /> : <Play className="h-4 w-4 mr-1.5" />}
-            {playing ? "Pause" : "Play"}
-          </Button>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur-sm px-3 py-1.5">
-            <Switch
-              id="reduce-motion"
-              checked={reduceMotion}
-              onCheckedChange={setReduceMotion}
-              aria-label="Reduce motion"
-            />
-            <label htmlFor="reduce-motion" className="text-xs text-muted-foreground cursor-pointer select-none">
-              Reduce motion
-            </label>
-          </div>
-          {autoLimited && !reduceMotion && (
-            <span className="text-xs text-muted-foreground ml-1">
-              Auto-adjusted for your device
-            </span>
-          )}
-        </div>
-
         <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-3 sm:p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden ic-stage">
           {/* soft glow background */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(var(--primary)/0.08),transparent_60%),radial-gradient(circle_at_70%_50%,hsl(var(--accent)/0.08),transparent_60%)]" />

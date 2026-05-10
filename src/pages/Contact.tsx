@@ -54,7 +54,7 @@ export default function Contact() {
               </div>
               <h3 className="text-lg font-semibold mb-2">WhatsApp</h3>
               <p className="text-muted-foreground text-sm mb-3">Chat with us directly</p>
-              <p className="text-primary font-medium">+91 7989975435</p>
+              <p className="text-primary font-medium">Open WhatsApp</p>
             </a>
 
             {/* GitHub */}

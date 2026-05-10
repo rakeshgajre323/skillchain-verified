@@ -44,22 +44,38 @@ export function Footer() {
 
   useEffect(() => {
     let cancelled = false;
-    supabase.rpc("increment_visitor_count").then(({ data, error }) => {
-      if (cancelled) return;
-      if (!error && data !== null) {
-        setVisitors(Number(data));
-      } else {
-        // Fallback: just read the current count
-        supabase
-          .from("site_stats")
-          .select("visitor_count")
-          .eq("id", 1)
-          .maybeSingle()
-          .then(({ data: row }) => {
-            if (!cancelled && row) setVisitors(Number(row.visitor_count));
-          });
-      }
-    });
+
+    // Only count on a true page (re)load — not SPA navigations or back/forward.
+    const navEntry = (typeof performance !== "undefined"
+      ? (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)
+      : undefined);
+    const navType = navEntry?.type ?? "navigate";
+    const shouldIncrement = navType === "navigate" || navType === "reload";
+
+    const readOnly = () => {
+      supabase
+        .from("site_stats")
+        .select("visitor_count")
+        .eq("id", 1)
+        .maybeSingle()
+        .then(({ data: row }) => {
+          if (!cancelled && row) setVisitors(Number(row.visitor_count));
+        });
+    };
+
+    if (shouldIncrement) {
+      supabase.rpc("increment_visitor_count").then(({ data, error }) => {
+        if (cancelled) return;
+        if (!error && data !== null) {
+          setVisitors(Number(data));
+        } else {
+          readOnly();
+        }
+      });
+    } else {
+      readOnly();
+    }
+
     return () => {
       cancelled = true;
     };

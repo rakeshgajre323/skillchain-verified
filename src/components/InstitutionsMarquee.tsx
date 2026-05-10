@@ -420,6 +420,7 @@ export function InstitutionsMarquee() {
           })}
         </div>
       </div>
+    </div>
     </section>
   );
 }

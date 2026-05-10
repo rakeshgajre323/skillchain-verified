@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Shield,
   BarChart3,
+  ArrowLeft,
 } from "lucide-react";
 import {
   LineChart,
@@ -114,6 +115,12 @@ export default function AdminDashboard() {
       <Header />
       <main className="flex-1 py-8">
         <div className="container">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back to dashboard
+          </Link>
           <div className="flex items-center gap-3 mb-8">
             <div className="p-3 rounded-xl bg-primary/10">
               <BarChart3 className="h-6 w-6 text-primary" />

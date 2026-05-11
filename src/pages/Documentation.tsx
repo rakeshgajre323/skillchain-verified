@@ -2,6 +2,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Book, Code, Key, Upload, Search, Shield, Users, QrCode } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 const guides = [
   {
@@ -59,6 +61,14 @@ const Documentation = () => {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Everything you need to know to get the most out of CertiVault Credentials.
             </p>
+            <div className="pt-4">
+              <Button asChild size="lg">
+                <a href="/documentation.pdf" download="CertiVault-Documentation.pdf">
+                  <Download className="h-5 w-5 mr-2" />
+                  Click here to download
+                </a>
+              </Button>
+            </div>
           </div>
         </section>
 

@@ -61,6 +61,14 @@ const Documentation = () => {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Everything you need to know to get the most out of CertiVault Credentials.
             </p>
+            <div className="pt-4">
+              <Button asChild size="lg">
+                <a href="/documentation.pdf" download="CertiVault-Documentation.pdf">
+                  <Download className="h-5 w-5 mr-2" />
+                  Click here to download
+                </a>
+              </Button>
+            </div>
           </div>
         </section>
 

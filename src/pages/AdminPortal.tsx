@@ -199,7 +199,11 @@ export default function AdminPortal() {
                   <TableBody>
                     {filterRows(liveStudents).map((s) => (
                       <TableRow key={s.user_id}>
-                        <TableCell>{s.full_name || "—"}</TableCell>
+                        <TableCell>
+                          <button onClick={() => navigate(`/sys-control-7k9x2m/user/${s.user_id}`)} className="text-primary hover:underline font-medium text-left">
+                            {s.full_name || "—"}
+                          </button>
+                        </TableCell>
                         <TableCell>{s.email}</TableCell>
                         <TableCell>{s.appar_id || "—"}</TableCell>
                         <TableCell>{s.phone || "—"}</TableCell>
@@ -236,7 +240,11 @@ export default function AdminPortal() {
                   <TableBody>
                     {filterRows(students).map((s) => (
                       <TableRow key={s.user_id}>
-                        <TableCell>{s.full_name || "—"}</TableCell>
+                        <TableCell>
+                          <button onClick={() => navigate(`/sys-control-7k9x2m/user/${s.user_id}`)} className="text-primary hover:underline font-medium text-left">
+                            {s.full_name || "—"}
+                          </button>
+                        </TableCell>
                         <TableCell className="text-xs">{s.email}</TableCell>
                         <TableCell>{s.appar_id || "—"}</TableCell>
                         <TableCell className="text-xs">{s.phone || "—"}</TableCell>
@@ -280,7 +288,11 @@ export default function AdminPortal() {
                       <TableBody>
                         {filterRows(rows).map((r) => (
                           <TableRow key={r.user_id}>
-                            <TableCell>{r.full_name || "—"}</TableCell>
+                            <TableCell>
+                              <button onClick={() => navigate(`/sys-control-7k9x2m/user/${r.user_id}`)} className="text-primary hover:underline font-medium text-left">
+                                {r.full_name || "—"}
+                              </button>
+                            </TableCell>
                             <TableCell>{key === "institutes" ? r.institute_name : r.company_name}</TableCell>
                             <TableCell className="text-xs">{r.email}</TableCell>
                             <TableCell className="text-xs">{r.phone || "—"}</TableCell>

@@ -34,6 +34,7 @@ import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminPortal from "./pages/AdminPortal";
+import AdminUserView from "./pages/AdminUserView";
 import { BackButton } from "./components/BackButton";
 import { RequireAuth } from "./components/RequireAuth";
 import { RequireAdmin } from "./components/RequireAdmin";
@@ -119,6 +120,7 @@ const App = () => (
               {/* Hidden admin portal — do not link from anywhere */}
               <Route path="/sys-control-7k9x2m" element={<AdminLogin />} />
               <Route path="/sys-control-7k9x2m/portal" element={<RequireAdmin><AdminPortal /></RequireAdmin>} />
+              <Route path="/sys-control-7k9x2m/user/:userId" element={<RequireAdmin><AdminUserView /></RequireAdmin>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

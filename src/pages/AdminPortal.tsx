@@ -174,6 +174,7 @@ export default function AdminPortal() {
         <Tabs defaultValue="live">
           <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="live"><Activity className="w-4 h-4 mr-1" />Live Students ({liveStudents.length})</TabsTrigger>
+            <TabsTrigger value="students">Students ({students.length})</TabsTrigger>
             <TabsTrigger value="institutes">Institutes ({institutes.length})</TabsTrigger>
             <TabsTrigger value="companies">Companies ({companies.length})</TabsTrigger>
             <TabsTrigger value="creds">Credentials ({credentials.length})</TabsTrigger>

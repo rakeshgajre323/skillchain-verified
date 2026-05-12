@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Disallow: /sys-control-7k9x2m
 
 User-agent: Bingbot
 Allow: /
+Disallow: /sys-control-7k9x2m
 
 User-agent: Twitterbot
 Allow: /
@@ -12,3 +14,4 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /sys-control-7k9x2m

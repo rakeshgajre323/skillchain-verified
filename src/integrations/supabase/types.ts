@@ -302,11 +302,92 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      admin_delete_credential: { Args: { _id: string }; Returns: undefined }
+      admin_get_logged_in_students: {
+        Args: never
+        Returns: {
+          appar_id: string
+          email: string
+          full_name: string
+          last_sign_in_at: string
+          phone: string
+          user_id: string
+        }[]
+      }
+      admin_get_overview: {
+        Args: never
+        Returns: {
+          total_certs: number
+          total_companies: number
+          total_institutes: number
+          total_students: number
+          total_users: number
+          verified_certs: number
+        }[]
+      }
+      admin_list_credentials: {
+        Args: never
+        Returns: {
+          credential_type: string
+          id: string
+          issued_date: string
+          issuer_name: string
+          student_email: string
+          student_full_name: string
+          title: string
+          verification_status: string
+        }[]
+      }
+      admin_list_profiles: {
+        Args: { _role: Database["public"]["Enums"]["user_role"] }
+        Returns: {
+          address: string
+          appar_id: string
+          company_name: string
+          created_at: string
+          email: string
+          full_name: string
+          institute_name: string
+          last_sign_in_at: string
+          phone: string
+          status: Database["public"]["Enums"]["user_status"]
+          user_id: string
+          website: string
+        }[]
+      }
+      admin_update_user_status: {
+        Args: {
+          _status: Database["public"]["Enums"]["user_status"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
       find_student_user_id: {
         Args: { _appar_id: string; _email: string }
         Returns: string
@@ -359,6 +440,13 @@ export type Database = {
           users: number
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_visitor_count: { Args: never; Returns: number }
       verify_credential: {
         Args: { _credential_id: string }
@@ -375,6 +463,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "student" | "institute" | "company"
       request_status: "pending" | "approved" | "rejected" | "issued"
       user_role: "student" | "institute" | "company"
       user_status: "pending" | "active" | "suspended"
@@ -505,6 +594,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "student", "institute", "company"],
       request_status: ["pending", "approved", "rejected", "issued"],
       user_role: ["student", "institute", "company"],
       user_status: ["pending", "active", "suspended"],

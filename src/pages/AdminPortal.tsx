@@ -217,7 +217,52 @@ export default function AdminPortal() {
             </Card>
           </TabsContent>
 
-          {(["institutes", "companies"] as const).map((key) => {
+          <TabsContent value="students">
+            <Card>
+              <CardHeader><CardTitle>All Students</CardTitle></CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>APAAR</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last sign-in</TableHead>
+                      <TableHead>Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filterRows(students).map((s) => (
+                      <TableRow key={s.user_id}>
+                        <TableCell>{s.full_name || "—"}</TableCell>
+                        <TableCell className="text-xs">{s.email}</TableCell>
+                        <TableCell>{s.appar_id || "—"}</TableCell>
+                        <TableCell className="text-xs">{s.phone || "—"}</TableCell>
+                        <TableCell>
+                          <Badge variant={s.status === "active" ? "default" : "destructive"}>{s.status}</Badge>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {s.last_sign_in_at ? new Date(s.last_sign_in_at).toLocaleString() : "Never"}
+                        </TableCell>
+                        <TableCell>
+                          <Button size="sm" variant="outline" onClick={() => toggleStatus(s.user_id, s.status)}>
+                            {s.status === "suspended" ? "Activate" : "Suspend"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {students.length === 0 && (
+                      <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-6">No students found</TableCell></TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+
             const rows = key === "institutes" ? institutes : companies;
             return (
               <TabsContent key={key} value={key}>

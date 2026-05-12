@@ -173,6 +173,17 @@ export default function AdminUserView() {
           </Card>
         )}
       </div>
+
+      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="truncate pr-8">{previewTitle}</DialogTitle>
+          </DialogHeader>
+          {previewUrl && (
+            <iframe src={previewUrl} className="w-full flex-1 rounded border" title={previewTitle} />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -67,15 +67,17 @@ export default function AdminPortal() {
 
   const loadAll = useCallback(async () => {
     setLoading(true);
-    const [ov, ls, ins, co, cr] = await Promise.all([
+    const [ov, ls, st, ins, co, cr] = await Promise.all([
       supabase.rpc("admin_get_overview"),
       supabase.rpc("admin_get_logged_in_students"),
+      supabase.rpc("admin_list_profiles", { _role: "student" }),
       supabase.rpc("admin_list_profiles", { _role: "institute" }),
       supabase.rpc("admin_list_profiles", { _role: "company" }),
       supabase.rpc("admin_list_credentials"),
     ]);
     if (ov.data?.[0]) setOverview(ov.data[0] as Overview);
     setLiveStudents((ls.data as LiveStudent[]) || []);
+    setStudents((st.data as ProfileRow[]) || []);
     setInstitutes((ins.data as ProfileRow[]) || []);
     setCompanies((co.data as ProfileRow[]) || []);
     setCredentials((cr.data as CredRow[]) || []);

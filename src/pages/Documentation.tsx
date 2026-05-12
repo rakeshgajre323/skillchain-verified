@@ -51,6 +51,7 @@ const guides = [
 ];
 
 const Documentation = () => {
+  const [previewOpen, setPreviewOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />

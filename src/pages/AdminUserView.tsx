@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar, Eye, Download } from "lucide-react";
+import { toast } from "sonner";
 
 type Detail = {
   user_id: string; full_name: string | null; email: string; phone: string | null;

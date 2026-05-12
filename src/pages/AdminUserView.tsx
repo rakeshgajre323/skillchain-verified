@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar, Eye, Download } from "lucide-react";
+import { toast } from "sonner";
 
 type Detail = {
   user_id: string; full_name: string | null; email: string; phone: string | null;
@@ -26,6 +28,44 @@ export default function AdminUserView() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [creds, setCreds] = useState<Cred[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState<string>("");
+
+  const extractPath = (url: string): string | null => {
+    // Accept full public/signed URL or raw storage path
+    const m = url.match(/\/certificates\/(.+?)(\?|$)/);
+    if (m) return decodeURIComponent(m[1]);
+    if (!url.startsWith("http")) return url.replace(/^certificates\//, "");
+    return null;
+  };
+
+  const getSignedUrl = async (fileUrl: string): Promise<string | null> => {
+    const path = extractPath(fileUrl);
+    if (!path) return fileUrl; // fallback
+    const { data, error } = await supabase.storage
+      .from("certificates")
+      .createSignedUrl(path, 300);
+    if (error || !data) {
+      toast.error("Could not access file");
+      return null;
+    }
+    return data.signedUrl;
+  };
+
+  const handlePreview = async (c: Cred) => {
+    if (!c.certificate_file_url) return;
+    const url = await getSignedUrl(c.certificate_file_url);
+    if (url) {
+      setPreviewUrl(url);
+      setPreviewTitle(c.title);
+    }
+  };
+
+  const handleDownload = async (c: Cred) => {
+    if (!c.certificate_file_url) return;
+    const url = await getSignedUrl(c.certificate_file_url);
+    if (url) window.open(url, "_blank");
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -112,7 +152,14 @@ export default function AdminUserView() {
                       <TableCell className="text-xs text-muted-foreground">{new Date(c.issued_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {c.certificate_file_url ? (
-                          <a href={c.certificate_file_url} target="_blank" rel="noreferrer" className="text-primary text-xs underline">Open</a>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => handlePreview(c)}>
+                              <Eye className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDownload(c)}>
+                              <Download className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
                         ) : <span className="text-xs text-muted-foreground">—</span>}
                       </TableCell>
                     </TableRow>
@@ -126,6 +173,17 @@ export default function AdminUserView() {
           </Card>
         )}
       </div>
+
+      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="truncate pr-8">{previewTitle}</DialogTitle>
+          </DialogHeader>
+          {previewUrl && (
+            <iframe src={previewUrl} className="w-full flex-1 rounded border" title={previewTitle} />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

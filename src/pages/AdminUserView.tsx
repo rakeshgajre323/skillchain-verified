@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar, Eye, Download } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, Phone, MapPin, Globe, IdCard, Calendar, Eye, Download, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { toast } from "sonner";
 
 type Detail = {
@@ -29,10 +29,12 @@ export default function AdminUserView() {
   const [creds, setCreds] = useState<Cred[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewTitle, setPreviewTitle] = useState<string>("");
+  const [previewIndex, setPreviewIndex] = useState<number>(-1);
+
+  const previewable = creds.filter((c) => !!c.certificate_file_url);
+  const currentCred = previewIndex >= 0 ? previewable[previewIndex] : null;
 
   const extractPath = (url: string): string | null => {
-    // Accept full public/signed URL or raw storage path
     const m = url.match(/\/certificates\/(.+?)(\?|$)/);
     if (m) return decodeURIComponent(m[1]);
     if (!url.startsWith("http")) return url.replace(/^certificates\//, "");
@@ -41,7 +43,7 @@ export default function AdminUserView() {
 
   const getSignedUrl = async (fileUrl: string): Promise<string | null> => {
     const path = extractPath(fileUrl);
-    if (!path) return fileUrl; // fallback
+    if (!path) return fileUrl;
     const { data, error } = await supabase.storage
       .from("certificates")
       .createSignedUrl(path, 300);
@@ -52,14 +54,39 @@ export default function AdminUserView() {
     return data.signedUrl;
   };
 
-  const handlePreview = async (c: Cred) => {
-    if (!c.certificate_file_url) return;
+  const openAt = async (idx: number) => {
+    const c = previewable[idx];
+    if (!c?.certificate_file_url) return;
     const url = await getSignedUrl(c.certificate_file_url);
     if (url) {
       setPreviewUrl(url);
-      setPreviewTitle(c.title);
+      setPreviewIndex(idx);
     }
   };
+
+  const handlePreview = (c: Cred) => {
+    const idx = previewable.findIndex((p) => p.id === c.id);
+    if (idx >= 0) openAt(idx);
+  };
+
+  const closePreview = () => {
+    setPreviewUrl(null);
+    setPreviewIndex(-1);
+  };
+
+  const goPrev = () => { if (previewIndex > 0) openAt(previewIndex - 1); };
+  const goNext = () => { if (previewIndex < previewable.length - 1) openAt(previewIndex + 1); };
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      else if (e.key === "ArrowRight") goNext();
+      else if (e.key === "Escape") closePreview();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const handleDownload = async (c: Cred) => {
     if (!c.certificate_file_url) return;
@@ -174,13 +201,34 @@ export default function AdminUserView() {
         )}
       </div>
 
-      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
-        <DialogContent className="max-w-5xl h-[85vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="truncate pr-8">{previewTitle}</DialogTitle>
+      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && closePreview()}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-4 gap-3">
+          <DialogHeader className="flex-row items-center justify-between space-y-0 gap-2">
+            <DialogTitle className="truncate text-base">
+              {currentCred?.title || "Certificate"}
+              <span className="ml-2 text-xs text-muted-foreground font-normal">
+                {previewable.length > 0 && `${previewIndex + 1} / ${previewable.length}`}
+              </span>
+            </DialogTitle>
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="outline" onClick={goPrev} disabled={previewIndex <= 0}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button size="sm" variant="outline" onClick={goNext} disabled={previewIndex >= previewable.length - 1}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              {currentCred && (
+                <Button size="sm" variant="outline" onClick={() => handleDownload(currentCred)}>
+                  <Download className="w-4 h-4" />
+                </Button>
+              )}
+              <Button size="sm" variant="ghost" onClick={closePreview} aria-label="Close">
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </DialogHeader>
           {previewUrl && (
-            <iframe src={previewUrl} className="w-full flex-1 rounded border" title={previewTitle} />
+            <iframe key={previewUrl} src={previewUrl} className="w-full flex-1 rounded border" title={currentCred?.title || "Certificate"} />
           )}
         </DialogContent>
       </Dialog>

@@ -351,6 +351,39 @@ export type Database = {
           verified_certs: number
         }[]
       }
+      admin_get_user_credentials: {
+        Args: { _user_id: string }
+        Returns: {
+          certificate_file_url: string
+          credential_type: string
+          description: string
+          expiry_date: string
+          id: string
+          issued_date: string
+          issuer_name: string
+          title: string
+          verification_status: string
+        }[]
+      }
+      admin_get_user_detail: {
+        Args: { _user_id: string }
+        Returns: {
+          address: string
+          appar_id: string
+          avatar_url: string
+          company_name: string
+          created_at: string
+          email: string
+          full_name: string
+          institute_name: string
+          last_sign_in_at: string
+          phone: string
+          role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["user_status"]
+          user_id: string
+          website: string
+        }[]
+      }
       admin_list_credentials: {
         Args: never
         Returns: {

@@ -58,6 +58,7 @@ export default function AdminPortal() {
   const navigate = useNavigate();
   const [overview, setOverview] = useState<Overview | null>(null);
   const [liveStudents, setLiveStudents] = useState<LiveStudent[]>([]);
+  const [students, setStudents] = useState<ProfileRow[]>([]);
   const [institutes, setInstitutes] = useState<ProfileRow[]>([]);
   const [companies, setCompanies] = useState<ProfileRow[]>([]);
   const [credentials, setCredentials] = useState<CredRow[]>([]);
@@ -66,15 +67,17 @@ export default function AdminPortal() {
 
   const loadAll = useCallback(async () => {
     setLoading(true);
-    const [ov, ls, ins, co, cr] = await Promise.all([
+    const [ov, ls, st, ins, co, cr] = await Promise.all([
       supabase.rpc("admin_get_overview"),
       supabase.rpc("admin_get_logged_in_students"),
+      supabase.rpc("admin_list_profiles", { _role: "student" }),
       supabase.rpc("admin_list_profiles", { _role: "institute" }),
       supabase.rpc("admin_list_profiles", { _role: "company" }),
       supabase.rpc("admin_list_credentials"),
     ]);
     if (ov.data?.[0]) setOverview(ov.data[0] as Overview);
     setLiveStudents((ls.data as LiveStudent[]) || []);
+    setStudents((st.data as ProfileRow[]) || []);
     setInstitutes((ins.data as ProfileRow[]) || []);
     setCompanies((co.data as ProfileRow[]) || []);
     setCredentials((cr.data as CredRow[]) || []);
@@ -171,6 +174,7 @@ export default function AdminPortal() {
         <Tabs defaultValue="live">
           <TabsList className="flex-wrap h-auto">
             <TabsTrigger value="live"><Activity className="w-4 h-4 mr-1" />Live Students ({liveStudents.length})</TabsTrigger>
+            <TabsTrigger value="students">Students ({students.length})</TabsTrigger>
             <TabsTrigger value="institutes">Institutes ({institutes.length})</TabsTrigger>
             <TabsTrigger value="companies">Companies ({companies.length})</TabsTrigger>
             <TabsTrigger value="creds">Credentials ({credentials.length})</TabsTrigger>
@@ -206,6 +210,51 @@ export default function AdminPortal() {
                     ))}
                     {liveStudents.length === 0 && (
                       <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">No active sessions</TableCell></TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="students">
+            <Card>
+              <CardHeader><CardTitle>All Students</CardTitle></CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>APAAR</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last sign-in</TableHead>
+                      <TableHead>Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filterRows(students).map((s) => (
+                      <TableRow key={s.user_id}>
+                        <TableCell>{s.full_name || "—"}</TableCell>
+                        <TableCell className="text-xs">{s.email}</TableCell>
+                        <TableCell>{s.appar_id || "—"}</TableCell>
+                        <TableCell className="text-xs">{s.phone || "—"}</TableCell>
+                        <TableCell>
+                          <Badge variant={s.status === "active" ? "default" : "destructive"}>{s.status}</Badge>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {s.last_sign_in_at ? new Date(s.last_sign_in_at).toLocaleString() : "Never"}
+                        </TableCell>
+                        <TableCell>
+                          <Button size="sm" variant="outline" onClick={() => toggleStatus(s.user_id, s.status)}>
+                            {s.status === "suspended" ? "Activate" : "Suspend"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {students.length === 0 && (
+                      <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-6">No students found</TableCell></TableRow>
                     )}
                   </TableBody>
                 </Table>

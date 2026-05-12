@@ -32,8 +32,11 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPortal from "./pages/AdminPortal";
 import { BackButton } from "./components/BackButton";
 import { RequireAuth } from "./components/RequireAuth";
+import { RequireAdmin } from "./components/RequireAdmin";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +115,10 @@ const App = () => (
                 path="/admin"
                 element={<RequireAuth roles={["institute", "company"]}><AdminDashboard /></RequireAuth>}
               />
+
+              {/* Hidden admin portal — do not link from anywhere */}
+              <Route path="/sys-control-7k9x2m" element={<AdminLogin />} />
+              <Route path="/sys-control-7k9x2m/portal" element={<RequireAdmin><AdminPortal /></RequireAdmin>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -58,6 +58,7 @@ export default function AdminPortal() {
   const navigate = useNavigate();
   const [overview, setOverview] = useState<Overview | null>(null);
   const [liveStudents, setLiveStudents] = useState<LiveStudent[]>([]);
+  const [students, setStudents] = useState<ProfileRow[]>([]);
   const [institutes, setInstitutes] = useState<ProfileRow[]>([]);
   const [companies, setCompanies] = useState<ProfileRow[]>([]);
   const [credentials, setCredentials] = useState<CredRow[]>([]);

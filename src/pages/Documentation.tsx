@@ -3,7 +3,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Book, Code, Key, Upload, Search, Shield, Users, QrCode } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 const guides = [
   {

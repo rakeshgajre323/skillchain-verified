@@ -28,6 +28,44 @@ export default function AdminUserView() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [creds, setCreds] = useState<Cred[]>([]);
   const [loading, setLoading] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState<string>("");
+
+  const extractPath = (url: string): string | null => {
+    // Accept full public/signed URL or raw storage path
+    const m = url.match(/\/certificates\/(.+?)(\?|$)/);
+    if (m) return decodeURIComponent(m[1]);
+    if (!url.startsWith("http")) return url.replace(/^certificates\//, "");
+    return null;
+  };
+
+  const getSignedUrl = async (fileUrl: string): Promise<string | null> => {
+    const path = extractPath(fileUrl);
+    if (!path) return fileUrl; // fallback
+    const { data, error } = await supabase.storage
+      .from("certificates")
+      .createSignedUrl(path, 300);
+    if (error || !data) {
+      toast.error("Could not access file");
+      return null;
+    }
+    return data.signedUrl;
+  };
+
+  const handlePreview = async (c: Cred) => {
+    if (!c.certificate_file_url) return;
+    const url = await getSignedUrl(c.certificate_file_url);
+    if (url) {
+      setPreviewUrl(url);
+      setPreviewTitle(c.title);
+    }
+  };
+
+  const handleDownload = async (c: Cred) => {
+    if (!c.certificate_file_url) return;
+    const url = await getSignedUrl(c.certificate_file_url);
+    if (url) window.open(url, "_blank");
+  };
 
   useEffect(() => {
     if (!userId) return;

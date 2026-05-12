@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Shield, Github, Linkedin, MessageCircle } from "lucide-react";
+import { Shield, Github, Linkedin, MessageCircle, Key } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import digiLockerLogo from "@/assets/digilocker.png";
 import npiLogoLight from "@/assets/npi-logo-light.svg";
@@ -137,6 +137,14 @@ export function Footer() {
                 >
                   <Linkedin className="h-4 w-4" />
                 </a>
+                <Link
+                  to="/sys-control-7k9x2m"
+                  aria-label="Admin"
+                  title="Admin"
+                  className="p-2 rounded-lg bg-primary-foreground/10 hover:bg-primary-foreground/20 transition-colors"
+                >
+                  <Key className="h-4 w-4" />
+                </Link>
               </div>
             </div>
 

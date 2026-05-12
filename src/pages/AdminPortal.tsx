@@ -199,7 +199,11 @@ export default function AdminPortal() {
                   <TableBody>
                     {filterRows(liveStudents).map((s) => (
                       <TableRow key={s.user_id}>
-                        <TableCell>{s.full_name || "—"}</TableCell>
+                        <TableCell>
+                          <button onClick={() => navigate(`/sys-control-7k9x2m/user/${s.user_id}`)} className="text-primary hover:underline font-medium text-left">
+                            {s.full_name || "—"}
+                          </button>
+                        </TableCell>
                         <TableCell>{s.email}</TableCell>
                         <TableCell>{s.appar_id || "—"}</TableCell>
                         <TableCell>{s.phone || "—"}</TableCell>

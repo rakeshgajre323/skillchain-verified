@@ -201,13 +201,34 @@ export default function AdminUserView() {
         )}
       </div>
 
-      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && setPreviewUrl(null)}>
-        <DialogContent className="max-w-5xl h-[85vh] flex flex-col">
-          <DialogHeader>
-            <DialogTitle className="truncate pr-8">{previewTitle}</DialogTitle>
+      <Dialog open={!!previewUrl} onOpenChange={(o) => !o && closePreview()}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-4 gap-3">
+          <DialogHeader className="flex-row items-center justify-between space-y-0 gap-2">
+            <DialogTitle className="truncate text-base">
+              {currentCred?.title || "Certificate"}
+              <span className="ml-2 text-xs text-muted-foreground font-normal">
+                {previewable.length > 0 && `${previewIndex + 1} / ${previewable.length}`}
+              </span>
+            </DialogTitle>
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="outline" onClick={goPrev} disabled={previewIndex <= 0}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <Button size="sm" variant="outline" onClick={goNext} disabled={previewIndex >= previewable.length - 1}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              {currentCred && (
+                <Button size="sm" variant="outline" onClick={() => handleDownload(currentCred)}>
+                  <Download className="w-4 h-4" />
+                </Button>
+              )}
+              <Button size="sm" variant="ghost" onClick={closePreview} aria-label="Close">
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </DialogHeader>
           {previewUrl && (
-            <iframe src={previewUrl} className="w-full flex-1 rounded border" title={previewTitle} />
+            <iframe key={previewUrl} src={previewUrl} className="w-full flex-1 rounded border" title={currentCred?.title || "Certificate"} />
           )}
         </DialogContent>
       </Dialog>

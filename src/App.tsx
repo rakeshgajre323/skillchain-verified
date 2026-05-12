@@ -120,6 +120,7 @@ const App = () => (
               {/* Hidden admin portal — do not link from anywhere */}
               <Route path="/sys-control-7k9x2m" element={<AdminLogin />} />
               <Route path="/sys-control-7k9x2m/portal" element={<RequireAdmin><AdminPortal /></RequireAdmin>} />
+              <Route path="/sys-control-7k9x2m/user/:userId" element={<RequireAdmin><AdminUserView /></RequireAdmin>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>

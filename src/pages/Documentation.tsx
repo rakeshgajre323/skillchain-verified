@@ -98,6 +98,31 @@ const Documentation = () => {
         </section>
       </main>
       <Footer />
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-5xl w-[95vw] h-[90vh] flex flex-col p-4">
+          <DialogHeader>
+            <DialogTitle>Documentation Preview</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 rounded-md overflow-hidden border">
+            {previewOpen && (
+              <iframe
+                src="/documentation.pdf#toolbar=1&view=FitH"
+                title="Documentation Preview"
+                className="w-full h-full"
+              />
+            )}
+          </div>
+          <div className="flex justify-end pt-2">
+            <Button asChild>
+              <a href="/documentation.pdf" download="CertiVault-Documentation.pdf">
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </a>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

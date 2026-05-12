@@ -34,6 +34,7 @@ import Security from "./pages/Security";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminPortal from "./pages/AdminPortal";
+import AdminUserView from "./pages/AdminUserView";
 import { BackButton } from "./components/BackButton";
 import { RequireAuth } from "./components/RequireAuth";
 import { RequireAdmin } from "./components/RequireAdmin";

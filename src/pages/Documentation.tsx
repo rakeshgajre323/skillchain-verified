@@ -3,7 +3,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Book, Code, Key, Upload, Search, Shield, Users, QrCode } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Eye } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 
 const guides = [
   {
@@ -49,6 +51,7 @@ const guides = [
 ];
 
 const Documentation = () => {
+  const [previewOpen, setPreviewOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
@@ -61,7 +64,11 @@ const Documentation = () => {
             <p className="text-lg text-muted-foreground leading-relaxed">
               Everything you need to know to get the most out of CertiVault Credentials.
             </p>
-            <div className="pt-4">
+            <div className="pt-4 flex flex-wrap gap-3 justify-center">
+              <Button size="lg" variant="outline" onClick={() => setPreviewOpen(true)}>
+                <Eye className="h-5 w-5 mr-2" />
+                Preview
+              </Button>
               <Button asChild size="lg">
                 <a href="/documentation.pdf" download="CertiVault-Documentation.pdf">
                   <Download className="h-5 w-5 mr-2" />
@@ -91,6 +98,31 @@ const Documentation = () => {
         </section>
       </main>
       <Footer />
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="max-w-5xl w-[95vw] h-[90vh] flex flex-col p-4">
+          <DialogHeader>
+            <DialogTitle>Documentation Preview</DialogTitle>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 rounded-md overflow-hidden border">
+            {previewOpen && (
+              <iframe
+                src="/documentation.pdf#toolbar=1&view=FitH"
+                title="Documentation Preview"
+                className="w-full h-full"
+              />
+            )}
+          </div>
+          <div className="flex justify-end pt-2">
+            <Button asChild>
+              <a href="/documentation.pdf" download="CertiVault-Documentation.pdf">
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </a>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

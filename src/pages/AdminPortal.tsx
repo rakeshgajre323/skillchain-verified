@@ -262,7 +262,7 @@ export default function AdminPortal() {
             </Card>
           </TabsContent>
 
-
+          {(["institutes", "companies"] as const).map((key) => {
             const rows = key === "institutes" ? institutes : companies;
             return (
               <TabsContent key={key} value={key}>

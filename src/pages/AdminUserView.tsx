@@ -29,10 +29,12 @@ export default function AdminUserView() {
   const [creds, setCreds] = useState<Cred[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewTitle, setPreviewTitle] = useState<string>("");
+  const [previewIndex, setPreviewIndex] = useState<number>(-1);
+
+  const previewable = creds.filter((c) => !!c.certificate_file_url);
+  const currentCred = previewIndex >= 0 ? previewable[previewIndex] : null;
 
   const extractPath = (url: string): string | null => {
-    // Accept full public/signed URL or raw storage path
     const m = url.match(/\/certificates\/(.+?)(\?|$)/);
     if (m) return decodeURIComponent(m[1]);
     if (!url.startsWith("http")) return url.replace(/^certificates\//, "");
@@ -41,7 +43,7 @@ export default function AdminUserView() {
 
   const getSignedUrl = async (fileUrl: string): Promise<string | null> => {
     const path = extractPath(fileUrl);
-    if (!path) return fileUrl; // fallback
+    if (!path) return fileUrl;
     const { data, error } = await supabase.storage
       .from("certificates")
       .createSignedUrl(path, 300);
@@ -52,14 +54,39 @@ export default function AdminUserView() {
     return data.signedUrl;
   };
 
-  const handlePreview = async (c: Cred) => {
-    if (!c.certificate_file_url) return;
+  const openAt = async (idx: number) => {
+    const c = previewable[idx];
+    if (!c?.certificate_file_url) return;
     const url = await getSignedUrl(c.certificate_file_url);
     if (url) {
       setPreviewUrl(url);
-      setPreviewTitle(c.title);
+      setPreviewIndex(idx);
     }
   };
+
+  const handlePreview = (c: Cred) => {
+    const idx = previewable.findIndex((p) => p.id === c.id);
+    if (idx >= 0) openAt(idx);
+  };
+
+  const closePreview = () => {
+    setPreviewUrl(null);
+    setPreviewIndex(-1);
+  };
+
+  const goPrev = () => { if (previewIndex > 0) openAt(previewIndex - 1); };
+  const goNext = () => { if (previewIndex < previewable.length - 1) openAt(previewIndex + 1); };
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      else if (e.key === "ArrowRight") goNext();
+      else if (e.key === "Escape") closePreview();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const handleDownload = async (c: Cred) => {
     if (!c.certificate_file_url) return;

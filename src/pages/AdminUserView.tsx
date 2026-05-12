@@ -152,7 +152,14 @@ export default function AdminUserView() {
                       <TableCell className="text-xs text-muted-foreground">{new Date(c.issued_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {c.certificate_file_url ? (
-                          <a href={c.certificate_file_url} target="_blank" rel="noreferrer" className="text-primary text-xs underline">Open</a>
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="ghost" onClick={() => handlePreview(c)}>
+                              <Eye className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => handleDownload(c)}>
+                              <Download className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
                         ) : <span className="text-xs text-muted-foreground">—</span>}
                       </TableCell>
                     </TableRow>

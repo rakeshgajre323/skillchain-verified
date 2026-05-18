@@ -366,3 +366,45 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+/* ============================================================
+   Scroll-Reveal Animations (driven by ScrollReveal.tsx)
+   Use: <div data-reveal="up" data-reveal-delay="120"> ... </div>
+   Stagger: <div data-reveal-stagger="100"> children auto-reveal </div>
+   ============================================================ */
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+  filter: blur(6px);
+}
+[data-reveal="down"]  { transform: translate3d(0, -32px, 0); }
+[data-reveal="left"]  { transform: translate3d(-40px, 0, 0); }
+[data-reveal="right"] { transform: translate3d(40px, 0, 0); }
+[data-reveal="fade"]  { transform: none; }
+[data-reveal="zoom"]  { transform: scale(0.92); }
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* Smooth anchor scrolling site-wide */
+html {
+  scroll-behavior: smooth;
+}
+

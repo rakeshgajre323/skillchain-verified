@@ -172,13 +172,9 @@ export default function Index() {
         {/* Stats Section */}
         <section className="py-10 border-y border-border bg-card/50">
           <div className="container">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-              {stats.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="text-center animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8" data-reveal-stagger="120">
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center" data-reveal="up">
                   <div className="text-3xl md:text-4xl font-display font-bold text-primary">
                     {stat.value}
                   </div>

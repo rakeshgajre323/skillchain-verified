@@ -172,13 +172,9 @@ export default function Index() {
         {/* Stats Section */}
         <section className="py-10 border-y border-border bg-card/50">
           <div className="container">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-              {stats.map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="text-center animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8" data-reveal-stagger="120">
+              {stats.map((stat) => (
+                <div key={stat.label} className="text-center" data-reveal="up">
                   <div className="text-3xl md:text-4xl font-display font-bold text-primary">
                     {stat.value}
                   </div>
@@ -192,7 +188,7 @@ export default function Index() {
         {/* Features Section */}
         <section className="py-10 bg-background">
           <div className="container">
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-16" data-reveal="up">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
                 Why Choose CertiVault?
               </h2>
@@ -201,15 +197,11 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => {
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6" data-reveal-stagger="120">
+              {features.map((feature) => {
                 const Icon = feature.icon;
                 return (
-                  <div
-                    key={feature.title}
-                    className="group surface-card animate-fade-in-up"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
+                  <div key={feature.title} className="group surface-card" data-reveal="up">
                     <div className="p-3 rounded-xl bg-primary/10 text-primary w-fit mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Icon className="h-6 w-6" />
                     </div>
@@ -225,7 +217,7 @@ export default function Index() {
         {/* Roles Section */}
         <section className="py-10 bg-muted/30">
           <div className="container">
-            <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="text-center max-w-2xl mx-auto mb-16" data-reveal="up">
               <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
                 Built for Everyone
               </h2>
@@ -234,14 +226,14 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {roles.map((role, index) => {
+            <div className="grid md:grid-cols-3 gap-8" data-reveal-stagger="150">
+              {roles.map((role) => {
                 const Icon = role.icon;
                 return (
                   <div
                     key={role.title}
-                    className="relative group p-8 rounded-2xl bg-card border border-border overflow-hidden hover:shadow-xl transition-all duration-300 animate-fade-in-up"
-                    style={{ animationDelay: `${index * 0.1}s` }}
+                    className="relative group p-8 rounded-2xl bg-card border border-border overflow-hidden hover:shadow-xl transition-all duration-300"
+                    data-reveal="up"
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500" />
 
@@ -270,7 +262,7 @@ export default function Index() {
           <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent opacity-90" />
           <div className="absolute inset-0 bg-hero-pattern opacity-10" />
 
-          <div className="container relative text-center">
+          <div className="container relative text-center" data-reveal="zoom">
             <Award className="h-16 w-16 mx-auto mb-6 opacity-90" />
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 font-serif">
               Ready to Transform Your Credentials?
@@ -289,7 +281,7 @@ export default function Index() {
 
         {/* Developed By Section */}
         <section className="py-8 border-t border-border bg-muted/30">
-          <div className="container text-center">
+          <div className="container text-center" data-reveal="fade">
             <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
               This Website Developed By
             </p>

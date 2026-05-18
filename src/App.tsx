@@ -36,6 +36,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminPortal from "./pages/AdminPortal";
 import AdminUserView from "./pages/AdminUserView";
 import { BackButton } from "./components/BackButton";
+import { ScrollReveal } from "./components/ScrollReveal";
 import { RequireAuth } from "./components/RequireAuth";
 import { RequireAdmin } from "./components/RequireAdmin";
 
@@ -49,6 +50,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <ScrollReveal />
             <BackButton />
             <Routes>
               {/* Public */}

@@ -288,7 +288,7 @@ export function InstitutionsMarquee() {
 
   return (
     <section className="py-10 sm:py-14 md:py-16 bg-card/40 border-y border-border overflow-hidden">
-      <div className="container mb-6 sm:mb-8 md:mb-10 text-center">
+      <div className="container mb-6 sm:mb-8 md:mb-10 text-center" data-reveal="up">
         <p className="text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-primary mb-2 sm:mb-3">
           Trusted Partner Institutions
         </p>

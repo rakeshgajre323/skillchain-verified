@@ -65,7 +65,7 @@ export function IssuanceAnimation() {
       `}</style>
 
       <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-8">
+        <div className="text-center max-w-2xl mx-auto mb-8" data-reveal="up">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
             <Sparkles className="h-3.5 w-3.5" />
             How Issuance Works

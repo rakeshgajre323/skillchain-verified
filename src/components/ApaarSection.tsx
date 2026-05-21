@@ -30,7 +30,7 @@ export function ApaarSection() {
       <div className="container relative">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Image */}
-          <div className="relative animate-fade-in-up order-2 lg:order-1">
+          <div className="relative order-2 lg:order-1" data-reveal="left">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-2xl" />
             <img
               src={apaarCard}
@@ -41,7 +41,7 @@ export function ApaarSection() {
           </div>
 
           {/* Content */}
-          <div className="space-y-6 animate-fade-in-up order-1 lg:order-2" style={{ animationDelay: "0.1s" }}>
+          <div className="space-y-6 order-1 lg:order-2" data-reveal="right">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
               <IdCard className="h-4 w-4" />
               <span>APAAR ID</span>
@@ -62,14 +62,14 @@ export function ApaarSection() {
               access, and share academic credentials throughout your lifetime.
             </p>
 
-            <div className="space-y-4">
-              {highlights.map((item, index) => {
+            <div className="space-y-4" data-reveal-stagger="120">
+              {highlights.map((item) => {
                 const Icon = item.icon;
                 return (
                   <div
                     key={item.title}
-                    className="flex gap-4 items-start group animate-fade-in-up"
-                    style={{ animationDelay: `${0.2 + index * 0.1}s` }}
+                    className="flex gap-4 items-start group"
+                    data-reveal="up"
                   >
                     <div className="p-2.5 rounded-xl bg-primary/10 text-primary flex-shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                       <Icon className="h-5 w-5" />

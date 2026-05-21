@@ -107,13 +107,13 @@ export default function Index() {
           <div className="pointer-events-none absolute top-1/2 left-[8%] w-1.5 h-1.5 rounded-full bg-foreground/40 animate-float-slow" />
 
           <div className="container relative pt-24 pb-20 md:pt-[96px] md:pb-[80px]">
-            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
-              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium animate-fade-in border border-primary/20 backdrop-blur-sm hover:bg-primary/15 transition-colors">
+            <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8" data-reveal-stagger="100">
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium border border-primary/20 backdrop-blur-sm hover:bg-primary/15 transition-colors" data-reveal="up">
                 <Sparkles className="h-4 w-4 flex-shrink-0 animate-pulse-slow" />
                 <span className="text-balance font-sans">Trusted and Secure </span>
               </div>
 
-              <h1 className="font-display tracking-tight animate-fade-in-up text-balance font-sans">
+              <h1 className="font-display tracking-tight text-balance font-sans" data-reveal="up">
                 Secure, Verifiable{" "}
                 <span
                   className="gradient-text font-sans animate-shimmer"
@@ -127,11 +127,11 @@ export default function Index() {
                 for Everyone
               </h1>
 
-              <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto animate-fade-in-up text-balance font-sans" style={{ animationDelay: "0.1s" }}>
+              <p className="text-lg text-secondary-foreground/90 max-w-2xl mx-auto text-balance font-sans" data-reveal="up">
                 Issue, manage, and verify academic and professional credentials with blockchain-grade security. Empowering students, institutions, and employers.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center" data-reveal="up">
                 <Link to="/signup" className="w-full sm:w-auto group/cta relative">
                   <span className="absolute -inset-0.5 rounded-xl bg-gradient-to-r from-primary via-accent to-primary opacity-60 blur-md group-hover/cta:opacity-90 transition-opacity animate-gradient" />
                   <Button variant="hero" className="group relative w-full sm:w-auto">
@@ -146,7 +146,7 @@ export default function Index() {
                 </Link>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-6 sm:pt-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pt-6 sm:pt-8" data-reveal="up">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground font-serif">
                   <CheckCircle2 className="h-4 w-4 text-success" />
                   No credit card required

@@ -13,20 +13,20 @@ export function GettingStarted() {
       <div className="container">
         <div className="rounded-3xl bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 border border-border p-8 md:p-12">
           <div className="grid lg:grid-cols-[auto_1fr] gap-8 lg:gap-12 items-center">
-            <div className="animate-fade-in-up">
+            <div data-reveal="left">
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold leading-tight">
                 Getting started is<br />quick and easy
               </h2>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-4 md:gap-2">
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-4 md:gap-2" data-reveal-stagger="130">
               {steps.map((step, i) => {
                 const Icon = step.icon;
                 return (
                   <div key={step.label} className="flex items-center gap-2 md:gap-4">
                     <div
-                      className="flex flex-col items-center gap-3 group animate-fade-in-up"
-                      style={{ animationDelay: `${i * 0.15}s` }}
+                      className="flex flex-col items-center gap-3 group"
+                      data-reveal="up"
                     >
                       <div
                         className={`relative h-16 w-16 md:h-20 md:w-20 rounded-full bg-background shadow-lg flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${step.bg}`}
@@ -46,7 +46,6 @@ export function GettingStarted() {
                     {i < steps.length - 1 && (
                       <ArrowRight
                         className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground/60 animate-pulse-slow"
-                        style={{ animationDelay: `${i * 0.15 + 0.1}s` }}
                       />
                     )}
                   </div>

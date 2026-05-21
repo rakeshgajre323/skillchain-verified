@@ -144,16 +144,16 @@ export function IssuanceAnimation() {
           </div>
 
           {/* Steps strip */}
-          <div className="relative mt-10 grid grid-cols-3 gap-3 max-w-3xl mx-auto text-center text-xs">
-            <div className="p-3 rounded-xl bg-background/60 border border-border">
+          <div className="relative mt-10 grid grid-cols-3 gap-3 max-w-3xl mx-auto text-center text-xs" data-reveal-stagger="120">
+            <div className="p-3 rounded-xl bg-background/60 border border-border" data-reveal="up">
               <Award className="h-4 w-4 text-primary mx-auto mb-1" />
               <p className="font-medium">Institute issues</p>
             </div>
-            <div className="p-3 rounded-xl bg-background/60 border border-border">
+            <div className="p-3 rounded-xl bg-background/60 border border-border" data-reveal="up">
               <Sparkles className="h-4 w-4 text-accent mx-auto mb-1" />
               <p className="font-medium">Verified & signed</p>
             </div>
-            <div className="p-3 rounded-xl bg-background/60 border border-border">
+            <div className="p-3 rounded-xl bg-background/60 border border-border" data-reveal="up">
               <CheckCircle2 className="h-4 w-4 text-success mx-auto mb-1" />
               <p className="font-medium">In student dashboard</p>
             </div>

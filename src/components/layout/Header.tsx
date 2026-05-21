@@ -220,12 +220,12 @@ export function Header() {
           ) : (
             <>
               <Link to="/login">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="rounded-full">
                   Sign In
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button variant="default" size="sm">
+                <Button variant="default" size="sm" className="rounded-full px-5">
                   Get Started
                 </Button>
               </Link>

@@ -83,8 +83,8 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/70 backdrop-blur-xl">
-      <div className="container flex h-16 md:h-[72px] items-center justify-between gap-2">
+    <header className="sticky top-3 md:top-5 z-50 w-full px-3 sm:px-5">
+      <div className="container max-w-7xl flex h-14 md:h-[64px] items-center justify-between gap-2 rounded-full border border-border/60 bg-background/70 backdrop-blur-xl shadow-lg shadow-foreground/5 pl-3 pr-2 md:pl-5 md:pr-2">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <a
             href="https://www.digitalindia.gov.in/"
@@ -220,12 +220,12 @@ export function Header() {
           ) : (
             <>
               <Link to="/login">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="rounded-full">
                   Sign In
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button variant="default" size="sm">
+                <Button variant="default" size="sm" className="rounded-full px-5">
                   Get Started
                 </Button>
               </Link>

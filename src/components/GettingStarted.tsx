@@ -20,7 +20,7 @@ export function GettingStarted() {
             </div>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-end gap-4 md:gap-2" data-reveal-stagger="130">
-              {steps.map((step) => {
+              {steps.map((step, i) => {
                 const Icon = step.icon;
                 return (
                   <div key={step.label} className="flex items-center gap-2 md:gap-4">
@@ -43,9 +43,11 @@ export function GettingStarted() {
                       </span>
                     </div>
 
-                    <ArrowRight
-                      className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground/60 animate-pulse-slow"
-                    />
+                    {i < steps.length - 1 && (
+                      <ArrowRight
+                        className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground/60 animate-pulse-slow"
+                      />
+                    )}
                   </div>
                 );
               })}

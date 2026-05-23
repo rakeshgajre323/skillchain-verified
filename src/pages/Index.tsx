@@ -291,6 +291,9 @@ export default function Index() {
             </h3>
           </div>
         </section>
+
+        {/* Disclaimer Marquee */}
+        <DisclaimerMarquee />
       </main>
 
       <Footer />

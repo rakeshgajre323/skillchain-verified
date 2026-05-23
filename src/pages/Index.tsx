@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { InstitutionsMarquee } from "@/components/InstitutionsMarquee";
+import { DisclaimerMarquee } from "@/components/DisclaimerMarquee";
 import { IssuanceAnimation } from "@/components/IssuanceAnimation";
 import { GettingStarted } from "@/components/GettingStarted";
 import { ApaarSection } from "@/components/ApaarSection";

@@ -15,7 +15,6 @@ export default defineTool({
     roll_number: z.string().describe("The student's roll number at the institute.").optional(),
   },
   annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
-  needsApproval: true,
   handler: async (input, ctx) => {
     if (!ctx.isAuthenticated()) return unauthenticated;
     const supabase = supabaseForUser(ctx);

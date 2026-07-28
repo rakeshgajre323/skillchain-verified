@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -83,6 +83,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { user, profile, loading, signIn } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawNext = searchParams.get("next");
+  // Only allow same-origin relative paths.
+  const nextPath =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
+
+
 
   const isStudent = activeRole === "student";
   const schema = isStudent ? studentSchema : orgSchema;
@@ -105,7 +112,7 @@ export default function Login() {
   }
 
   if (user) {
-    return <Navigate to={getHomeForRole(profile?.role)} replace />;
+    return <Navigate to={nextPath ?? getHomeForRole(profile?.role)} replace />;
   }
 
   const handleRoleChange = (role: LoginRole) => {
@@ -170,7 +177,10 @@ export default function Login() {
       }
 
       toast.success("Welcome back!");
-      navigate(getHomeForRole(profileRow.role as "student" | "institute" | "company"));
+      navigate(
+        nextPath ??
+          getHomeForRole(profileRow.role as "student" | "institute" | "company")
+      );
     } catch {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {

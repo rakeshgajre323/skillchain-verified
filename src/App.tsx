@@ -35,6 +35,7 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/AdminLogin";
 import AdminPortal from "./pages/AdminPortal";
 import AdminUserView from "./pages/AdminUserView";
+import OAuthConsent from "./pages/OAuthConsent";
 import { BackButton } from "./components/BackButton";
 import { ScrollReveal } from "./components/ScrollReveal";
 import { RequireAuth } from "./components/RequireAuth";
@@ -68,6 +69,9 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/security" element={<Security />} />
+
+              {/* OAuth consent screen for MCP / agent integrations */}
+              <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
 
               {/* Pending users allowed (verification step) */}
               <Route

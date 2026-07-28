@@ -83,6 +83,13 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { user, profile, loading, signIn } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const rawNext = searchParams.get("next");
+  // Only allow same-origin relative paths.
+  const nextPath =
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : null;
+
+
 
   const isStudent = activeRole === "student";
   const schema = isStudent ? studentSchema : orgSchema;

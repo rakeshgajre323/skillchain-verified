@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "sdk_version": "0.25.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://jrchdzojqwjvnyzddqwc.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "origincerti-mcp",
+      "version": "0.1.0",
+      "title": "OriginCerti Credentials"
+    },
+    "tools": [
+      {
+        "name": "get_my_profile",
+        "title": "Get my profile",
+        "description": "Get the signed-in user's profile: role (student, institute or company), name, APAAR ID, institute/company name and account status.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_credentials",
+        "title": "List my credentials",
+        "description": "List academic credentials visible to the signed-in user. Students see credentials issued to them; institutes see credentials they issued.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of credentials to return (default 20)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_credential",
+        "title": "Get credential details",
+        "description": "Fetch the full details of one credential by its ID, including verification status. Only credentials the signed-in user may access are returned.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "credential_id": {
+              "type": "string",
+              "description": "The UUID of the credential."
+            }
+          },
+          "required": [
+            "credential_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_credential_requests",
+        "title": "List credential requests",
+        "description": "List credential issuance requests visible to the signed-in user. Students see their own requests; institutes see requests addressed to them.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Optional status filter, e.g. pending, approved or rejected."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of requests to return (default 20)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_credential_request",
+        "title": "Request a credential",
+        "description": "Create a credential issuance request from the signed-in student to an institute. The institute reviews and approves it in the app.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "issuer_id": {
+              "type": "string",
+              "description": "User ID of the institute the request is sent to."
+            },
+            "title": {
+              "type": "string",
+              "description": "Title of the requested credential, e.g. 'B.Tech Degree Certificate'."
+            },
+            "credential_type": {
+              "type": "string",
+              "description": "Type of credential, e.g. degree, diploma, certificate."
+            },
+            "description": {
+              "type": "string",
+              "description": "Why the credential is needed."
+            },
+            "roll_number": {
+              "type": "string",
+              "description": "The student's roll number at the institute."
+            }
+          },
+          "required": [
+            "issuer_id",
+            "title",
+            "credential_type"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_institutes",
+        "title": "List institutes",
+        "description": "List institutes registered on the platform, with their user IDs — use these IDs as issuer_id when creating a credential request.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "search": {
+              "type": "string",
+              "description": "Optional case-insensitive name filter."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of institutes to return (default 25)."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

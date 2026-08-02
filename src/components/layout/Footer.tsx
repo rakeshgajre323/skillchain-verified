@@ -246,7 +246,7 @@ export function Footer() {
 
         <div className="border-t border-primary-foreground/15 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-primary-foreground/80">
-            © {new Date().getFullYear()} CertiVault Credentials. All rights reserved.
+            © {new Date().getFullYear()} OriginCerti Credentials. All rights reserved.
           </p>
           <p className="text-sm text-primary-foreground/80">
             Built with security in mind.

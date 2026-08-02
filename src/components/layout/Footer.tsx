@@ -98,7 +98,7 @@ export function Footer() {
                 <Shield className="h-5 w-5 text-primary-foreground" />
               </div>
               <span className="font-display font-bold text-xl">
-                Certi<span className="text-primary-foreground/80">Vault</span>
+                OriginCerti
               </span>
             </Link>
             <p className="text-sm text-primary-foreground/80">

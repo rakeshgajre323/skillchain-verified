@@ -132,7 +132,7 @@ export function Header() {
               <Shield className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
             <span className="font-display font-bold text-base sm:text-xl truncate">
-              Certi<span className="text-primary">Vault</span>
+              OriginCerti
             </span>
             {isAuthed && profile?.role && (
               <span className="hidden lg:inline-flex ml-2 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
